@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Strings</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <h1>Lesson: Strings in Processing</h1>
+</header>
+
+<main>
+
+<section>
+<h2>Strings are Objects</h2>
+<p>A string is a sequence of characters:</p>
+
+<pre><code>
+String s = "Hello";
+</code></pre>
+
+<p>Important: a String is an <strong>object</strong>, not a primitive.</p>
+</section>
+
+<section>
+<h2>⚠️ String Comparison</h2>
+
+<p><strong>Never use == to compare strings.</strong></p>
+
+<h3>Misleading case</h3>
+<pre><code>
+String a = "hello";
+String b = "hello";
+
+println(a == b); // might print true
+</code></pre>
+
+<p>This works only because the compiler may reuse the same object.</p>
+
+<h3>Real case</h3>
+<pre><code>
+String a = "hello";
+String b = "he" + "llo";
+
+println(a == b); // false
+</code></pre>
+
+<p>Same text, different objects.</p>
+
+<h3>Correct way</h3>
+<pre><code>
+println(a.equals(b)); // true
+</code></pre>
+
+<p><strong>Rule:</strong> use <code>.equals()</code></p>
+
+</section>
+
+<section>
+<h2>Immutability</h2>
+
+<p>Strings cannot be changed after creation.</p>
+
+<pre><code>
+String word = "cat";
+word = "cut"; // new object
+</code></pre>
+
+<p>You are not editing the old string — you are creating a new one.</p>
+
+<h3>Fixing a typo</h3>
+
+<p>This does NOT work:</p>
+
+<pre><code>
+String typo = "I liek Processing";
+typo.replace("liek", "like");
+println(typo); // still wrong
+</code></pre>
+
+<p>Because replace returns a NEW string.</p>
+
+<p>This works:</p>
+
+<pre><code>
+typo = typo.replace("liek", "like");
+println(typo);
+</code></pre>
+
+</section>
+
+<section>
+<h2>Useful Methods</h2>
+
+<pre><code>
+String s = "Processing";
+
+s.length();
+s.charAt(0);
+s.substring(0,4);
+</code></pre>
+
+</section>
+
+<section>
+<h2>Typography</h2>
+
+<pre><code>
+text("Hello", 100, 100);
+</code></pre>
+
+<h3>Fonts</h3>
+<pre><code>
+PFont f = createFont("Arial", 32);
+textFont(f);
+</code></pre>
+
+<h3>Alignment</h3>
+<pre><code>
+textAlign(CENTER, CENTER);
+</code></pre>
+
+</section>
+
+<section>
+<h2>Flexibility Example</h2>
+
+<p>Turn a string into characters:</p>
+
+<pre><code>
+String word = "Flexibility";
+char[] letters = word.toCharArray();
+</code></pre>
+
+<p>Now each letter can be manipulated independently.</p>
+
+</section>
+
+<section>
+<h2>Exercises</h2>
+<ul>
+<li>Test == vs .equals()</li>
+<li>Fix a typo using replace</li>
+<li>Split a word into characters</li>
+</ul>
+</section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+fetch("assets/includes/footer.html")
+  .then(r => r.text())
+  .then(html => document.getElementById("footer-placeholder").innerHTML = html);
+</script>
+
+</body>
+</html>

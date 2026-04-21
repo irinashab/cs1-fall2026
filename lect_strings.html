@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Strings & Typography</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>Lesson: Strings & Typography in Processing</h1>
+</header>
+
+<main>
+
+<section>
+<h2>What is a String?</h2>
+<p>A <strong>String</strong> is a sequence of characters enclosed in quotes.</p>
+
+<pre><code>
+String s = "Hello";
+String name = "Irina";
+</code></pre>
+
+<p>Strings are <strong>objects</strong>, not primitive types. That distinction matters.</p>
+</section>
+
+<section>
+<h2>⚠️ Why you CANNOT compare strings with ==</h2>
+
+<p>This is one of the most important conceptual points.</p>
+
+<pre><code>
+String a = "hello";
+String b = "hello";
+
+if (a == b) {
+  println("Same");
+}
+</code></pre>
+
+<p>This may <em>appear</em> to work sometimes — but it is unreliable.</p>
+
+<h3>What is actually happening?</h3>
+<ul>
+<li><code>==</code> compares <strong>memory addresses</strong></li>
+<li>Strings are <strong>objects</strong></li>
+<li>So you are asking: <em>are these the same object?</em></li>
+</ul>
+
+<p>Instead, you want:</p>
+
+<pre><code>
+if (a.equals(b)) {
+  println("Same content");
+}
+</code></pre>
+
+<h3>Correct mental model</h3>
+<ul>
+<li><code>==</code> → identity (same object)</li>
+<li><code>.equals()</code> → content (same characters)</li>
+</ul>
+
+<p><strong>Rule:</strong> For strings, always use <code>.equals()</code>.</p>
+
+</section>
+
+<section>
+<h2>Common String Operations</h2>
+
+<pre><code>
+String s = "Processing";
+
+println(s.length());     // 10
+println(s.charAt(0));    // 'P'
+println(s.substring(0,4)); // "Proc"
+</code></pre>
+
+</section>
+
+<section>
+<h2>Typography in Processing</h2>
+
+<p>Strings become visual when used with typography functions.</p>
+
+<h3>Basic text</h3>
+
+<pre><code>
+text("Hello", 100, 100);
+</code></pre>
+
+<h3>Fonts</h3>
+
+<pre><code>
+PFont f;
+
+void setup() {
+  size(400,400);
+  f = createFont("Arial", 32);
+  textFont(f);
+}
+</code></pre>
+
+<h3>Alignment</h3>
+
+<pre><code>
+textAlign(CENTER, CENTER);
+text("Centered", width/2, height/2);
+</code></pre>
+
+</section>
+
+<section>
+<h2>Typography Examples (based on your sketches)</h2>
+
+<h3>1. Letters in Motion</h3>
+<ul>
+<li>Each character moves independently</li>
+<li>Requires splitting a string into characters</li>
+</ul>
+
+<pre><code>
+String word = "HELLO";
+
+for (int i = 0; i < word.length(); i++) {
+  char c = word.charAt(i);
+  text(c, 50 + i*20, 100);
+}
+</code></pre>
+
+<h3>2. Opacity / Fade</h3>
+
+<pre><code>
+fill(0, 150); // transparency
+text("fade", 100, 100);
+</code></pre>
+
+<h3>3. Interaction (hover / avoid)</h3>
+<ul>
+<li>Characters react to mouse</li>
+<li>Position becomes dynamic</li>
+</ul>
+
+<h3>4. Bulge / Distortion</h3>
+<ul>
+<li>Typography reacts to distance</li>
+<li>Size or spacing changes</li>
+</ul>
+
+</section>
+
+<section>
+<h2>Common Student Mistakes</h2>
+
+<ul>
+<li>Using <code>==</code> instead of <code>.equals()</code></li>
+<li>Forgetting Strings are objects</li>
+<li>Trying to modify characters directly (Strings are immutable)</li>
+</ul>
+
+</section>
+
+<section>
+<h2>Mini Exercises</h2>
+
+<ol>
+<li>Print each character of a string on a new line</li>
+<li>Reverse a string</li>
+<li>Check if a word is a palindrome</li>
+<li>Make letters follow the mouse</li>
+</ol>
+
+</section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+fetch("assets/includes/footer.html")
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById("footer-placeholder").innerHTML = html;
+  })
+  .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>

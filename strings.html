@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Strings & Typography</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>Lesson: Strings & Typography in Processing</h1>
+</header>
+
+<main>
+
+<section>
+  <h2>What is a String?</h2>
+  <p>A <strong>String</strong> is a sequence of characters enclosed in quotes.</p>
+
+<pre><code>String s = "Hello";
+String name = "Irina";</code></pre>
+
+  <p>In Java/Processing, a String is an <strong>object</strong>, not a primitive type like <code>int</code> or <code>float</code>. That distinction matters when we compare strings, pass them to methods, or try to modify them.</p>
+</section>
+
+<section>
+  <h2>Why we cannot compare strings directly with <code>==</code></h2>
+
+  <p>This is one of the most important points in the whole lesson.</p>
+
+  <p>When you write <code>==</code> with strings, you are <strong>not</strong> asking whether the two strings contain the same text. You are asking whether they are the <strong>same object in memory</strong>.</p>
+
+<pre><code>String a = "hello";
+String b = "hello";
+
+println(a == b);</code></pre>
+
+  <p>This may print <code>true</code>. But that does <strong>not</strong> mean <code>==</code> is correct for strings.</p>
+
+  <p>Sometimes the compiler notices identical constant strings and reuses the same object. That can trick you into thinking direct comparison works.</p>
+
+  <h3>A misleading example</h3>
+
+<pre><code>String HELLO = "Hello";
+String hello = "Hello";
+
+println(hello == HELLO);</code></pre>
+
+  <p>This may print <code>true</code> because both variables may point to the same stored string object.</p>
+
+  <h3>But now look at this</h3>
+
+<pre><code>String HELLO = "Hello";
+String hell = "Hell";
+String hello = hell + "o";
+
+println(hello == HELLO);</code></pre>
+
+  <p>Now the result is typically <code>false</code>, even though both strings contain exactly the same characters.</p>
+
+  <p><strong>Why?</strong> Because <code>hello</code> was built during the program, so it is a different object, even though its text is still <code>"Hello"</code>.</p>
+
+  <h3>The correct way</h3>
+
+<pre><code>String HELLO = "Hello";
+String hell = "Hell";
+String hello = hell + "o";
+
+println(hello.equals(HELLO));</code></pre>
+
+  <p>This checks the <strong>contents</strong> of the strings, which is what we usually mean when we ask whether two strings are equal.</p>
+
+  <h3>Correct mental model</h3>
+  <ul>
+    <li><code>==</code> asks: are these the same object?</li>
+    <li><code>.equals()</code> asks: do these objects contain the same text?</li>
+  </ul>
+
+  <p><strong>Rule:</strong> if you want to compare strings, use <code>.equals()</code>, not <code>==</code>.</p>
+</section>
+
+<section>
+  <h2>Useful String operations</h2>
+
+<pre><code>String s = "Processing";
+
+println(s.length());        // number of characters
+println(s.charAt(0));       // character at index 0
+println(s.substring(0, 4)); // "Proc"</code></pre>
+
+  <p>These methods do not change the original string. They either return information or create a new string.</p>
+</section>
+
+<section>
+  <h2>Strings are immutable</h2>
+
+  <p><strong>Immutable</strong> means that once a String object is created, its contents cannot be changed.</p>
+
+  <p>For example, suppose we start with:</p>
+
+<pre><code>String word = "cat";</code></pre>
+
+  <p>You cannot directly change just one character inside that string object. There is no command that turns the existing <code>"cat"</code> object into <code>"cut"</code>.</p>
+
+  <p>When it looks like you are “changing” a string, what actually happens is that you create a <strong>new</strong> string and usually store it back into the same variable.</p>
+
+<pre><code>String word = "cat";
+word = "cut";</code></pre>
+
+  <p>The variable <code>word</code> now refers to a different string object. The original <code>"cat"</code> string was not edited in place.</p>
+
+  <h3>What if you need to fix a typo?</h3>
+
+  <p>You build a new string.</p>
+
+  <p>For example, suppose you have:</p>
+
+<pre><code>String typo = "Helo";</code></pre>
+
+  <p>One simple fix is just reassignment:</p>
+
+<pre><code>typo = "Hello";</code></pre>
+
+  <p>But sometimes you want to fix the typo systematically. Then you can create a new string using methods such as <code>substring()</code>, concatenation, or <code>replace()</code>.</p>
+
+  <h3>Fixing with concatenation and substring</h3>
+
+<pre><code>String typo = "Helo";
+String fixed = typo.substring(0, 3) + "l" + typo.substring(3);
+
+println(fixed);</code></pre>
+
+  <p>This does not repair the old string object. It creates a new one.</p>
+
+  <h3>Fixing with <code>replace()</code></h3>
+
+<pre><code>String typo = "I liek Processing";
+String fixed = typo.replace("liek", "like");
+
+println(fixed);</code></pre>
+
+  <p>Again, <code>replace()</code> returns a new string. The old one stays unchanged unless you assign the result to a variable.</p>
+
+<pre><code>String typo = "I liek Processing";
+typo.replace("liek", "like");
+println(typo);</code></pre>
+
+  <p>The typo is still there, because the result was not saved.</p>
+
+<pre><code>typo = typo.replace("liek", "like");
+println(typo);</code></pre>
+
+  <p>Now the variable points to the corrected version.</p>
+</section>
+
+<section>
+  <h2>Typography in Processing</h2>
+
+  <p>Strings become visual when we draw them with Processing.</p>
+
+  <h3>Basic text</h3>
+
+<pre><code>text("Hello", 100, 100);</code></pre>
+
+  <h3>Fonts</h3>
+
+<pre><code>PFont f;
+
+void setup() {
+  size(400, 400);
+  f = createFont("Arial", 32);
+  textFont(f);
+}</code></pre>
+
+  <h3>Alignment</h3>
+
+<pre><code>textAlign(CENTER, CENTER);
+text("Centered", width/2, height/2);</code></pre>
+</section>
+
+<section>
+  <h2>Typography example: Flexibility</h2>
+
+  <p>In the sketch <code>flexibility.pde</code>, the word is turned into an array of characters so each letter can be handled separately.</p>
+
+<pre><code>String word = "Flexibility";
+char[] letters;
+
+void setup() {
+  letters = word.toCharArray();
+}</code></pre>
+
+  <p>The method <code>toCharArray()</code> extracts the individual characters from the string and places them into a character array.</p>
+
+  <p>That is useful because each letter can now be drawn one by one, rotated, spaced, or animated independently.</p>
+
+<pre><code>for (int i = 0; i < letters.length; i++) {
+  float angle = map(mouseX, 0, width, 0, PI / 8);
+  rotate(angle);
+  text(letters[i], 0, 0);
+  translate(textWidth(letters[i]), 0);
+}</code></pre>
+
+  <p>The string itself is still immutable. We are not changing the original word. We are using its characters as drawing data.</p>
+</section>
+
+<section>
+  <h2>Common student mistakes</h2>
+  <ul>
+    <li>Using <code>==</code> instead of <code>.equals()</code></li>
+    <li>Thinking a string variable stores “just text” rather than a reference to an object</li>
+    <li>Assuming methods like <code>replace()</code> permanently change the original string</li>
+    <li>Forgetting that if you want the updated text, you must save the returned string</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Mini exercises</h2>
+  <ol>
+    <li>Write two strings with the same text and test them with both <code>==</code> and <code>.equals()</code>.</li>
+    <li>Create a string with a typo and fix it using <code>substring()</code>.</li>
+    <li>Create another typo and fix it using <code>replace()</code>.</li>
+    <li>Convert a word to a character array and draw its letters one at a time.</li>
+  </ol>
+</section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>

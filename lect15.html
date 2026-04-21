@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – PVector and Motion</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    pre {
+      overflow-x: auto;
+      padding: 1rem;
+      background: #f6f6f6;
+      border-radius: 8px;
+    }
+    code { font-family: "Courier New", monospace; }
+    .note {
+      background: #eef6ff;
+      padding: 0.9rem 1rem;
+      border-left: 4px solid #4a78c2;
+      margin: 1rem 0;
+    }
+    .warning {
+      background: #fff6e8;
+      padding: 0.9rem 1rem;
+      border-left: 4px solid #cc8a00;
+      margin: 1rem 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1rem 0;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.6rem;
+      text-align: left;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+<header>
+    <h1>PVector: Motion, Direction, and Steering in Processing</h1>
+</header>
+<main>
+
+<section>
+  <h2>Why are we learning <code>PVector</code>?</h2>
+  <p>
+    Once motion gets even a little bit interesting, keeping track of separate variables like <code>x</code>, <code>y</code>,
+    <code>xspeed</code>, <code>yspeed</code>, <code>xacceleration</code>, and <code>yacceleration</code> becomes messy.
+    The Processing tutorial introduces <code>PVector</code> as a way to bundle related values together and work with motion more cleanly.
+    Instead of treating horizontal and vertical motion as unrelated numbers, we can treat them as one object: a vector.
+  </p>
+  <div class="note">
+    <strong>Main idea:</strong> a vector can represent position, velocity, acceleration, direction, force, or the difference between two points.
+  </div>
+</section>
+
+<section>
+  <h2>What a <code>PVector</code> stores</h2>
+  <p>
+    At its core, a <code>PVector</code> stores components such as <code>x</code> and <code>y</code> (and optionally <code>z</code> in 3D).
+    That means a single variable can describe a position like <code>(100, 200)</code>, a velocity like <code>(2, -1)</code>, or an acceleration like <code>(0, 0.1)</code>.
+  </p>
+<pre><code>PVector location = new PVector(100, 200);
+PVector velocity = new PVector(2, -1);
+PVector acceleration = new PVector(0, 0.1);</code></pre>
+  <p>
+    The Processing tutorial starts with the classic bouncing ball and rewrites it using <code>PVector</code> so that the motion rule becomes conceptually simple:
+  </p>
+<pre><code>location.add(velocity);</code></pre>
+  <p>
+    That line means: “move the object by its current velocity.” This is the heart of animation with vectors.
+  </p>
+</section>
+
+<section>
+  <h2>The motion chain</h2>
+  <p>As our sketches become more realistic, we usually update motion in this order:</p>
+  <ol>
+    <li>Change velocity by acceleration</li>
+    <li>Optionally limit the speed</li>
+    <li>Change location by velocity</li>
+  </ol>
+<pre><code>velocity.add(acceleration);
+velocity.limit(topspeed);
+location.add(velocity);</code></pre>
+  <div class="note">
+    <strong>Conceptual summary:</strong><br>
+    position tells us <em>where</em> an object is,<br>
+    velocity tells us <em>how position changes</em>,<br>
+    acceleration tells us <em>how velocity changes</em>.
+  </div>
+</section>
+
+<section>
+  <h2>Useful <code>PVector</code> operations</h2>
+  <table>
+    <tr>
+      <th>Method</th>
+      <th>What it does</th>
+      <th>Typical use</th>
+    </tr>
+    <tr>
+      <td><code>add()</code></td>
+      <td>Adds another vector</td>
+      <td>Move position by velocity</td>
+    </tr>
+    <tr>
+      <td><code>sub()</code></td>
+      <td>Subtracts one vector from another</td>
+      <td>Find direction from one object to another</td>
+    </tr>
+    <tr>
+      <td><code>mult()</code></td>
+      <td>Scales a vector</td>
+      <td>Make a force stronger or weaker</td>
+    </tr>
+    <tr>
+      <td><code>div()</code></td>
+      <td>Divides by a scalar</td>
+      <td>Average values, normalize manually</td>
+    </tr>
+    <tr>
+      <td><code>mag()</code></td>
+      <td>Returns magnitude (length)</td>
+      <td>Measure distance-like size of a vector</td>
+    </tr>
+    <tr>
+      <td><code>normalize()</code></td>
+      <td>Makes the vector have length 1</td>
+      <td>Keep only direction</td>
+    </tr>
+    <tr>
+      <td><code>limit()</code></td>
+      <td>Caps magnitude</td>
+      <td>Prevent runaway speed</td>
+    </tr>
+    <tr>
+      <td><code>heading()</code></td>
+      <td>Returns direction as an angle</td>
+      <td>Rotate a triangle/ship/boid to face its motion</td>
+    </tr>
+    <tr>
+      <td><code>PVector.angleBetween()</code></td>
+      <td>Returns the smaller angle between two vectors</td>
+      <td>Compare directions</td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>Example 1: gravity and acceleration</h2>
+  <p>
+    Your gravity example is a good bridge from simple motion to more physical motion. The object has
+    <code>location</code>, <code>velocity</code>, and <code>acceleration</code>, and gravity is modeled as a constant vertical acceleration.
+  </p>
+<pre><code>class Mover {
+  PVector location;
+  PVector velocity;
+  PVector acceleration;
+  float topspeed;
+
+  Mover() {
+    location = new PVector(width/2, 0);
+    velocity = new PVector(1, 0);
+    acceleration = new PVector(0, 0.01);
+    topspeed = 6;
+  }
+
+  void update() {
+    velocity.add(acceleration);
+    velocity.limit(topspeed);
+    location.add(velocity);
+  }
+}</code></pre>
+  <p>
+    This shows an important modeling idea: we do not usually set position directly once the sketch is running.
+    Instead, we let acceleration influence velocity, and velocity influence location.
+  </p>
+  <div class="warning">
+    <strong>Notice:</strong> in the bouncing version of your code, the line <code>velocity.y *= -0.95;</code>
+    makes the ball lose some energy after each bounce. That damping factor is a nice touch because it looks more realistic than a perfect bounce.
+  </div>
+</section>
+
+<section>
+  <h2>Example 2: moving with acceleration and screen wrap</h2>
+  <p>
+    Your second mover example starts in the center and uses a tiny constant acceleration. Instead of bouncing,
+    it wraps around the screen. This is a nice chance to compare two boundary behaviors: <strong>bounce</strong> versus <strong>wrap</strong>.
+  </p>
+<pre><code>velocity.add(acceleration);
+velocity.limit(topspeed);
+location.add(velocity);</code></pre>
+<pre><code>if (location.x &gt; width) {
+  location.x = 0;
+} else if (location.x &lt; 0) {
+  location.x = width;
+}
+
+if (location.y &gt; height) {
+  location.y = 0;
+} else if (location.y &lt; 0) {
+  location.y = height;
+}</code></pre>
+  <p>
+    Wrapping is especially useful later for boids and particle systems, where objects leaving one side of the screen and reappearing on the other can make the world feel continuous.
+  </p>
+</section>
+
+<section>
+  <h2>Example 3: tip-to-tail vector addition</h2>
+  <p>
+    In your tip-to-tail demo, students click to create <code>v₁</code> and <code>v₂</code>, then see the sum vector <code>v₁ + v₂</code>.
+    This is exactly the geometric meaning of addition: copy the second vector so its tail starts at the tip of the first.
+  </p>
+<pre><code>PVector sum = PVector.add(v1, v2);
+text("v₁ + v₂", sum.x + 10, sum.y);</code></pre>
+  <p>
+    The parallelogram fill is pedagogically useful because it shows that algebraic addition and geometric addition are describing the same object.
+  </p>
+  <p><strong>Good discussion question:</strong> Why does the green vector always go from the origin to the opposite corner of the parallelogram?</p>
+</section>
+
+<section>
+  <h2>Example 4: vector subtraction</h2>
+  <p>
+    Subtraction is just as important as addition. In animation, subtraction often answers the question:
+    <em>What vector points from here to there?</em>
+  </p>
+<pre><code>PVector diff = PVector.sub(v1, v2);</code></pre>
+  <p>
+    In your subtraction demo, students can see that <code>v₁ - v₂</code> is the same as <code>v₁ + (-v₂)</code>.
+    That idea will matter later when a boid needs to compute a steering direction toward a target or away from a neighbor.
+  </p>
+  <div class="note">
+    <strong>Very common pattern:</strong>
+  </div>
+<pre><code>PVector dir = PVector.sub(target, location);</code></pre>
+  <p>
+    This creates a vector pointing from the object's current position to the target.
+  </p>
+</section>
+
+<section>
+  <h2>Example 5: magnitude and normalization</h2>
+  <p>
+    The Processing tutorial emphasizes that the magnitude of a vector is its length. Once we know the magnitude,
+    we can normalize the vector and keep only its direction.
+  </p>
+<pre><code>float m = dir.mag();
+dir.normalize();</code></pre>
+  <p>
+    This distinction is crucial:
+  </p>
+  <ul>
+    <li><code>dir</code> by itself contains both direction and size.</li>
+    <li>After <code>normalize()</code>, it keeps the same direction but has length 1.</li>
+    <li>Then <code>mult(someValue)</code> lets us decide how strong that direction should be.</li>
+  </ul>
+<pre><code>dir.normalize();
+dir.mult(0.5);</code></pre>
+  <p>
+    This “normalize, then scale” pattern appears constantly in motion and steering code.
+  </p>
+</section>
+
+<section>
+  <h2>Example 6: fireworks and particles</h2>
+  <p>
+    Your fireworks sketch is an excellent example of vectors inside objects. Each particle stores its own position,
+    velocity, and acceleration:
+  </p>
+<pre><code>class Particle {
+  PVector pos;
+  PVector vel;
+  PVector acc = new PVector(0, 0.05);
+}</code></pre>
+  <p>
+    The update rule is written component-by-component in your code:
+  </p>
+<pre><code>vel.x += acc.x;
+vel.y += acc.y;
+
+pos.x += vel.x;
+pos.y += vel.y;</code></pre>
+  <p>
+    That works, but this is also a good place to show students how vectors can shorten and clean up the code:
+  </p>
+<pre><code>vel.add(acc);
+pos.add(vel);</code></pre>
+  <p>
+    The particle system also motivates arrays or <code>ArrayList</code>s of objects and shows why vectors matter in larger projects.
+  </p>
+</section>
+
+<section>
+  <h2>Example 7: angle between vectors</h2>
+  <p>
+    Your <code>angleBetween</code> sketch introduces a subtle but important point: <code>PVector.angleBetween(v1, v2)</code>
+    returns the <strong>smaller unsigned angle</strong> between the vectors.
+  </p>
+<pre><code>float theta = PVector.angleBetween(v1, v2);</code></pre>
+  <p>
+    That means the result is between <code>0</code> and <code>PI</code>. It tells us how far apart the vectors are, but not whether the turn is clockwise or counterclockwise.
+  </p>
+  <div class="warning">
+    <strong>Important distinction:</strong> <code>angleBetween()</code> measures separation, not direction of rotation.
+  </div>
+</section>
+
+<section>
+  <h2>Example 8: signed angle using dot and cross products</h2>
+  <p>
+    Your signed-angle sketch fixes the limitation of <code>angleBetween()</code>. Using the dot product and the 2D cross-product idea,
+    it computes a signed angle in the range <code>-PI</code> to <code>PI</code>.
+  </p>
+<pre><code>float signedAngle(PVector v1, PVector v2) {
+  float cross = v1.x * v2.y - v1.y * v2.x;
+  float dot = v1.x * v2.x + v1.y * v2.y;
+  return atan2(cross, dot);
+}</code></pre>
+  <p>
+    This is advanced for CS1, but it is a beautiful example of vectors carrying geometric meaning. It is especially useful when an object must decide whether to turn left or right.
+  </p>
+</section>
+
+<section>
+  <h2>Static vs. non-static style</h2>
+  <p>Students will see both of these styles:</p>
+<pre><code>location.add(velocity);      // non-static: changes location
+PVector sum = PVector.add(v1, v2);  // static: creates/returns a result</code></pre>
+  <p>
+    This is worth pointing out explicitly. Non-static calls often modify the vector you call them on. Static calls are often used when you want a new vector result.
+  </p>
+</section>
+
+<section>
+  <h2>Where this is heading</h2>
+  <p>
+    The tutorial gradually moves toward steering behavior: computing a vector toward the mouse, normalizing it,
+    scaling it, and using it as acceleration. That gives us the core recipe for autonomous motion:
+  </p>
+<pre><code>PVector target = new PVector(mouseX, mouseY);
+PVector dir = PVector.sub(target, location);
+dir.normalize();
+dir.mult(0.5);
+acceleration = dir;</code></pre>
+  <p>
+    This is the bridge from “things moving on the screen” to “things choosing how to move.”
+  </p>
+</section>
+
+<section>
+  <h2>Possible project: flocking</h2>
+  <p>
+    A <strong>boid</strong> is a simulated bird-like agent. In a flocking model, each boid follows only local rules,
+    but the group as a whole appears coordinated. Your flocking notes identify the three classic rules:
+  </p>
+  <ol>
+    <li><strong>Separation</strong> – avoid crowding nearby boids</li>
+    <li><strong>Alignment</strong> – steer toward the average direction of nearby boids</li>
+    <li><strong>Cohesion</strong> – steer toward the average position of nearby boids</li>
+  </ol>
+  <p>
+    This is a natural next step after <code>PVector</code> because every boid needs a position, velocity, and acceleration vector,
+    and the three rules are built out of subtraction, addition, averaging, normalization, and limiting.
+  </p>
+</section>
+
+<section>
+  <h2>Suggested flocking project stages</h2>
+  <table>
+    <tr>
+      <th>Stage</th>
+      <th>Goal</th>
+      <th>Vector ideas involved</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Create one moving boid object</td>
+      <td><code>location</code>, <code>velocity</code>, <code>acceleration</code>, <code>update()</code>, <code>display()</code></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Rotate the boid so it faces its direction of motion</td>
+      <td><code>velocity.heading()</code></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Add many boids with an array or <code>ArrayList</code></td>
+      <td>Objects plus repeated vector updates</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Implement screen wrap</td>
+      <td>Continuous world idea</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Implement separation</td>
+      <td>Subtract nearby positions, steer away</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Implement alignment</td>
+      <td>Average neighbors' velocities</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Implement cohesion</td>
+      <td>Average neighbors' positions, then steer toward that center</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Tune the weights of the three rules</td>
+      <td><code>mult()</code>, <code>limit()</code></td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>Starter structure for a boid</h2>
+<pre><code>class Boid {
+  PVector location;
+  PVector velocity;
+  PVector acceleration;
+  float maxSpeed;
+  float maxForce;
+
+  Boid(float x, float y) {
+    location = new PVector(x, y);
+    velocity = PVector.random2D();
+    acceleration = new PVector(0, 0);
+    maxSpeed = 3;
+    maxForce = 0.08;
+  }
+
+  void update() {
+    velocity.add(acceleration);
+    velocity.limit(maxSpeed);
+    location.add(velocity);
+    acceleration.mult(0);
+  }
+
+  void applyForce(PVector force) {
+    acceleration.add(force);
+  }
+
+  void edges() {
+    if (location.x &lt; 0) location.x = width;
+    if (location.x &gt; width) location.x = 0;
+    if (location.y &lt; 0) location.y = height;
+    if (location.y &gt; height) location.y = 0;
+  }
+
+  void display() {
+    float theta = velocity.heading();
+    pushMatrix();
+    translate(location.x, location.y);
+    rotate(theta);
+    triangle(12, 0, -10, 6, -10, -6);
+    popMatrix();
+  }
+}</code></pre>
+  <p>
+    This is not the full flocking logic yet. It is the shell students can build on once they understand vectors.
+  </p>
+</section>
+
+<section>
+  <h2>Practice ideas</h2>
+  <ol>
+    <li>Rewrite one particle or mover example so it uses <code>vel.add(acc)</code> and <code>pos.add(vel)</code> instead of component-by-component updates.</li>
+    <li>In the tip-to-tail sketch, also draw <code>v₂ + v₁</code>. What do you notice?</li>
+    <li>Modify the subtraction sketch so it displays the numeric components of <code>v₁</code>, <code>v₂</code>, and <code>v₁ - v₂</code>.</li>
+    <li>In the angle sketch, compare <code>angleBetween()</code> and your signed-angle function side by side.</li>
+    <li>Turn one mover into a boid-shaped triangle that rotates with <code>heading()</code>.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Takeaways</h2>
+  <ul>
+    <li><code>PVector</code> helps us organize motion-related quantities cleanly.</li>
+    <li>Most motion code follows the pattern: acceleration → velocity → location.</li>
+    <li>Normalization separates direction from size.</li>
+    <li>Subtraction is the key to “where should I go?”</li>
+    <li>Limiting magnitude helps control speed and steering strength.</li>
+    <li>These ideas lead naturally to particles, steering, and flocking.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Reference</h2>
+  <p>
+    This lecture is based on the Processing tutorial on <code>PVector</code> by Daniel Shiffman, plus the class examples and flocking notes.
+  </p>
+</section>
+
+</main>
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>
