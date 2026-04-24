@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Lesson 17: Circular and Elliptic Motion in 2D and 3D</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+    <h1>Lesson 17: Circular and Elliptic Motion in 2D and 3D</h1>
+</header>
+
+<main>
+  <section>
+    <h2>Big Idea</h2>
+    <p>
+      Circular and elliptic motion are both built from the same two functions:
+      <code>cos()</code> and <code>sin()</code>. In Processing, the variable that changes over time
+      is usually an angle or parameter such as <code>angle</code> or <code>t</code>.
+    </p>
+    <p>
+      In 2D, we usually write positions as <code>(x, y)</code>. In 3D, we add one more coordinate:
+      <code>(x, y, z)</code>. A 3D orbit can simply be a 2D curve placed inside a plane in 3D space.
+    </p>
+  </section>
+
+  <section>
+    <h2>Part 1: Circular Motion in 2D</h2>
+    <p>
+      A point moving on a circle around a center <code>(centerX, centerY)</code> can be described by:
+    </p>
+
+<pre><code>float x = centerX + radius * cos(angle);
+float y = centerY + radius * sin(angle);</code></pre>
+
+    <p>
+      As <code>angle</code> increases, the point moves around the circle.
+    </p>
+
+<pre><code>float centerX, centerY;
+float radius = 120;
+float angle = 0;
+float speed = 0.02;
+
+void setup() {
+  size(600, 400);
+  centerX = width / 2;
+  centerY = height / 2;
+}
+
+void draw() {
+  background(255);
+
+  // Draw orbit path
+  noFill();
+  stroke(180);
+  ellipse(centerX, centerY, 2 * radius, 2 * radius);
+
+  // Compute moving object's position
+  float x = centerX + radius * cos(angle);
+  float y = centerY + radius * sin(angle);
+
+  // Draw center
+  fill(0);
+  noStroke();
+  ellipse(centerX, centerY, 10, 10);
+
+  // Draw orbiting object
+  fill(50, 100, 255);
+  ellipse(x, y, 30, 30);
+
+  angle += speed;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Part 2: Circular Motion with a Trail</h2>
+    <p>
+      To leave a trail, do not clear the screen completely with <code>background()</code> each frame.
+      Instead, draw a semi-transparent rectangle over the whole canvas. The old frames fade gradually.
+    </p>
+
+<pre><code>fill(255, 20);
+rect(0, 0, width, height);</code></pre>
+
+    <p>
+      Smaller alpha values make longer trails. Larger alpha values make shorter trails.
+    </p>
+
+<pre><code>float centerX, centerY;
+float radius = 120;
+float angle = 0;
+float speed = 0.03;
+
+void setup() {
+  size(600, 400);
+  centerX = width / 2;
+  centerY = height / 2;
+  background(255);   // only once
+}
+
+void draw() {
+  // Fade previous frames
+  noStroke();
+  fill(255, 20);
+  rect(0, 0, width, height);
+
+  float x = centerX + radius * cos(angle);
+  float y = centerY + radius * sin(angle);
+
+  fill(50, 100, 255);
+  ellipse(x, y, 20, 20);
+
+  angle += speed;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Part 3: Orbit and Self-Rotation in 2D</h2>
+    <p>
+      There are two different kinds of rotation:
+    </p>
+    <ul>
+      <li><strong>Orbit:</strong> the object moves around another object.</li>
+      <li><strong>Self-rotation:</strong> the object spins around its own center.</li>
+    </ul>
+    <p>
+      In Processing, the order of transformations matters. This is the key sequence:
+    </p>
+
+<pre><code>translate(cx, cy);          // go to the center object
+rotate(orbitAngle);        // rotate around the center
+translate(orbitRadius, 0); // move outward
+rotate(selfAngle);         // spin around local center</code></pre>
+
+<pre><code>float cx, cy;
+float orbitRadius = 120;
+float orbitAngle = 0;
+float selfAngle = 0;
+
+void setup() {
+  size(600, 400);
+  cx = width / 2;
+  cy = height / 2;
+  rectMode(CENTER);
+}
+
+void draw() {
+  background(255);
+
+  // central object
+  fill(0);
+  noStroke();
+  ellipse(cx, cy, 20, 20);
+
+  // orbit path
+  noFill();
+  stroke(180);
+  ellipse(cx, cy, orbitRadius * 2, orbitRadius * 2);
+
+  pushMatrix();
+  translate(cx, cy);
+  rotate(orbitAngle);
+  translate(orbitRadius, 0);
+  rotate(selfAngle);
+
+  // rectangle makes self-rotation visible
+  fill(255, 150, 50);
+  noStroke();
+  rect(0, 0, 60, 20);
+
+  // marker dot
+  fill(50, 100, 255);
+  ellipse(20, 0, 10, 10);
+
+  popMatrix();
+
+  orbitAngle += 0.02;
+  selfAngle += 0.08;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Part 4: Circular Motion of a Sphere in 3D</h2>
+    <p>
+      To work in 3D, use <code>P3D</code> in <code>size()</code>. A circular orbit can live in the
+      <code>xz</code>-plane by changing <code>x</code> and <code>z</code>, while keeping <code>y</code> fixed.
+    </p>
+
+<pre><code>float x = radius * cos(angle);
+float z = radius * sin(angle);</code></pre>
+
+<pre><code>float radius = 150;
+float angle = 0;
+
+void setup() {
+  size(800, 600, P3D);
+}
+
+void draw() {
+  background(255);
+  lights();
+
+  translate(width / 2, height / 2, 0);
+  rotateX(PI / 5);  // tilt so we can see depth
+
+  // center sphere
+  fill(0);
+  noStroke();
+  sphere(20);
+
+  // orbit path in xz-plane
+  noFill();
+  stroke(180);
+  beginShape();
+  for (float a = 0; a &lt; TWO_PI; a += 0.05) {
+    float x = radius * cos(a);
+    float z = radius * sin(a);
+    vertex(x, 0, z);
+  }
+  endShape(CLOSE);
+
+  // moving sphere
+  float x = radius * cos(angle);
+  float z = radius * sin(angle);
+
+  pushMatrix();
+  translate(x, 0, z);
+  noStroke();
+  fill(80, 140, 255);
+  sphere(25);
+  popMatrix();
+
+  angle += 0.02;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Part 5: 3D Orbit and Self-Rotation</h2>
+    <p>
+      A plain sphere is symmetric, so its self-rotation is hard to see. Add a small marker sphere on
+      the surface to make the spin visible.
+    </p>
+
+<pre><code>float orbitAngle = 0;
+float selfAngle = 0;
+float orbitRadius = 150;
+
+void setup() {
+  size(800, 600, P3D);
+  sphereDetail(30);
+}
+
+void draw() {
+  background(255);
+  lights();
+
+  translate(width / 2, height / 2, 0);
+  rotateX(PI / 5);
+
+  // center sphere
+  fill(50);
+  noStroke();
+  sphere(25);
+
+  // orbit path
+  noFill();
+  stroke(180);
+  beginShape();
+  for (float a = 0; a &lt; TWO_PI; a += 0.05) {
+    float x = orbitRadius * cos(a);
+    float z = orbitRadius * sin(a);
+    vertex(x, 0, z);
+  }
+  endShape(CLOSE);
+
+  pushMatrix();
+
+  // orbit around center in the xz-plane
+  rotateY(orbitAngle);
+  translate(orbitRadius, 0, 0);
+
+  // self-rotation around local y-axis
+  rotateY(selfAngle);
+
+  // main sphere
+  fill(100, 150, 255);
+  noStroke();
+  sphere(35);
+
+  // marker on surface
+  pushMatrix();
+  translate(35, 0, 0);
+  fill(255, 100, 100);
+  sphere(8);
+  popMatrix();
+
+  popMatrix();
+
+  orbitAngle += 0.02;
+  selfAngle += 0.08;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Part 6: Elliptic Motion Without Polar Coordinates</h2>
+    <p>
+      An ellipse can be understood as a stretched circle. Start with circular motion:
+    </p>
+
+<pre><code>cos(t), sin(t)</code></pre>
+
+    <p>
+      Then stretch it differently in the horizontal and vertical directions:
+    </p>
+
+<pre><code>float x = centerX + a * cos(t);
+float y = centerY + b * sin(t);</code></pre>
+
+    <p>
+      Here <code>a</code> is the horizontal radius and <code>b</code> is the vertical radius.
+      This is parametric motion, not polar coordinates.
+    </p>
+
+<pre><code>float cx, cy;
+float a = 200;
+float b = 120;
+float t = 0;
+
+void setup() {
+  size(600, 400);
+  cx = width / 2;
+  cy = height / 2;
+}
+
+void draw() {
+  background(255);
+
+  // ellipse path
+  noFill();
+  stroke(180);
+  ellipse(cx, cy, 2 * a, 2 * b);
+
+  // moving object
+  float x = cx + a * cos(t);
+  float y = cy + b * sin(t);
+
+  fill(50, 100, 255);
+  noStroke();
+  ellipse(x, y, 20, 20);
+
+  t += 0.02;
+}</code></pre>
+
+    <p>
+      Important note: this does not move at constant speed along the ellipse. The parameter
+      <code>t</code> changes uniformly, but the distance traveled per frame changes.
+    </p>
+  </section>
+
+  <section>
+    <h2>Part 7: Elliptic Motion in 3D</h2>
+    <p>
+      To add the third coordinate, place the ellipse into one of the coordinate planes.
+      For example, an ellipse in the <code>xz</code>-plane has:
+    </p>
+
+<pre><code>float x = a * cos(t);
+float y = 0;
+float z = b * sin(t);</code></pre>
+
+<pre><code>float a = 220;
+float b = 120;
+float t = 0;
+
+void setup() {
+  size(800, 600, P3D);
+}
+
+void draw() {
+  background(255);
+  lights();
+
+  translate(width / 2, height / 2, 0);
+  rotateX(PI / 5);
+
+  // ellipse path in xz-plane
+  noFill();
+  stroke(180);
+  beginShape();
+  for (float u = 0; u &lt; TWO_PI; u += 0.05) {
+    float x = a * cos(u);
+    float z = b * sin(u);
+    vertex(x, 0, z);
+  }
+  endShape(CLOSE);
+
+  // moving sphere
+  float x = a * cos(t);
+  float z = b * sin(t);
+
+  pushMatrix();
+  translate(x, 0, z);
+  fill(100, 150, 255);
+  noStroke();
+  sphere(20);
+  popMatrix();
+
+  t += 0.02;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Part 8: Ellipse in a Tilted Plane</h2>
+    <p>
+      Another way to make a 3D orbit is to create a flat ellipse first, then rotate the whole plane.
+      This keeps the motion simple while making the orbit look three-dimensional.
+    </p>
+
+<pre><code>float a = 220;
+float b = 120;
+float t = 0;
+
+void setup() {
+  size(800, 600, P3D);
+}
+
+void draw() {
+  background(255);
+  lights();
+
+  translate(width / 2, height / 2, 0);
+
+  // Tilt the entire orbital plane
+  rotateX(PI / 4);
+  rotateY(PI / 6);
+
+  // ellipse path in local xy-plane
+  noFill();
+  stroke(180);
+  beginShape();
+  for (float u = 0; u &lt; TWO_PI; u += 0.05) {
+    float x = a * cos(u);
+    float y = b * sin(u);
+    vertex(x, y, 0);
+  }
+  endShape(CLOSE);
+
+  // moving sphere
+  float x = a * cos(t);
+  float y = b * sin(t);
+
+  pushMatrix();
+  translate(x, y, 0);
+  fill(100, 150, 255);
+  noStroke();
+  sphere(20);
+  popMatrix();
+
+  t += 0.02;
+}</code></pre>
+  </section>
+
+  <section>
+    <h2>Summary</h2>
+    <ul>
+      <li><strong>Circle:</strong> use the same radius for both directions.</li>
+      <li><strong>Ellipse:</strong> use different stretch factors, <code>a</code> and <code>b</code>.</li>
+      <li><strong>3D orbit:</strong> add a third coordinate and place the curve in a plane.</li>
+      <li><strong>Tilted orbit:</strong> draw a simple flat orbit, then rotate its coordinate system.</li>
+      <li><strong>Self-rotation:</strong> move to the object first, then rotate locally.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Exercises</h2>
+    <ol>
+      <li>Change the trail example so the trail is longer, then shorter.</li>
+      <li>Change the 2D circular orbit so it starts at the top instead of the right.</li>
+      <li>In the 3D circular orbit, change the orbit from the <code>xz</code>-plane to the <code>xy</code>-plane.</li>
+      <li>In the elliptic orbit, try <code>a = 250</code> and <code>b = 60</code>. What changes?</li>
+      <li>Add a second sphere moving on the same ellipse, but starting halfway around the orbit.</li>
+      <li>Add self-rotation to the tilted elliptic orbit by placing a small marker sphere on the moving sphere.</li>
+    </ol>
+  </section>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>
