@@ -1,1 +1,1 @@
-This repo is to store course materials for CS1 course (two sections), spring 2026.
+This repo is to store course materials for CS1 course, fall 2026.
