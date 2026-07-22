@@ -72,21 +72,7 @@ a:focus {
   color: var(--link-hover);
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
 
-th, td {
-  border: 2px solid var(--border);
-  padding: 8px;
-  text-align: left;
-}
-/* Keep the Week column from wrapping */
-table th:first-child,
-table td:first-child {
-    white-space: nowrap;
-}
 /* Responsive YouTube embeds (optional utility) */
 .youtube-container {
   overflow: hidden;
@@ -325,18 +311,26 @@ code {
 pre code {
   color: #222;
 }
+/* ===========================
+   Tables
+   =========================== */
+
 table {
-  border-collapse: collapse;
-  margin: 15px 0;
+    ...
 }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 8px 12px;
+th,
+td {
+    ...
 }
 
 th {
-  background: #eef2f7;
+    ...
+}
+
+table th:first-child,
+table td:first-child {
+    white-space: nowrap;
 }
 section {
   margin-bottom: 35px;
