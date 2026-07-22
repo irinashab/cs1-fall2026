@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS1 – Required Materials</title>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
     <h1>Required Materials</h1>
@@ -14,22 +14,22 @@
     <p>
         The required textbook is <strong>Learning Processing: A Beginner's Guide to Programming Images, Animation, and Interaction</strong>
         (2nd Edition, The Morgan Kaufmann Series in Computer Graphics) by Dan Shiffman.<br/>
-        We use this book because it emphasizes creative coding and visual thinking, which aligns directly with how we will approach programming in CS1.<br/>
+        We use this book because its emphasis on creative coding and visual thinking aligns well with our approach to programming in CS1.<br/>
         It is available through the <a href="http://ezproxy.purchase.edu/login?url=https://search.ebscohost.com/login.aspx?direct=true&db=nlebk&AN=485992&site=ehost-live&scope=site" target="_blank" rel="noopener noreferrer">Purchase College Library</a>,
         licensed for unlimited simultaneous users.<br/>
-        Simply click the link, sign in with your Purchase credentials, and read online—or download it for offline use.
+        Simply follow the link, sign in with your Purchase credentials, and read online or download the book for offline use.
     </p>
 
     <h3>Troubleshooting</h3>
     <p>
         Occasionally, you may see the error <strong><em>“This site does not provide a secure connection.”</em></strong>
     </p>
-    <p>Possible fixes:</p>
+    <p>If that happens, try the following:</p>
     <ul>
-        <li>Try a different browser</li>
-        <li>Clear your cache/history (choose “all time”)</li>
-        <li>Use an incognito or private window</li>
-    </ul>
+    <li>Try a different browser.</li>
+<li>Clear your browser cache. If your browser asks what to remove, clearing cached files is usually sufficient.</li>
+    <li>Try an Incognito (Chrome) or Private (Safari) window.</li>
+</ul>
     <p>
         If the issue continues, please contact me and we’ll sort it out together.
     </p>
@@ -37,19 +37,20 @@
     <h3>Reference</h3>
     <p>
         We will also use the official <a href="https://processing.org/reference/" target="_blank" rel="noopener noreferrer">Processing Reference</a>.<br/>
-        Please keep this page open whenever you are coding—it will save you time!
+        Please keep this page open whenever you are coding—it will save you time.
     </p>
 
     <h3>Video</h3>
     <p>
-        Video resource: <a href="https://www.youtube.com/watch?v=4JzDttgdILQ" target="_blank" rel="noopener noreferrer">Learning Processing</a>.<br/>
+        Recommended video series: <a href="https://www.youtube.com/watch?v=4JzDttgdILQ" target="_blank" rel="noopener noreferrer">Learning Processing</a>.<br/>
         This is an introductory series on Processing, created by Dan Shiffman for complete beginners.
     </p>
+    <p> Dan Shiffman is the creator of the Processing Foundation's educational materials and one of the best programming teachers on YouTube. Even if you don't watch every video, they're an excellent supplement when you're stuck.</p>
 </body>
 <div id="footer-placeholder"></div>
 
 <script>
-  fetch("assets/includes/footer.html")
+  fetch("../assets/includes/footer.html")
     .then(response => response.text())
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;

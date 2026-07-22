@@ -316,16 +316,19 @@ pre code {
    =========================== */
 
 table {
-    ...
+     border-collapse: collapse;
+  width: 100%;
 }
 
 th,
 td {
-    ...
+    border: 2px solid var(--border);
+  padding: 8px;
+  text-align: left;
 }
 
 th {
-    ...
+    background: #eef2f7;
 }
 
 table th:first-child,
