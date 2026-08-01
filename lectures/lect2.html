@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>CS1 – Lesson 2: More Sophisticated Shapes</title>
+  <link href="../assets/style.css" rel="stylesheet"/>
+</head>
+<body>
+<header>
+  <h1>Lesson 2: More Sophisticated Shapes</h1>
+</header>
+
+<main>
+  <h2 id="The_Flow_of_a_Program_2">The Flow of a Program</h2>
+
+  <p>When writing a program, some tasks need to happen once, while others repeat continuously. Processing handles this using two functions: <code>setup()</code> and <code>draw()</code>. The statements belonging to each function are enclosed in curly braces <code>{ }</code>. The braces mark the beginning and end of the function's code block.</p>
+
+  <pre><code>void setup() {
+  size(700, 300); // Must be the first statement
+  frameRate(20);  // Set the number of frames per second
+}</code></pre>
+
+  <p>The <code>setup()</code> function runs once when the program starts. It is used for one-time configuration, such as setting the canvas size and frame rate.</p>
+
+  <p>After <code>setup()</code> finishes, the <code>draw()</code> function begins. It runs repeatedly until the program stops. Even when a drawing does not yet move, we will usually place drawing commands inside <code>draw()</code>. This prepares the sketch for interaction and animation.</p>
+
+  <pre><code>void draw() {
+  background(0); // Clear and redraw the background each frame
+  println("I am printing this message 20 times a second!");
+}</code></pre>
+
+  <h3 id="Mouse_Interaction_22">Mouse Interaction</h3>
+
+  <p>Processing tracks the mouse cursor's position using two variables:</p>
+  <ul>
+    <li><code>mouseX</code>: horizontal position</li>
+    <li><code>mouseY</code>: vertical position</li>
+  </ul>
+
+  <p>Example:</p>
+
+  <pre><code>void setup() {
+  size(500, 500);
+}
+
+void draw() {
+  background(255);          // White background
+  println(mouseX, mouseY);  // Print the current mouse position
+}</code></pre>
+
+  <p>You can use this information to plan coordinates and later to position shapes dynamically on the canvas.</p>
+
+  <hr/>
+
+  <h2 id="Drawing_an_Arc_42">Drawing an Arc</h2>
+
+  <p>An arc is a section of an ellipse. Use the <code>arc()</code> function with the following parameters:</p>
+
+  <pre><code>arc(x, y, width, height, start, stop);</code></pre>
+
+  <p>Where:</p>
+  <ul>
+    <li><code>x</code>, <code>y</code>: center coordinates of the ellipse</li>
+    <li><code>width</code>, <code>height</code>: dimensions of the ellipse</li>
+    <li><code>start</code>, <code>stop</code>: angles in radians that define the arc's range</li>
+  </ul>
+
+  <p>Angles in Processing are measured in radians. Angle 0 starts pointing to the right, along the positive x-axis. Angles increase clockwise because the y-axis points downward on the screen. A full turn is <code>TWO_PI</code>, and half a turn is <code>PI</code>. You can convert degrees to radians with <code>radians(degrees)</code>.</p>
+
+  <h3 id="Example_Drawing_a_Semicircle_53">Example: Drawing a Semicircle</h3>
+
+  <pre><code>void setup() {
+  size(400, 400);
+}
+
+void draw() {
+  background(255);
+  fill(150, 100, 255);               // Purple fill
+  arc(200, 200, 150, 150, 0, PI);   // 0 to 180 degrees
+}</code></pre>
+
+  <p><img alt="An example of a semicircular arc from 0 to 180 degrees" height="300" src="../assets/images/screenshot0.png" width="300"/></p>
+
+  <h3 id="Key_Points_to_Remember_63">Key Points to Remember</h3>
+  <ul>
+    <li>Angles are in radians, not degrees. Use <code>radians(degrees)</code> to convert.</li>
+    <li>Processing provides useful predefined constants:
+      <ul>
+        <li><code>PI</code> (approximately 3.14): half-circle, 180°</li>
+        <li><code>TWO_PI</code> (approximately 6.28): full circle, 360°</li>
+        <li><code>HALF_PI</code> (approximately 1.57): quarter-circle, 90°</li>
+        <li><code>QUARTER_PI</code> (approximately 0.78): eighth-circle, 45°</li>
+      </ul>
+    </li>
+  </ul>
+
+  <hr/>
+
+  <h2 id="Drawing_Irregular_Shapes_73">Drawing Irregular Shapes</h2>
+
+  <p>Custom shapes can be created using <code>beginShape()</code> and <code>endShape()</code>, with a sequence of vertices between them.</p>
+
+  <h3 id="Steps_to_Create_a_Shape_76">Steps to Create a Shape</h3>
+  <ol>
+    <li>Start with <code>beginShape()</code>.</li>
+    <li>Add vertices using <code>vertex(x, y)</code>.</li>
+    <li>Finish the shape with <code>endShape()</code>. Use <code>endShape(CLOSE)</code> when you want Processing to connect the last vertex back to the first.</li>
+  </ol>
+
+  <h3 id="Example_Open_and_Closed_Shapes_81">Example: Open and Closed Shapes</h3>
+
+  <pre><code>void setup() {
+  size(400, 400);
+}
+
+void draw() {
+  background(255);
+
+  // Open shape
+  beginShape();
+  vertex(100, 100);
+  vertex(150, 200);
+  vertex(200, 100);
+  endShape(); // The last vertex is not connected to the first
+
+  // Closed shape
+  beginShape();
+  vertex(100, 300);
+  vertex(150, 370);
+  vertex(200, 300);
+  endShape(CLOSE); // Connect the last vertex to the first
+}</code></pre>
+
+  <h3 id="Shape_Types_103">Shape Types</h3>
+
+  <p>When you pass a parameter to <code>beginShape()</code>, you can specify how Processing should use the vertices:</p>
+  <ul>
+    <li><code>POINTS</code>: each vertex is a point</li>
+    <li><code>LINES</code>: vertices are connected in pairs as line segments</li>
+    <li><code>TRIANGLES</code>: vertices are grouped in sets of three</li>
+    <li><code>TRIANGLE_STRIP</code>: connected triangles share vertices</li>
+    <li><code>QUADS</code>: vertices are grouped in sets of four</li>
+  </ul>
+
+  <h3 id="Example_Using_TRIANGLES_111">Example: Using TRIANGLES</h3>
+
+  <pre><code>void setup() {
+  size(400, 400);
+}
+
+void draw() {
+  background(255);
+
+  beginShape(TRIANGLES);
+  vertex(100, 100);
+  vertex(150, 200);
+  vertex(200, 100);
+
+  vertex(250, 200);
+  vertex(300, 100);
+  vertex(200, 300);
+  endShape();
+}</code></pre>
+
+  <hr/>
+
+  <h2 id="Kazimir_Malevich_and_Suprematism_130">Kazimir Malevich and Suprematism</h2>
+
+  <p><a href="https://www.theartstory.org/artist/malevich-kasimir/" rel="noopener noreferrer" target="_blank">Kazimir Malevich</a> was a Russian avant-garde artist who emphasized abstract forms over realism. His Suprematist works can be recreated in Processing using geometric figures as well as custom shapes made with <code>beginShape()</code> and <code>endShape()</code>.</p>
+
+  <p>Displayed below is one of Malevich's Suprematist compositions.</p>
+  <p><img alt="One of Malevich's Suprematist compositions" src="../assets/images/malevich0.png"/></p>
+<p>You can find the code recreating this composition in the <a href="../code-examples/lesson2-code-examples.zip" download> code examples</a>.</p>
+code examples.</p>
+  <h3 id="Challenge_166">Challenge</h3>
+  <p>Recreate one of Malevich's paintings or create your own abstract design using <code>beginShape()</code> and <code>endShape()</code>. Experiment with angles, colors, and shapes.</p>
+
+  <p>
+    <img alt="Malevich's Suprematism: Contour of Sportsmen" src="../assets/images/malevich1.jpeg"/><br/>
+    <img alt="Malevich's At the Harvest" src="../assets/images/malevich2.jpeg"/>
+  </p>
+
+  <hr/>
+
+  <h3 id="Quick_Reference_172">Quick Reference</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Function</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code>size(w, h)</code></td><td>Sets canvas dimensions.</td></tr>
+      <tr><td><code>background(c)</code></td><td>Sets the background color and clears the previous frame.</td></tr>
+      <tr><td><code>arc(x, y, w, h, start, stop)</code></td><td>Draws an arc.</td></tr>
+      <tr><td><code>beginShape()</code></td><td>Starts defining a custom shape.</td></tr>
+      <tr><td><code>endShape()</code></td><td>Finishes the shape definition.</td></tr>
+      <tr><td><code>vertex(x, y)</code></td><td>Adds a vertex to the shape.</td></tr>
+      <tr><td><code>fill(r, g, b)</code></td><td>Sets the fill color for shapes.</td></tr>
+      <tr><td><code>frameRate(fps)</code></td><td>Sets how many times per second <code>draw()</code> runs.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="lesson2-examples">Download the Examples</h3>
+  <p><a href="../code-examples/lesson2-code-examples.zip" download>Download all Lesson 2 code examples</a>.</p>
+
+  <hr/>
+
+  <h2 id="assignment1">Assignment 1: Getting Comfortable with Shapes and Coordinates in Processing</h2>
+
+  <p>In this assignment, you will practice drawing and combining shapes in Processing. The main goal is to help you become comfortable placing shapes on the canvas using coordinates and to see how more complex images can be built from simple geometric pieces.</p>
+
+  <p>Keep the <a href="https://processing.org/reference/" rel="noopener noreferrer" target="_blank">Processing Reference</a> handy while you work.</p>
+
+  <p>Use <code>setup()</code> for one-time configuration and place your drawing commands inside <code>draw()</code>. You may also experiment with and trace the position of the mouse cursor.</p>
+
+  <p>Do not forget to begin every sketch with a comment containing your name and to add comments explaining what your code is doing.</p>
+
+  <h3>Note on Images</h3>
+  <p>The images in this assignment are references, not blueprints. You are not expected to reproduce them exactly. Focus on understanding how shapes, coordinates, and angles work together.</p>
+
+  <h3>Getting Started</h3>
+  <ol>
+    <li>Create a folder named <code>yourNameAssignment1</code>.</li>
+    <li>Open a new Processing sketch and save it in this folder under an appropriate name.</li>
+  </ol>
+  <p>You may create multiple sketches inside this folder. You do not need to put everything into a single sketch.</p>
+
+  <h3>Required Tasks (Everyone)</h3>
+
+  <h4>1. Using <code>arc()</code></h4>
+  <p>Write a sketch using the <code>arc()</code> function that reproduces the four arc shapes in the figure below.</p>
+  <p><img alt="Four examples of arcs with different starting and stopping angles" src="../assets/images/ass1img0.png"/></p>
+  <p>This task is meant to help you connect numerical angle values to visual results.</p>
+
+  <h4>2. Ellipses and Arcs</h4>
+  <p>Create another sketch. Using either <code>ellipse()</code> or <code>arc()</code>, draw the figure below on a 200 × 200 pixel canvas.</p>
+  <p><img alt="Four curved black shapes forming a white diamond-like area in the center" src="../assets/images/ass1img1.png"/></p>
+  <p><strong>Tip:</strong> It often helps to sketch the figure on paper first or imagine a bounding box before coding.</p>
+  <p>This task is meant to help you connect numerical angle values to visual results.</p>
+
+  <h3>Choose TWO of the Following Tasks</h3>
+  <p>Pick any two of the tasks below and complete them in Processing.</p>
+
+  <h4>3. Draw a House</h4>
+  <p>Design a simple or detailed house using Processing code. Your house can be very simple or more detailed—both are fine.</p>
+
+  <h4>4. Toy, Animal, or Snowman</h4>
+  <p>Pick one of the following and draw it in Processing:</p>
+  <ul>
+    <li>a toy car</li>
+    <li>an animal</li>
+    <li>a snowman</li>
+  </ul>
+  <p>This task emphasizes composition rather than precision.</p>
+
+  <h4>5. Your Initials</h4>
+  <p>Draw your initials using Processing shapes, not typed text. Be creative with spacing and style.</p>
+
+  <h4>6. Olympic Flag</h4>
+  <p>Recreate the Olympic flag using Processing.</p>
+  <p><img alt="The five interlocking Olympic rings" src="../assets/images/ass1img2.png"/></p>
+  <p>This task emphasizes accuracy and relative positioning.</p>
+
+  <h3>For Go-Getters (Optional / Extra Credit)</h3>
+  <p>Recreate one of Malevich's abstract paintings or invent your own abstract design.</p>
+  <p><img alt="Malevich painting used as inspiration for the optional challenge" src="../assets/images/ass1img3.png"/></p>
+  <p>Use:</p>
+  <ul>
+    <li><code>beginShape()</code> and <code>endShape()</code></li>
+    <li>angles</li>
+    <li>colors</li>
+    <li>abstract forms</li>
+  </ul>
+  <p><strong>Concept focus:</strong></p>
+  <ul>
+    <li>freeform shapes</li>
+    <li>experimenting with angles and vertices</li>
+    <li>moving beyond predefined shapes</li>
+  </ul>
+  <p>This is an extra-credit challenge and is entirely optional.</p>
+
+  <h3>Code Requirements</h3>
+  <ul>
+    <li>Begin every sketch with a comment containing your name.</li>
+    <li>Your code should be well commented.</li>
+    <li>Comments should identify the major parts of the drawing and explain coordinates, angles, or construction choices that are not immediately obvious.</li>
+    <li>Artistic perfection is not required—clarity and thoughtful construction matter more.</li>
+  </ul>
+
+  <h3>Submission</h3>
+  <ol>
+    <li>Right-click the <code>yourNameAssignment1</code> folder and select <strong>Compress</strong>.</li>
+    <li>This will create a file named <code>yourNameAssignment1.zip</code>.</li>
+    <li>Upload this single ZIP file.</li>
+  </ol>
+
+  <p><strong>Remember:</strong> Every task in this assignment is about thinking geometrically: Where is this shape? Why is it there? How do angles and coordinates control what I see?</p>
+</main>
+
+<div id="footer-placeholder"></div>
+<script>
+  fetch("../assets/includes/footer.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+</body>
+</html>
