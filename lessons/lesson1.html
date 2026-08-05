@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>CS1 – Lesson 2: More Sophisticated Shapes</title>
-  <link href="../assets/style.css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Course page description">
+  <title>CS1 – Lesson 1: More Sophisticated Shapes</title>
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
-<header>
-  <h1>Lesson 2: More Sophisticated Shapes</h1>
-</header>
+  <header>
+    <h1>Lesson 1: More Sophisticated Shapes</h1>
+  </header>
 
-<main>
-  <h2 id="The_Flow_of_a_Program_2">The Flow of a Program</h2>
+  <div id="navigation-placeholder"></div>
+
+  <main>
+   <h2 id="The_Flow_of_a_Program_2">The Flow of a Program</h2>
 
   <p>When writing a program, some tasks need to happen once, while others repeat continuously. Processing handles this using two functions: <code>setup()</code> and <code>draw()</code>. The statements belonging to each function are enclosed in curly braces <code>{ }</code>. The braces mark the beginning and end of the function's code block.</p>
 
@@ -298,16 +302,45 @@ void draw() {
   </ol>
 
   <p><strong>Remember:</strong> Every task in this assignment is about thinking geometrically: Where is this shape? Why is it there? How do angles and coordinates control what I see?</p>
-</main>
 
-<div id="footer-placeholder"></div>
-<script>
-  fetch("../assets/includes/footer.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("footer-placeholder").innerHTML = data;
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
     })
-    .catch(err => console.error("Footer load failed:", err));
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
 </script>
+
 </body>
 </html>

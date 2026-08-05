@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS1 – Required Materials</title>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="stylesheet" href="../assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Course page description">
+  <title>CS1 – Required Materials</title>
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
+  <header>
     <h1>Required Materials</h1>
+  </header>
 
-    <h3>Textbook</h3>
+  <div id="navigation-placeholder"></div>
+
+  <main>
+     <h3>Textbook</h3>
     <p>
         The required textbook is <strong>Learning Processing: A Beginner's Guide to Programming Images, Animation, and Interaction</strong>
         (2nd Edition, The Morgan Kaufmann Series in Computer Graphics) by Dan Shiffman.<br/>
@@ -38,7 +44,7 @@
     We will use <a href="https://processing.org/download/"
     target="_blank" rel="noopener noreferrer">Processing</a> throughout the course.
     Processing is free and must be installed on the computer you will use for coursework outside class.
-    Installation instructions will be provided in Lesson 1.
+    Installation instructions will be provided in Lesson 0.
 </p>
     <h3>Reference</h3>
     <p>
@@ -52,16 +58,45 @@
         This is an introductory series on Processing, created by Dan Shiffman for complete beginners.
     </p>
     <p> Dan Shiffman is the creator of the Processing Foundation's educational materials and one of the best programming teachers on YouTube. Even if you don't watch every video, they're an excellent supplement when you're stuck.</p>
-</body>
-<div id="footer-placeholder"></div>
 
-<script>
-  fetch("../assets/includes/footer.html")
-    .then(response => response.text())
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(err => console.error("Footer load failed:", err));
+    .catch(error => console.error("Footer load failed:", error));
 </script>
 
+</body>
 </html>
