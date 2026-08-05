@@ -1,23 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Irina Shablinsky">
-  <meta name="description" content="Course page description">
-  <title>CS1 – Page Title</title>
-  <link rel="stylesheet" href="../assets/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS1 Syllabus — Fall 2026</title>
+   <link rel="stylesheet" href="../assets/style.css"> 
 </head>
-<body>
-  <header>
-    <h1>Page Title</h1>
-  </header>
-
-  <div id="navigation-placeholder"></div>
-
-  <main>
-    <!-- Page content goes here -->
-     <header>
+<body><main>
+    <header>
 <h1>MAT1520 CRN 41428 Computer Science I</h1>
 <p>Purchase College - Fall 2026</p>
 <p> Wednesday  3:00 p.m. - 6:40 p.m. | NS1013</p>
@@ -138,44 +128,16 @@ The final project must be accompanied by a written report. Please consult course
 <h3>Cell Phone Policy During Class</h3>
 <p>Cellphones are like toddlers—always looking for trouble—so keep them silenced and out of sight during class. If your phone rings, you’ll owe us a performance (karaoke, anyone?). Emergencies are the only exception, but Instagram and memes can wait—focus on the real learning happening here!</p>
 <p><strong>With that said, I take classroom focus seriously. If I see you using your phone during class, I may ask you to leave.</strong></p>
-  </main>
-
+</main>
+</body>
   <div id="footer-placeholder"></div>
 
-  <script>
-  const siteRoot = window.location.hostname.endsWith("github.io")
-    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
-    : "/";
-
-  fetch(`${siteRoot}assets/includes/navigation.html`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Navigation request failed: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then(html => {
-      const placeholder = document.getElementById("navigation-placeholder");
-      placeholder.innerHTML = html;
-
-      placeholder.querySelectorAll("a[data-path]").forEach(link => {
-        link.href = `${siteRoot}${link.dataset.path}`;
-      });
-    })
-    .catch(error => console.error("Navigation load failed:", error));
-
-  fetch(`${siteRoot}assets/includes/footer.html`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Footer request failed: ${response.status}`);
-      }
-      return response.text();
-    })
+<script>
+  fetch("../assets/includes/footer.html")
+    .then(response => response.text())
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(error => console.error("Footer load failed:", error));
+    .catch(err => console.error("Footer load failed:", err));
 </script>
-
-</body>
 </html>

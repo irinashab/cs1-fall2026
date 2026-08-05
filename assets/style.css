@@ -368,3 +368,56 @@ section {
   border-left: 5px solid #888;
   
 }
+/*=============================
+       Navigation
+===============================*/
+
+
+.course-navigation {
+  margin: 1rem 0 2rem;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.course-navigation ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-navigation a {
+  display: block;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+}
+
+.course-navigation a:hover,
+.course-navigation a:focus {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .course-navigation ul {
+    flex-direction: column;
+  }
+}
+/*======================
+   Announcement box
+========================*/
+.announcements {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  background-color: #f5f1e8;
+  border-left: 4px solid #7a4f32;
+  border-radius: 6px;
+}
+
+.announcements h2 {
+  margin-top: 0;
+}
+
+.announcements p:last-child {
+  margin-bottom: 0;
+}
