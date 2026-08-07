@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Course page description">
+  <title>CS1 – Programming Assignment 0</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header>
+    <h1>Programming Assignment 0: Getting Started</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <p><strong>Goal:</strong> Become familiar with Processing’s coordinate system and practice placing shapes precisely on the canvas.</p>
+
+  <h3>Your Task</h3>
+  <p>Create a new Processing sketch. Your sketch must contain:</p>
+  <ul>
+    <li>two diagonal lines: one from the upper-left corner to the lower-right corner and one from the upper-right corner to the lower-left corner;</li>
+    <li>a rectangle 200 pixels wide and 300 pixels high, with its upper-left corner at <code>(0, 0)</code>;</li>
+    <li>a circle with diameter 100, centered on the canvas;</li>
+    <li>several additional shapes of your choice.</li>
+  </ul>
+
+  <p>Experiment with:</p>
+  <ul>
+    <li><code>stroke()</code> and <code>fill()</code>;</li>
+    <li>color and transparency (alpha values);</li>
+    <li>different shapes, such as <code>ellipse()</code>, <code>triangle()</code>, and <code>quad()</code>.</li>
+  </ul>
+
+  <p>
+    Add comments identifying the two diagonal lines, the rectangle, and the centered circle.
+    Be creative, but make sure all required elements are clearly visible and easy to identify.
+  </p>
+
+  <h3>Challenge</h3>
+  <p>
+    Change the dimensions of your canvas in <code>size()</code>. Does the circle remain centered?
+    If not, revise the code so that it does. The built-in variables <code>width</code> and <code>height</code> will help.
+  </p>
+  <h3>Submission</h3>
+
+<p>Upload  your <a href="../resources/submission.html">properly named and compressed sketch </a> to Brightspace.</p>
+<p>Need help? Review  <a href="../lessons/lesson0.html">Lesson 0.</a>
+ 
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
