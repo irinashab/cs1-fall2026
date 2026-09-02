@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 Programming Assignment 2 on variables, conditionals, and changing state">
+  <title>CS1 – Programming Assignment 2</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Programming Assignment 2</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <section>
+      <h2>Variables, Decisions, and Motion</h2>
+
+      <p>
+        In this assignment, you will use variables to store information, change
+        values while a program runs, and make decisions with
+        <code>if</code>, <code>else if</code>, and <code>else</code> statements.
+      </p>
+
+      <p>By the end of the assignment, you should be able to:</p>
+
+      <ul>
+        <li>choose meaningful variables for a program,</li>
+        <li>trace how variable values change,</li>
+        <li>write Boolean expressions using comparison operators,</li>
+        <li>choose among several possible actions, and</li>
+        <li>combine changing state with conditionals to create motion.</li>
+      </ul>
+    </section>
+    <section>
+  <h2>Starter Files</h2>
+
+  <p>
+    Download and unzip the starter folder:
+    <a href="../code-examples/lesson3-code-examples.zip" download>
+      Programming Assignment 2 starter files
+    </a>.
+  </p>
+
+  <p>
+    The folder contains <code>colorChange.pde</code>,
+    <code>rollOver.pde</code>, and <code>ball.pde</code>.
+  </p>
+</section>
+
+    <section>
+      <h2>Getting started</h2>
+
+      <ol>
+        <li>Create a folder named <code>yourNameProgrammingAssignment2</code>.</li>
+        <li>Save every sketch for this assignment inside that folder.</li>
+        <li>Give each sketch a descriptive name.</li>
+        <li>Read each program aloud and predict its behavior before running it.</li>
+      </ol>
+
+      <p>
+        Use <strong>camelCase</strong> for names made from several words, such as
+        <code>circleSize</code>, <code>xSpeed</code>, and <code>backgroundColor</code>.
+        Choose names that explain what each value represents.
+      </p>
+
+      <p>
+        Comments should explain what important variables represent and why
+        their values change. Do not comment every line simply by translating the
+        code into English.
+      </p>
+    </section>
+
+    <section>
+      <h2>Part 1. Random Grade</h2>
+
+      <p>Ask the computer to generate a score and report the corresponding letter grade.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Score</th>
+            <th scope="col">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>90–100</td><td>A</td></tr>
+          <tr><td>80–89</td><td>B</td></tr>
+          <tr><td>70–79</td><td>C</td></tr>
+          <tr><td>60–69</td><td>D</td></tr>
+          <tr><td>0–59</td><td>F</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Requirements</h3>
+
+      <ol>
+        <li>Declare an <code>int</code> variable named <code>score</code>.</li>
+        <li>Assign it a random integer from 0 through 100, inclusive.</li>
+        <li>Print the score to the console.</li>
+        <li>Use an <code>if–else if–else</code> chain to print the correct letter grade.</li>
+        <li>Run the sketch several times and verify that the reported grades are correct.</li>
+      </ol>
+
+      <p>
+        Remember that <code>random(101)</code> produces a value from 0 up to, but
+        not including, 101. Because <code>random()</code> returns a <code>float</code>,
+        you must convert the result to an <code>int</code>.
+      </p>
+
+      <p>
+        Your executable statements belong inside <code>setup()</code>. Conditions
+        are checked from top to bottom, and only one grade should be printed.
+      </p>
+    </section>
+
+    <section>
+      <h2>Part 2. Choose One Interactive Sketch</h2>
+
+      <p>
+        Complete <strong>one</strong> of the following starter sketches. Save your
+        completed sketch with a new, descriptive name.
+      </p>
+
+      <h3>Option A: <code>colorChange.pde</code></h3>
+
+      <ol>
+        <li>Complete the blue-color change controlled by the vertical mouse position.</li>
+        <li>When the mouse is pressed, set the background to a color of your choice.</li>
+        <li>Keep all three color values between 0 and 255.</li>
+        <li>Add comments explaining the conditions and the changing variables.</li>
+      </ol>
+
+      <p>
+        The provided call to <code>constrain()</code> keeps a value within a specified
+        range. Look it up in the Processing reference and use it where needed.
+      </p>
+
+      <h3>Option B: <code>rollOver.pde</code></h3>
+
+      <ol>
+        <li>Divide the canvas into four quadrants.</li>
+        <li>Use nested <code>if</code> statements to determine which quadrant contains the mouse.</li>
+        <li>Highlight only that quadrant.</li>
+        <li>Add comments explaining the purpose of each condition.</li>
+      </ol>
+
+      <p>
+        For this assignment, do not combine conditions using
+        <code>&amp;&amp;</code>, <code>||</code>, or <code>!</code>. Use nested
+        <code>if</code> statements when you must ask a second question.
+      </p>
+    </section>
+
+    <section>
+      <h2>Part 3. Bouncing Ball</h2>
+
+      <p>
+        Begin with <code>ball.pde</code>. The starter ball moves horizontally and
+        teleports back to the left after leaving the canvas. Change the program so
+        the ball moves in two dimensions and bounces from all four edges.
+      </p>
+
+      <h3>Requirements</h3>
+
+      <ol>
+        <li>Store the horizontal and vertical positions in variables.</li>
+        <li>Use separate variables for horizontal and vertical speed.</li>
+        <li>Update both positions during every frame.</li>
+        <li>Reverse the appropriate speed when the ball reaches an edge.</li>
+        <li>Keep the entire ball inside the canvas—not just its center.</li>
+        <li>Use separate <code>if</code> statements for the boundaries.</li>
+      </ol>
+
+      <p>
+        Do not use <code>&amp;&amp;</code>, <code>||</code>, or <code>!</code> in this part.
+        Think carefully about the radius of the ball and the order in which position
+        and speed are updated.
+      </p>
+
+      <h3>If you finish early</h3>
+
+      <p>Choose one or more extensions:</p>
+
+      <ul>
+        <li>Change the ball’s color when it hits an edge.</li>
+        <li>Give the ball a random starting position or speed.</li>
+        <li>Change the canvas size and make sure the program still works.</li>
+        <li>Add a second ball with different position and speed variables.</li>
+      </ul>
+      <p>Before writing each condition, say the yes-or-no question aloud. For example:
+        “Has the left side of the circle reached the left edge of the canvas?”</p>
+    </section>
+
+    <section>
+      <h2>Code expectations</h2>
+
+      <ul>
+        <li>Use meaningful camelCase variable names.</li>
+        <li>Avoid unexplained magic numbers.</li>
+        <li>Indent the contents of every function and conditional block.</li>
+        <li>Use braces consistently.</li>
+        <li>Add useful comments.</li>
+        <li>Run and test every sketch before submitting it.</li>
+      </ul>
+
+      <p>
+        You should be able to explain what each variable stores, when its value
+        changes, and why each condition is true or false.
+      </p>
+    </section>
+
+    <section>
+      <h2>Submission</h2>
+
+      <ol>
+        <li>Confirm that all three completed sketches are inside <code>yourNameProgrammingAssignment2</code>.</li>
+        <li>Make sure each sketch runs without errors.</li>
+        <li>Compress the entire folder to create <code>yourNameProgrammingAssignment2.zip</code>.</li>
+        <li>Submit that single ZIP file through Brightspace.</li>
+      </ol>
+    </section>
+
+    <p class="back-to-top">
+      <a href="#top">↑ Back to top</a>
+    </p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+  </script>
+</body>
+</html>

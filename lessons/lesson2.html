@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson on variables, changing state, and conditionals in Processing">
+  <title>CS1 – Lesson 3: Variables and Conditionals</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Lesson 3: Variables and Conditionals</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <section>
+      <h2>Big idea</h2>
+
+      <p>
+        Until now, our sketches have mostly followed a fixed list of drawing instructions.
+        Today we will give a program a memory and let it make decisions.
+      </p>
+
+      <p>By the end of this lesson, you should be able to:</p>
+
+      <ul>
+        <li>give meaningful names to values,</li>
+        <li>change a value while a program runs,</li>
+        <li>use a variable to create motion,</li>
+        <li>ask a true-or-false question, and</li>
+        <li>make a program behave differently depending on the answer.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>1. Numbers versus ideas</h2>
+
+      <p>Consider this line:</p>
+
+      <pre><code>ellipse(250, 150, 100, 100);</code></pre>
+
+      <p>
+        The computer can draw the ellipse, but it does not know what the numbers mean.
+        Is <code>250</code> the center of the canvas? Is <code>100</code> the radius or the
+        diameter? We may know now, but we might not remember later.
+      </p>
+
+      <p>We can name the important values:</p>
+
+      <pre><code>int centerX = 250;
+int centerY = 150;
+int diameter = 100;
+
+ellipse(centerX, centerY, diameter, diameter);</code></pre>
+
+      <p>
+        A <strong>variable</strong> is a name for a value that the computer should remember.
+        The drawing has not changed, but our intentions are now visible in the code.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Declaring a variable</h2>
+
+      <p>A variable declaration has three parts:</p>
+
+      <pre><code>int diameter = 100;
+│   │          │
+│   │          └── starting value
+│   └───────────── name
+└───────────────── data type</code></pre>
+
+      <p>
+        The <strong>data type</strong> tells Processing what kind of value the variable stores.
+      </p>
+
+      <ul>
+        <li><code>int</code> stores a whole number, such as <code>42</code> or <code>-7</code>.</li>
+        <li><code>float</code> stores a number with a decimal part, such as <code>2.5</code>.</li>
+        <li><code>String</code> stores text, such as <code>"Hello"</code>.</li>
+        <li><code>boolean</code> stores either <code>true</code> or <code>false</code>.</li>
+      </ul>
+
+      <pre><code>int score = 0;
+float speed = 2.5;
+String message = "Hello, Processing";
+boolean gameOver = false;</code></pre>
+
+      <p>
+        For now, use <code>int</code> for most positions, sizes, and counters, and
+        <code>float</code> when you need fractional values or smoother motion.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Assignment: changing a value</h2>
+
+      <p>A variable stores one value at a time, but that value can change:</p>
+
+      <pre><code>void setup() {
+  int x = 5;
+  x = 8;
+  println(x);
+}</code></pre>
+
+      <p>This prints <code>8</code>. The old value has been replaced.</p>
+
+      <p>Programs run in order, one statement at a time:</p>
+
+      <pre><code>void setup() {
+  int x = 3;
+  x = x + 2;
+  x = x * 2;
+  println(x);
+}</code></pre>
+
+      <p>
+        This prints <code>10</code>. Each statement uses the value of <code>x</code> at
+        that moment.
+      </p>
+
+      <p>The statement</p>
+
+      <pre><code>x = x + 1;</code></pre>
+
+      <p>does not mean an algebraic equation. It means:</p>
+
+      <blockquote>
+        Take the current value of <code>x</code>, add 1, and store the result back in
+        <code>x</code>.
+      </blockquote>
+    </section>
+
+    <section>
+      <h2>Try it: trace the variable</h2>
+
+      <p>Without running the program, determine what each line prints.</p>
+
+      <pre><code>void setup() {
+  int number = 4;
+  println(number);
+
+  number = number + 3;
+  println(number);
+
+  number = number * 2;
+  println(number);
+}</code></pre>
+
+      <p>
+        Trace the program on paper first. Then run it and compare the output with
+        your prediction.
+      </p>
+    </section>
+
+    <section>
+      <h2>4. Variables create motion</h2>
+
+      <p>
+        The function <code>draw()</code> runs repeatedly. If a position changes a little
+        during every frame, an object appears to move.
+      </p>
+
+      <pre><code>int x = 50;
+
+void setup() {
+  size(600, 300);
+}
+
+void draw() {
+  background(255);
+  ellipse(x, height / 2, 50, 50);
+  x = x + 2;
+}</code></pre>
+
+      <p>During each frame:</p>
+
+      <ol>
+        <li>the background erases the previous picture,</li>
+        <li>the circle is drawn at the current value of <code>x</code>, and</li>
+        <li><code>x</code> changes before the next frame.</li>
+      </ol>
+
+      <p>
+        The changing value of <code>x</code> is part of the program’s
+        <strong>state</strong>: information the program remembers from one frame to the next.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Where should the variable be declared?</h2>
+
+      <p>Compare the previous sketch with this one:</p>
+
+      <pre><code>void draw() {
+  int x = 50;
+  ellipse(x, height / 2, 50, 50);
+  x = x + 2;
+}</code></pre>
+
+      <p>
+        Here, <code>x</code> is created again and reset to <code>50</code> every time
+        <code>draw()</code> begins. The circle does not move.
+      </p>
+
+      <ul>
+        <li>
+          A variable declared <strong>outside</strong> the functions is global. It can
+          preserve a changing value from one frame to the next.
+        </li>
+        <li>
+          A variable declared <strong>inside</strong> a function is local. It can be used
+          only inside that function and is created again each time the function runs.
+        </li>
+      </ul>
+
+      <p>
+        If an object must remember its position between frames, declare its position
+        variable outside <code>setup()</code> and <code>draw()</code>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Try it: make something move</h2>
+
+      <ol>
+        <li>Draw a shape using variables for its position.</li>
+        <li>Change one position variable inside <code>draw()</code>.</li>
+        <li>Change the speed.</li>
+        <li>Make the object move vertically instead of horizontally.</li>
+      </ol>
+
+      <p>
+        What happens when the object reaches the edge? At the moment, the program
+        always performs the update. We need a way for it to make a decision.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. A little unpredictability: <code>random()</code></h2>
+
+      <p>
+        Processing’s <code>random()</code> function asks the computer to choose a
+        number for us. This is useful for games, movement, colors, and experiments.
+      </p>
+
+      <pre><code>void setup() {
+  float number = random(1, 7);
+  println(number);
+}</code></pre>
+
+      <p>
+        This produces a <code>float</code> greater than or equal to <code>1</code> and less
+        than <code>7</code>. If we want a whole number that behaves like a six-sided die,
+        we convert the result to an <code>int</code>:
+      </p>
+
+      <pre><code>void setup() {
+  int roll = (int)random(1, 7);
+  println(roll);
+}</code></pre>
+
+      <p>
+        The cast <code>(int)</code> discards the decimal part, so <code>roll</code> will be
+        one of the integers from <code>1</code> through <code>6</code>.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Asking a yes-or-no question</h2>
+
+      <p>
+        A <strong>Boolean expression</strong> is an expression whose value is either
+        <code>true</code> or <code>false</code>.
+      </p>
+
+      <pre><code>x &gt; 100
+x &lt; width
+x == 50
+x != 0
+x &gt;= width - 25</code></pre>
+
+      <p>The comparison operators are:</p>
+
+      <ul>
+        <li><code>&gt;</code> greater than</li>
+        <li><code>&lt;</code> less than</li>
+        <li><code>&gt;=</code> greater than or equal to</li>
+        <li><code>&lt;=</code> less than or equal to</li>
+        <li><code>==</code> equal to</li>
+        <li><code>!=</code> not equal to</li>
+      </ul>
+
+      <p>
+        Be careful: <code>=</code> performs assignment, while <code>==</code> asks
+        whether two values are equal.
+      </p>
+
+      <pre><code>x = 50;       // store 50 in x
+x == 50       // ask: is x equal to 50?</code></pre>
+    </section>
+
+    <section>
+      <h2>8. The <code>if</code> statement</h2>
+
+      <p>
+        An <code>if</code> statement is a decision point. When execution reaches it,
+        the program evaluates a Boolean expression.
+      </p>
+
+      <pre><code>if (condition) {
+  // runs only when the condition is true
+}</code></pre>
+
+      <p>For example:</p>
+
+      <pre><code>void setup() {
+  int roll = (int)random(1, 7);
+
+  if (roll &gt; 3) {
+    println("You win!");
+  }
+}</code></pre>
+
+      <p>
+        If <code>roll &gt; 3</code> is <code>true</code>, the statement inside the braces
+        runs. If it is <code>false</code>, that statement is skipped. The condition is
+        checked when execution reaches the <code>if</code> statement—not continuously.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. Choosing between two paths</h2>
+
+      <p>
+        An <code>if–else</code> statement chooses one of two paths. Exactly one path runs.
+      </p>
+
+      <pre><code>void setup() {
+  int roll = (int)random(1, 7);
+
+  if (roll &gt; 3) {
+    println("You win!");
+  } else {
+    println("Try again.");
+  }
+}</code></pre>
+
+      <p>Read it in English:</p>
+
+      <blockquote>
+        If the roll is greater than 3, print “You win!” Otherwise, print “Try again.”
+      </blockquote>
+    </section>
+
+    <section>
+      <h2>10. Putting it together: bouncing off an edge</h2>
+
+      <p>
+        Let <code>x</code> store the circle’s position and <code>speed</code> store both
+        how fast it moves and in which direction it moves.
+      </p>
+
+      <pre><code>int x = 50;
+int speed = 3;
+
+void setup() {
+  size(600, 300);
+}
+
+void draw() {
+  background(255);
+  ellipse(x, height / 2, 50, 50);
+
+  x = x + speed;
+
+  if (x &gt; width - 25) {
+    x = 0;
+  }
+}</code></pre>
+
+      <p>
+        When the center of the circle reaches <code>width - 25</code>, the circle teleports to the starting
+        point. 
+      </p>
+    </section>
+
+    
+        
+     
+
+    <section>
+      <h2>Common pitfalls</h2>
+
+      <ul>
+        <li>Using <code>=</code> when you mean <code>==</code>.</li>
+        <li>Putting a changing position variable inside <code>draw()</code>, where it is reset every frame.</li>
+        <li>Forgetting braces around the body of an <code>if</code> statement.</li>
+        <li>Testing the center of a shape when you really mean to test its edge.</li>
+        <li>Changing a variable before thinking about which value the condition will see.</li>
+      </ul>
+
+      <p>
+        When a sketch behaves unexpectedly, use <code>println()</code> to inspect the
+        current values of important variables.
+      </p>
+    </section>
+
+    <section>
+      <h2>Takeaway</h2>
+
+      <ul>
+        <li>A variable gives a name to a value.</li>
+        <li>Assignment replaces the variable’s current value.</li>
+        <li>A global variable can preserve state between frames.</li>
+        <li>A Boolean expression evaluates to <code>true</code> or <code>false</code>.</li>
+        <li>An <code>if</code> statement makes execution selective.</li>
+        <li>Variables make motion possible; conditionals let the motion respond.</li>
+      </ul>
+    </section>
+
+    <p class="back-to-top">
+      <a href="#top">↑ Back to top</a>
+    </p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+  </script>
+</body>
+</html>
