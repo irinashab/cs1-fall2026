@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson: Part 5 · Start your Three Doors story">
+  <title>CS1 – Part 5 · Start your Three Doors story</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Part 5 · Start your Three Doors story</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    
+<nav class="course-navigation" aria-label="Lesson parts"><ul><li><a href="index.html">Contents</a></li><li><a href="part-1-variables.html">Part 1</a></li><li><a href="part-2-logic.html">Part 2</a></li><li><a href="part-3-images.html">Part 3</a></li><li><a href="part-4-sound.html">Part 4</a></li><li><a aria-current="page" href="part-5-workshop.html">Part 5</a></li></ul></nav>
+<p class="lead">Use your one-door practice as a starting point for a story with three distinct paths. Your group’s choices should determine what happens next.</p>
+<h2>1. Map your story</h2><p>Draw a starting screen with three arrows, one for each door. Label each destination and its outcome. Show how the player returns home. Keep the first version small enough to test.</p><div class="table"><table><thead><tr><th>State value</th><th>Scene</th><th>What the player can do</th></tr></thead><tbody><tr><td>0</td><td>Starting screen</td><td>Choose one of three doors</td></tr><tr><td>1</td><td>Your first destination</td><td>Experience an outcome; return home</td></tr><tr><td>2</td><td>Your second destination</td><td>Experience an outcome; return home</td></tr><tr><td>3</td><td>Your third destination</td><td>Experience an outcome; return home</td></tr></tbody></table></div><p>Change the descriptions to fit your story. Each path needs one or more possible endings; further branching is optional. Decide who will begin coding, who will check the logic, and who will prepare the story and media. Share decisions and rotate roles.</p>
+<h2>2. Build and test</h2><ol><li>Save a new copy of your one-door sketch for the group project.</li><li>Draw three doors in room 0 and label them.</li><li>Add two more destination scenes to your <code>if</code>/<code>else if</code> chain. Use <code>else</code> for an appropriate remaining case, such as an unexpected room value.</li><li>Inside the starting-screen click handler, use <code>if</code>/<code>else if</code> to select which door was clicked.</li><li>Keep the return action and test each path before adding more story details.</li><li>Add your sounds and any images after the transitions work.</li></ol><p>If a single click changes rooms more than once, examine separate <code>if</code> statements that check a room value you just changed. Decide the starting-screen action in one branch before handling other scenes.</p>
+<details><summary>Need to compare with the completed one-door practice?</summary><p>This reference combines the earlier pieces. It is a one-door example, not a completed Three Doors project. Add the door image and practice sound to your sketch using Sketch → Add File….</p><pre><code>import processing.sound.*;
+
+int room = 0;
+PImage door;
+SoundFile ding;
+
+void setup() {
+  size(600, 400);
+  textSize(22);
+  door = loadImage(&quot;door.jpg&quot;);
+  ding = new SoundFile(this, &quot;ding.mp3&quot;);
+}
+
+void draw() {
+  if (room == 0) {
+    background(230);
+    fill(0);
+    text(&quot;Click the door&quot;, 40, 45);
+    if (door != null) {
+      image(door, 80, 100, 120, 220);
+    } else {
+      fill(130, 80, 40);
+      rect(80, 100, 120, 220);
+    }
+  } else if (room == 1) {
+    background(30, 60, 90);
+    fill(255);
+    text(&quot;You found the library.&quot;, 40, 60);
+    text(&quot;Press r to return.&quot;, 40, 100);
+  }
+}
+
+void mousePressed() {
+  if (room == 0) {
+    if (mouseX &gt;= 80 &amp;&amp; mouseX &lt;= 200 &amp;&amp;
+        mouseY &gt;= 100 &amp;&amp; mouseY &lt;= 320) {
+      room = 1;
+      ding.play();
+    }
+  }
+}
+
+void keyPressed() {
+  if (key == &#x27;r&#x27; || key == &#x27;R&#x27;) {
+    room = 0;
+  }
+}</code></pre></details>
+<h2>3. Test with a partner</h2><div class="table"><table><thead><tr><th>Action</th><th>Expected result</th></tr></thead><tbody><tr><td>Click each door from the start</td><td>Its own destination appears.</td></tr><tr><td>Click between, above, or below doors</td><td>No door opens and no entry sound plays.</td></tr><tr><td>Click in a destination</td><td>Starting-screen doors do not respond there.</td></tr><tr><td>Press r and R</td><td>Both return to the start.</td></tr><tr><td>Enter a path again after returning</td><td>The story starts in its intended reset state.</td></tr></tbody></table></div><p>If you add variables for keys, points, or other story choices, decide which must reset on returning home. Returning to room 0 does not automatically reset other variables.</p>
+<h2>Final project checklist</h2><ul><li>One group sketch with every group member’s name in a comment at the top.</li><li>Three clickable doors or regions leading to three distinct story paths, each with at least one ending.</li><li>A variable that tracks the current room; exactly one current room at a time.</li><li><code>if</code>, <code>else if</code>, and <code>else</code> controlling scenes or events; combine conditions where useful.</li><li>A way to return to the starting screen and reset story variables appropriately.</li><li>At least two sound effects. Images are optional.</li><li>The entire sketch folder, including <code>data</code>, submitted together.</li></ul><p>Be ready to explain your state variable and how conditionals control your story when presenting.</p>
+<h2>Check your understanding</h2><ol><li>Why is <code>room</code> global in this sketch?</li><li>What is the value of <code>true &amp;&amp; false</code>? Of <code>true || false</code>?</li><li>Why do we load media in <code>setup()</code> and play a door sound in the click handler?</li><li>What works in your group’s sketch, and what is the next change you will make?</li></ol>
+<p><a href="index.html">Return to contents</a></p>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

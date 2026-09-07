@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson: Part 2 · AND, OR, and clickable doors">
+  <title>CS1 – Part 2 · AND, OR, and clickable doors</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Part 2 · AND, OR, and clickable doors</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    
+<nav class="course-navigation" aria-label="Lesson parts"><ul><li><a href="index.html">Contents</a></li><li><a href="part-1-variables.html">Part 1</a></li><li><a aria-current="page" href="part-2-logic.html">Part 2</a></li><li><a href="part-3-images.html">Part 3</a></li><li><a href="part-4-sound.html">Part 4</a></li><li><a href="part-5-workshop.html">Part 5</a></li></ul></nav>
+<p class="lead">A click should open a door only when the player is on the starting screen and the pointer is inside that door.</p>
+<h2>1. Combine true-or-false questions</h2><p>A comparison such as <code>mouseX > 200</code> produces a Boolean value: <code>true</code> or <code>false</code>. <code>&amp;&amp;</code> means AND: both conditions must be true. <code>||</code> means OR: at least one must be true, including when both are true.</p><aside class="callout"><h3>Try it</h3><p>Copy this table and fill the two blank columns with T or F. A and B stand for any two Boolean conditions.</p></aside><div class="table"><table><thead><tr><th>A</th><th>B</th><th>A && B</th><th>A || B</th></tr></thead><tbody><tr><td>T</td><td>T</td><td>___</td><td>___</td></tr><tr><td>T</td><td>F</td><td>___</td><td>___</td></tr><tr><td>F</td><td>T</td><td>___</td><td>___</td></tr><tr><td>F</td><td>F</td><td>___</td><td>___</td></tr></tbody></table></div><details><summary>Check your reasoning</summary><div class="table"><table><thead><tr><th>A</th><th>B</th><th>AND</th><th>OR</th></tr></thead><tbody><tr><td>T</td><td>T</td><td>T</td><td>T</td></tr><tr><td>T</td><td>F</td><td>F</td><td>T</td></tr><tr><td>F</td><td>T</td><td>F</td><td>T</td></tr><tr><td>F</td><td>F</td><td>F</td><td>F</td></tr></tbody></table></div></details>
+<h2>2. Predict the canvas</h2><p>On a 600-pixel-wide canvas, the dividing lines are at x = 200 and x = 400. This AND condition selects the middle region, excluding those lines.</p><pre><code>void setup() {
+  size(600, 300);
+}
+
+void draw() {
+  if (mouseX &gt; width/3 &amp;&amp; mouseX &lt; 2*width/3) {
+    background(234, 15, 160);
+  } else {
+    background(255);
+  }
+  stroke(0, 0, 240);
+  strokeWeight(3);
+  line(200, 0, 200, 300);
+  line(400, 0, 400, 300);
+}</code></pre><aside class="callout"><h3>Try it</h3><p>Predict the background at <code>mouseX</code> values 100, 200, 300, 400, and 500. Then run the sketch and test.</p><p>Next add <code>&amp;&amp; mousePressed</code> to the condition. Predict what must now be true for the background to turn pink.</p></aside><details><summary>Check your reasoning</summary><p>The original backgrounds are white, white, pink, white, white. After adding <code>&amp;&amp; mousePressed</code>, the pointer must be strictly between the lines and a mouse button must be held down.</p></details><p>For the OR demo, replace the condition with:</p><pre><code>if (mouseX &lt; width/3 || mouseX &gt; 2*width/3) {</code></pre><aside class="callout"><h3>Try it</h3><p>Predict the same five x positions for OR. Would OR work for “inside the middle region” if you simply changed AND to OR in the original condition?</p></aside><details><summary>Check your reasoning</summary><p>The outer-region demo gives pink, white, white, white, pink. Changing the original condition to <code>mouseX > 200 || mouseX < 400</code> would make it true for every x value: at least one side is always true.</p></details>
+<h2>3. A door has four boundaries</h2><p>With the default rectangle mode, <code>rect(80, 100, 120, 220)</code> has left edge 80, right edge 200, top edge 100, and bottom edge 320. To include its edges, use:</p><pre><code>mouseX &gt;= 80 &amp;&amp; mouseX &lt;= 200 &amp;&amp;
+mouseY &gt;= 100 &amp;&amp; mouseY &lt;= 320</code></pre><p>All four comparisons must be true. Being at the correct x position is insufficient if the pointer is above or below the door.</p><aside class="callout"><h3>Try it</h3><p>Classify these points as inside or outside: (100,150), (100,50), (250,150), (80,100). Write which comparison fails for each outside point.</p></aside><details><summary>Check your reasoning</summary><p>Inside, outside (y is too small), outside (x is too large), inside (edges are included).</p></details>
+<h2>4. Build one door and a way home</h2><p>This complete sketch builds on Part 1. Notice the outer <code>if (room == 0)</code>: door clicks are meaningful only on the starting screen.</p><pre><code>int room = 0;
+
+void setup() {
+  size(600, 400);
+  textSize(22);
+}
+
+void draw() {
+  if (room == 0) {
+    background(230);
+    fill(0);
+    text(&quot;Click the door&quot;, 40, 45);
+    fill(130, 80, 40);
+    rect(80, 100, 120, 220);
+  } else if (room == 1) {
+    background(30, 60, 90);
+    fill(255);
+    text(&quot;You found the library.&quot;, 40, 60);
+    text(&quot;Press r to return.&quot;, 40, 100);
+  }
+}
+
+void mousePressed() {
+  if (room == 0) {
+    if (mouseX &gt;= 80 &amp;&amp; mouseX &lt;= 200 &amp;&amp;
+        mouseY &gt;= 100 &amp;&amp; mouseY &lt;= 320) {
+      room = 1;
+    }
+  }
+}
+
+void keyPressed() {
+  if (key == &#x27;r&#x27; || key == &#x27;R&#x27;) {
+    room = 0;
+  }
+}</code></pre><p><code>mousePressed</code> without parentheses is a Boolean that tells you whether a button is held. <code>void mousePressed()</code> defines the function that responds to a new press. Use the function for a door-opening action. See the <a href="https://processing.org/reference/mousePressed_">Processing mousePressed() reference</a>.</p><p>In <code>keyPressed()</code>, each side of OR is a complete comparison. Write <code>key == 'r' || key == 'R'</code>, not <code>key == 'r' || 'R'</code>. Click the sketch window first if it is not receiving keyboard input.</p><aside class="callout"><h3>Try it</h3><p>Test inside the door, above it, beside it, and on an edge. Enter the room, click again, and try both r and R. Move the door 20 pixels right and update both horizontal click boundaries to match.</p></aside><p class="callout tip"><strong>Checkpoint:</strong> You have one clickable door and can return home. Save this sketch before adding media.</p>
+<p><a href="part-3-images.html">Next: Images and references →</a></p>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

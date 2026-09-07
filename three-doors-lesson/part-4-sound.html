@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson: Part 4 · Sound when something happens">
+  <title>CS1 – Part 4 · Sound when something happens</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Part 4 · Sound when something happens</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    
+<nav class="course-navigation" aria-label="Lesson parts"><ul><li><a href="index.html">Contents</a></li><li><a href="part-1-variables.html">Part 1</a></li><li><a href="part-2-logic.html">Part 2</a></li><li><a href="part-3-images.html">Part 3</a></li><li><a aria-current="page" href="part-4-sound.html">Part 4</a></li><li><a href="part-5-workshop.html">Part 5</a></li></ul></nav>
+<p class="lead">Load a sound when the sketch starts. Play it when the player takes an action.</p>
+<h2>1. Prepare the library and file</h2><p>Use Processing’s library manager (<strong>Sketch → Import Library → Add Library…</strong>) to install the <strong>Sound</strong> library from the Processing Foundation if it is not already installed. Create a sketch named <code>soundPractice</code> and add the supplied <a href="media/ding.mp3" download>ding.mp3</a> using <strong>Sketch → Add File…</strong>.</p>
+<h2>2. Run a click-to-play sketch</h2><pre><code>import processing.sound.*;
+
+SoundFile ding;
+
+void setup() {
+  size(600, 400);
+  ding = new SoundFile(this, &quot;ding.mp3&quot;);
+  textSize(22);
+}
+
+void draw() {
+  background(230);
+  fill(0);
+  text(&quot;Click to hear the sound.&quot;, 40, 60);
+}
+
+void mousePressed() {
+  ding.play();
+}</code></pre><p>The import makes the library’s classes available. <code>SoundFile ding;</code> declares our sound variable. <code>new SoundFile(this, "ding.mp3")</code> creates the player for the file; <code>this</code> identifies this sketch. <code>ding.play()</code> starts playback. See the <a href="https://processing.org/reference/libraries/sound/SoundFile">Processing SoundFile reference</a>.</p><aside class="callout"><h3>Try it</h3><p>Predict what changes if you move <code>ding.play();</code> into <code>setup()</code>. What if you put it directly in <code>draw()</code>?</p></aside><details><summary>Check your reasoning</summary><p>In <code>setup()</code>, the sound starts once at launch. Directly in <code>draw()</code>, the sketch requests playback every frame. In <code>mousePressed()</code>, it requests playback once per mouse press.</p></details>
+<h2>3. Make the door produce a sound</h2><p>In your one-door sketch, add the import, global sound declaration, and loading statement. Add the sound file to that sketch. Then place playback immediately after the successful room change, inside both conditions:</p><pre><code>void mousePressed() {
+  if (room == 0) {
+    if (mouseX &gt;= 80 &amp;&amp; mouseX &lt;= 200 &amp;&amp;
+        mouseY &gt;= 100 &amp;&amp; mouseY &lt;= 320) {
+      room = 1;
+      ding.play();
+    }
+  }
+}</code></pre><aside class="callout"><h3>Try it</h3><p>Test a click outside the door, a click inside it, and a click after entering the library. Only the successful entry should play the sound. Return home and enter again.</p></aside><details><summary>If you cannot hear the sound</summary><ul><li>Check that the Sound library is installed and the import is present.</li><li>Check the filename and the current sketch’s data folder.</li><li>Check your volume and audio output, then read the Processing console for errors.</li><li>Test the separate sound practice sketch to isolate the issue.</li></ul><p>The example assumes a valid sound file. Loading can fail before playback; wrapping only <code>play()</code> in an error handler would not handle a loading failure.</p></details>
+<p class="callout tip"><strong>Checkpoint:</strong> A successful door click changes the room and plays one sound. The final project requires at least two sound effects; this practice sketch uses one.</p>
+<p><a href="part-5-workshop.html">Next: Start your Three Doors story →</a></p>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

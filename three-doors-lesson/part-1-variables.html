@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson: Part 1 · Variables, memory, and scope">
+  <title>CS1 – Part 1 · Variables, memory, and scope</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Part 1 · Variables, memory, and scope</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    
+<nav class="course-navigation" aria-label="Lesson parts"><ul><li><a href="index.html">Contents</a></li><li><a aria-current="page" href="part-1-variables.html">Part 1</a></li><li><a href="part-2-logic.html">Part 2</a></li><li><a href="part-3-images.html">Part 3</a></li><li><a href="part-4-sound.html">Part 4</a></li><li><a href="part-5-workshop.html">Part 5</a></li></ul></nav>
+<p class="lead">A story needs to remember what the player has done. Start by tracing what a variable stores, then decide where to declare it.</p>
+<h2>1. A variable stores a value</h2><p>A declaration introduces a variable and its type. An assignment stores a value. In <code>int score = 0;</code>, we do both.</p><pre><code>int a = 5;
+int b = a;
+a = 3;</code></pre><p>Read assignment from right to left: evaluate the expression on the right, then store the result in the variable on the left. <code>b = a</code> copies the current integer value of <code>a</code>. It does not link the two variables.</p>
+<h2>2. Draw a memory snapshot</h2><p>Each box below represents one integer variable. A snapshot shows values at a particular moment.</p>
+<div class="grid"><section><h3>After line 1</h3><p><code>a [ 5 ]</code></p><p>b is not declared yet.</p></section><section><h3>After line 2</h3><p><code>a [ 5 ]</code></p><p><code>b [ 5 ]</code></p></section><section><h3>After line 3</h3><p><code>a [ 3 ]</code></p><p><code>b [ 5 ]</code></p></section></div>
+<p><code>=</code> assigns a value. <code>==</code> compares values and produces <code>true</code> or <code>false</code>.</p><aside class="callout"><h3>Try it</h3><p>Draw a snapshot after every line. Do this on paper before running it.</p><pre><code>int keys = 1;
+int savedKeys = keys;
+keys = keys + 2;
+savedKeys = savedKeys + 1;</code></pre></aside><details><summary>Check your reasoning</summary><p>After each line: <code>keys=1</code>; then <code>keys=1, savedKeys=1</code>; then <code>keys=3, savedKeys=1</code>; finally <code>keys=3, savedKeys=2</code>. The right side of <code>keys = keys + 2</code> uses the old value before replacing it.</p></details>
+<h2>3. Where can a variable be used?</h2><p><strong>Scope</strong> is the region of code where a variable name can be used. <strong>Lifetime</strong> concerns how long its storage exists during execution. These are related ideas, but they answer different questions.</p><div class="table"><table><thead><tr><th>Declaration location</th><th>Where you can use it in our sketches</th><th>What happens between calls</th></tr></thead><tbody><tr><td>Outside all functions: global</td><td>Throughout the sketch, unless a local variable hides its name</td><td>Its value remains until code changes it or the sketch ends.</td></tr><tr><td>Inside a function: local</td><td>From its declaration through the rest of its enclosing block</td><td>Each function call has its own local variables.</td></tr><tr><td>Inside an if block: local</td><td>From its declaration to that block’s closing brace</td><td>It belongs to that execution of the block.</td></tr></tbody></table></div><pre><code>void setup() {
+  size(400, 200);
+  int secret = 7;
+  println(secret); // Allowed here.
+}
+
+void draw() {
+  // println(secret); // Not allowed: secret is local to setup().
+}</code></pre><p>A local variable declared inside an <code>if</code> block cannot be used after that block’s closing brace, even if the block ran. This applies in Processing’s Java mode.</p>
+<h2>4. What survives the next frame?</h2><pre><code>int total = 0;
+
+void setup() {
+  size(400, 200);
+  frameRate(1);
+}
+
+void draw() {
+  int count = 0;
+  total = total + 1;
+  count = count + 1;
+  println(&quot;total: &quot; + total + &quot;, count: &quot; + count);
+}</code></pre><aside class="callout"><h3>Try it</h3><p>Predict the first three lines printed. Identify the global and local variables. Then run the sketch.</p></aside><details><summary>Check your reasoning</summary><p>The output is <code>total: 1, count: 1</code>, then <code>total: 2, count: 1</code>, then <code>total: 3, count: 1</code>. Each call to <code>draw()</code> executes <code>int count = 0;</code> again. The global <code>total</code> keeps its updated value.</p><p>After the first call: global box <code>total [1]</code>; that call’s local box <code>count [1]</code> ends with the call. During the next call, a new local <code>count</code> starts at 0.</p></details><p>Be careful: a global variable can still be reset every frame if you put an assignment such as <code>total = 0;</code> inside <code>draw()</code>. Declaration location and the statements that run both matter.</p>
+<h3>Extra prediction: two variables with the same name</h3><p>Predict what <code>setup()</code> prints and what <code>draw()</code> prints. Explain which variable each function uses.</p><pre><code>int room = 0;
+
+void setup() {
+  int room = 1;
+  println(room);
+}
+
+void draw() {
+  println(room);
+}</code></pre><details><summary>Check your reasoning</summary><p><code>setup()</code> prints 1. <code>draw()</code> repeatedly prints 0. The local declaration creates a separate variable that hides, or <em>shadows</em>, the global name inside <code>setup()</code>. Removing <code>int</code> from <code>int room = 1;</code> makes it an assignment to the global variable.</p></details>
+<h2>5. Remember a room</h2><p>The program’s <strong>state</strong> is the information that describes its current situation. We will use <code>room = 0</code> for the start and <code>room = 1</code> for the library.</p><pre><code>int room = 0;
+
+void setup() {
+  size(600, 400);
+  textSize(24);
+}
+
+void draw() {
+  if (room == 0) {
+    background(230);
+    fill(0);
+    text(&quot;Start: click to enter&quot;, 40, 60);
+  } else if (room == 1) {
+    background(30, 60, 90);
+    fill(255);
+    text(&quot;You found the library.&quot;, 40, 60);
+  }
+}
+
+void mousePressed() {
+  room = 1;
+}</code></pre><p><code>draw()</code> reads the state to choose a screen. Processing calls <code>mousePressed()</code> when you press a mouse button; this function changes the state.</p><aside class="callout"><h3>Try it</h3><ol><li>Run the sketch and click once.</li><li>Draw the global <code>room</code> box before the click, after the click, and during the next frame.</li><li>Explain why declaring <code>room</code> inside <code>setup()</code> would not work.</li><li>Predict what would happen if <code>room = 0;</code> were the first statement in <code>draw()</code>.</li></ol></aside><details><summary>Check your reasoning</summary><p>The snapshots are 0 → 1 → 1. A variable local to <code>setup()</code> is inaccessible in the other functions. Resetting the global to 0 in every <code>draw()</code> call would keep drawing the start screen.</p></details><p class="callout tip"><strong>Checkpoint:</strong> You can explain the difference between storing a value, comparing values, and deciding where a variable can be used.</p>
+<p><a href="part-2-logic.html">Next: AND, OR, and clickable doors →</a></p>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

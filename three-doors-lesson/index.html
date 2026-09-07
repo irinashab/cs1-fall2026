@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson: From Variables to Three Doors">
+  <title>CS1 – From variables to Three Doors</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>From variables to Three Doors</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    
+<nav class="course-navigation" aria-label="Lesson parts"><ul><li><a aria-current="page" href="index.html">Contents</a></li><li><a href="part-1-variables.html">Part 1</a></li><li><a href="part-2-logic.html">Part 2</a></li><li><a href="part-3-images.html">Part 3</a></li><li><a href="part-4-sound.html">Part 4</a></li><li><a href="part-5-workshop.html">Part 5</a></li></ul></nav>
+<p class="lead">Build an interactive story that remembers the player’s location, responds to choices, and uses images and sounds.</p><h2>Start here</h2><p>Imagine three doors. Each opens into a different scene, and the player can return to choose again. With a partner, name the information the program must remember and one condition it must check.</p><p>We will build a one-door example together, then you will expand the idea with your group. Use Processing in Java mode. You should already be comfortable with <code>setup()</code>, <code>draw()</code>, basic drawing, and simple <code>if</code> statements.</p><h2>Lesson parts</h2><div class="cards"><section><h3><a href="part-1-variables.html">Part 1 · Variables, memory, and scope</a></h3></section><section><h3><a href="part-2-logic.html">Part 2 · AND, OR, and clickable doors</a></h3></section><section><h3><a href="part-3-images.html">Part 3 · Images and references</a></h3></section><section><h3><a href="part-4-sound.html">Part 4 · Sound when something happens</a></h3></section><section><h3><a href="part-5-workshop.html">Part 5 · Start your Three Doors story</a></h3></section></div><h2>How to use this lesson</h2><p>Predict before running code. Keep short memory diagrams and test notes. Open “Check your reasoning” after making your own attempt. Create your sketches in Processing using the code examples on these pages.</p><h2>Practice files</h2><ul><li><a href="media/door.jpg" download>Door image</a></li><li><a href="media/ding.mp3" download>Practice sound</a></li></ul><p>The Sound library is required for the sound sketches.</p>
+
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

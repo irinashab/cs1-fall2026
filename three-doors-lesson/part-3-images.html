@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 lesson: Part 3 · Images and references">
+  <title>CS1 – Part 3 · Images and references</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Part 3 · Images and references</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    
+<nav class="course-navigation" aria-label="Lesson parts"><ul><li><a href="index.html">Contents</a></li><li><a href="part-1-variables.html">Part 1</a></li><li><a href="part-2-logic.html">Part 2</a></li><li><a aria-current="page" href="part-3-images.html">Part 3</a></li><li><a href="part-4-sound.html">Part 4</a></li><li><a href="part-5-workshop.html">Part 5</a></li></ul></nav>
+<p class="lead">An image can replace a drawn door. The click boundaries still come from your code.</p>
+<h2>1. Add the image file</h2><p>Use the supplied <a href="media/door.jpg" download>door.jpg</a>. Save a new sketch as <code>imagePractice</code>, then use <strong>Sketch → Add File…</strong> to add it. Or just drag the image onto an open sketch. The filename in your code must match the file, including its extension and capitalization.</p><pre><code>imagePractice/
+  imagePractice.pde
+  data/
+    door.jpg</code></pre><h2>2. Declare, load, display</h2><pre><code>PImage door;
+
+void setup() {
+  size(600, 400);
+  door = loadImage(&quot;door.jpg&quot;);
+}
+
+void draw() {
+  background(230);
+  if (door != null) {
+    image(door, 80, 100, 120, 220);
+  } else {
+    fill(0);
+    text(&quot;Check data/door.jpg&quot;, 40, 50);
+  }
+}</code></pre><p><code>PImage door;</code> declares a variable that can refer to an image object. <code>loadImage()</code> loads the file in <code>setup()</code>. <code>image()</code> draws it in <code>draw()</code>. Loading once avoids repeating file-loading work every frame. See the <a href="https://processing.org/reference/loadImage_">Processing loadImage() reference</a>.</p>
+<div class="callout note"><p>Before loading: <code>door [null]</code></p><p>After successful loading: <code>door [reference] → [image object]</code></p></div><p>This is a conceptual memory diagram. The variable holds a reference to the image object; it does not contain all the pixels inside a small value box. <code>null</code> means there is no object reference. The check avoids drawing a missing image.</p><p><code>image(door, 80, 100)</code> uses three arguments: the image, x, and y. The five-argument form adds display width and height. Our example stretches the image to fit a 120 × 220 door, which may change its proportions.</p>
+<h2>3. Put the image on your door</h2><aside class="callout"><h3>Try it</h3><ol><li>Run the separate image practice first.</li><li>Add <code>door.jpg</code> to your saved <code>oneDoor</code> sketch too: each sketch needs its own data folder.</li><li>Add the global <code>PImage</code> declaration and the loading statement in <code>setup()</code>.</li><li>Replace the door rectangle with the image at the same position and dimensions.</li><li>Keep your room conditionals, mouse function, and key function.</li></ol></aside><p>When combining sketches, merge their contents into the existing <code>setup()</code> and <code>draw()</code>; do not paste in second copies of those functions.</p><details><summary>Check your reasoning</summary><p>Your image should appear only in room 0. Drawing it after all the room conditionals would make it appear on the other screen too. A displayed image does not automatically create a clickable area; the coordinate checks still do that job.</p></details><p class="callout tip"><strong>Checkpoint:</strong> Your image appears in the starting screen, and the door still opens and returns correctly. Images are optional in the final project; drawn shapes are welcome.</p>
+<p><a href="part-4-sound.html">Next: Sound when something happens →</a></p>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
