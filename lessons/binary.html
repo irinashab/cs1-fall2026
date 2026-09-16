@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1: Binary numbers: place value and patterns">
+  <title>CS1 – Binary numbers: place value and patterns</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Binary numbers: place value and patterns</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <nav class="course-navigation" aria-label="Lesson pages"><ul><li><a href="lect7.html">Loops</a></li><li><a href="lect8.html">Loops and draw()</a></li><li><a href="binary.html">Binary numbers</a></li><li><a href="loop-extensions.html">Loop extensions</a></li></ul></nav>
+<p>A bit has two possible values: 0 or 1. A sequence of bits can represent a number, but it can also represent other information when we agree on a meaning. In this lesson, number examples use <strong>unsigned binary</strong>: nonnegative whole numbers.</p>
+<h2>1. Binary to decimal: positional expansion</h2>
+<p>Binary is base 2. Number the bit positions from right to left, starting at position 0. The weight of position i is 2<sup>i</sup>. Multiply each bit by its position weight, then add the products.</p>
+<p>For bits b<sub>n−1</sub> … b<sub>1</sub>b<sub>0</sub>, the decimal value is b<sub>n−1</sub> × 2<sup>n−1</sup> + … + b<sub>1</sub> × 2<sup>1</sup> + b<sub>0</sub> × 2<sup>0</sup>. Each bit is either 0 or 1.</p>
+<h3>Worked example: 101101<sub>2</sub> → decimal</h3><table><thead><tr><th>Position</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr></thead><tbody><tr><td>Weight</td><td>32</td><td>16</td><td>8</td><td>4</td><td>2</td><td>1</td></tr><tr><td>Bit</td><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>Contribution</td><td>32</td><td>0</td><td>8</td><td>4</td><td>0</td><td>1</td></tr></tbody></table><p>101101<sub>2</sub> = 1 × 32 + 0 × 16 + 1 × 8 + 1 × 4 + 0 × 2 + 1 × 1 = <strong>45<sub>10</sub></strong>.</p>
+<p>Zeros contribute nothing to the sum but still occupy positions. Leading zeros do not change the value: 00101101<sub>2</sub> also represents 45. Subscripts identify the base; without a base, a string such as 101 can be ambiguous.</p>
+<h3>An alternative: multiply by 2 and add the next bit</h3><p>Read from left to right, starting with a total of 0. For each bit, multiply the current total by 2 and add that bit. Moving to the next position doubles the value of everything already read.</p><table><thead><tr><th>Next bit of 101101</th><th>Calculation</th><th>New total</th></tr></thead><tbody><tr><td>1</td><td>0 × 2 + 1</td><td>1</td></tr><tr><td>0</td><td>1 × 2 + 0</td><td>2</td></tr><tr><td>1</td><td>2 × 2 + 1</td><td>5</td></tr><tr><td>1</td><td>5 × 2 + 1</td><td>11</td></tr><tr><td>0</td><td>11 × 2 + 0</td><td>22</td></tr><tr><td>1</td><td>22 × 2 + 1</td><td>45</td></tr></tbody></table>
+<h2>2. Decimal to binary: repeated division by 2</h2><p>For a positive whole number:</p><ol><li>Divide the number by 2 using integer division.</li><li>Record the remainder, which is either 0 or 1.</li><li>Use the quotient as the next number to divide.</li><li>Continue until the quotient is 0.</li><li><strong>Read the remainders from bottom to top.</strong> The first remainder is the rightmost bit.</li></ol>
+<h3>Worked example: 45<sub>10</sub> → binary</h3><table><thead><tr><th>Number</th><th>Integer quotient after ÷ 2</th><th>Remainder</th></tr></thead><tbody><tr><td>45</td><td>22</td><td>1</td></tr><tr><td>22</td><td>11</td><td>0</td></tr><tr><td>11</td><td>5</td><td>1</td></tr><tr><td>5</td><td>2</td><td>1</td></tr><tr><td>2</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>1</td></tr></tbody></table><p>The remainders in calculation order are 1, 0, 1, 1, 0, 1. Reading from the bottom upward gives <strong>101101<sub>2</sub></strong>. Check by expanding the position weights: 32 + 8 + 4 + 1 = 45.</p>
+<p><strong>Why it works:</strong> each division expresses the number as 2 × quotient + remainder. The remainder tells us the coefficient of 2<sup>0</sup>, the lowest-weight bit. Dividing the quotient again finds the next bit.</p><p><strong>Zero:</strong> represent decimal 0 as binary 0. If a fixed width is required, add leading zeros: decimal 45 written in eight bits is 00101101. Do not append zeros on the right; that changes the value.</p>
+<h2>3. Decimal to binary: subtract powers of 2</h2><p>This method works from the highest-weight bit toward the lowest. Find the largest power of 2 that does not exceed the number. At that weight and every smaller weight down to 1, write 1 and subtract the weight if it fits in the remainder; otherwise write 0 and keep the remainder.</p>
+<h3>Worked example: 45<sub>10</sub> → binary</h3><p>The largest usable power is 32: 32 ≤ 45 &lt; 64.</p><table><thead><tr><th>Weight</th><th>Amount remaining before step</th><th>Bit</th><th>Amount remaining after step</th></tr></thead><tbody><tr><td>32</td><td>45</td><td>1</td><td>13</td></tr><tr><td>16</td><td>13</td><td>0</td><td>13</td></tr><tr><td>8</td><td>13</td><td>1</td><td>5</td></tr><tr><td>4</td><td>5</td><td>1</td><td>1</td></tr><tr><td>2</td><td>1</td><td>0</td><td>1</td></tr><tr><td>1</td><td>1</td><td>1</td><td>0</td></tr></tbody></table><p>The bits read from top to bottom are <strong>101101</strong>. Unlike repeated division, this method produces the leftmost bit first. Record the zeros at weights 16 and 2; skipping them would change the positions.</p>
+<h3>Practice both directions</h3><ol><li>Convert 11010<sub>2</sub> and 100011<sub>2</sub> to decimal by positional expansion.</li><li>Convert 10110<sub>2</sub> to decimal using multiply-by-2-and-add.</li><li>Convert 26<sub>10</sub> and 35<sub>10</sub> to binary by repeated division. Show every quotient and remainder.</li><li>Convert 58<sub>10</sub> to binary by subtracting powers of 2. Verify by converting back.</li><li>Write decimal 0 and decimal 45 as eight-bit unsigned numbers.</li></ol><details><summary>Check your answers</summary><p>1. 26 and 35. 2. Running totals: 1, 2, 5, 11, 22. 3. 26 = 11010; 35 = 100011. 4. 58 = 111010 = 32 + 16 + 8 + 2. 5. 00000000 and 00101101.</p></details><h2>4. Count and carry</h2><p>Binary has no digit 2. When adding 1 to a position containing 1, write 0 there and carry 1 into the next position to the left.</p><table><thead><tr><th>Decimal</th><th>Four-bit binary</th></tr></thead><tbody><tr><td>0</td><td>0000</td></tr><tr><td>1</td><td>0001</td></tr><tr><td>2</td><td>0010</td></tr><tr><td>3</td><td>0011</td></tr><tr><td>4</td><td>0100</td></tr><tr><td>5</td><td>0101</td></tr><tr><td>6</td><td>0110</td></tr><tr><td>7</td><td>0111</td></tr></tbody></table><div class="callout"><h3>Try it</h3><p>Continue the table from 8 through 15 before opening the answer. Explain the change from 0111 to 1000 using carries.</p></div><details><summary>Check your reasoning</summary><table><thead><tr><th>Decimal</th><th>Four-bit binary</th></tr></thead><tbody><tr><td>8</td><td>1000</td></tr><tr><td>9</td><td>1001</td></tr><tr><td>10</td><td>1010</td></tr><tr><td>11</td><td>1011</td></tr><tr><td>12</td><td>1100</td></tr><tr><td>13</td><td>1101</td></tr><tr><td>14</td><td>1110</td></tr><tr><td>15</td><td>1111</td></tr></tbody></table></details><p>In 0111 + 1, the rightmost 1 becomes 0 and carries; the next two positions do the same. The carry reaches the 8 position, giving 1000.</p>
+<h2>5. Number of patterns is not the largest value</h2><p>Each added bit doubles the number of patterns. With four bits, there are 2 × 2 × 2 × 2 = 16 patterns. They represent 0 through 15, because zero uses one pattern.</p><table><thead><tr><th>Bits</th><th>Number of patterns</th><th>Largest unsigned value</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>1</td></tr><tr><td>2</td><td>4</td><td>3</td></tr><tr><td>3</td><td>8</td><td>7</td></tr><tr><td>4</td><td>16</td><td>15</td></tr><tr><td>8</td><td>256</td><td>255</td></tr></tbody></table><p>For n bits: <strong>2<sup>n</sup> patterns</strong> and a <strong>largest unsigned value of 2<sup>n</sup> − 1</strong>. Eight bits make one byte. Their weights are 128, 64, 32, 16, 8, 4, 2, 1.</p><div class="callout"><h3>Try it</h3><p>Can four bits represent decimal 16 as an unsigned number? How many bits do you need? Why can eight bits distinguish 256 possibilities but not represent unsigned 256?</p></div><details><summary>Check your reasoning</summary><p>Decimal 16 needs five bits: 10000. Eight bits represent 0 through 255. Decimal 256 requires a ninth position: 100000000.</p></details><p>The mathematical result of 1111 + 1 is 10000. If a storage scheme keeps only four bits, it cannot store that full result; a rule is needed for the extra carry. We are not assuming that every language or data type handles that situation the same way.</p>
+<h2>6. A pattern needs an interpretation</h2><p>The pattern 0101 represents decimal 5 under unsigned binary place value. Under a different agreed code, it could identify an action, a symbol, or four independent yes/no settings. Its interpretation comes from the rules we assign.</p><p>Distinguish a numeric representation from an encoding: the same bits can represent different information under different conventions. The conversion procedures above assume unsigned whole numbers; signed numbers and fractions require additional rules.</p>
+<h2>7. Connect back to loops</h2><p>This optional fragment goes inside setup(). Trace its values before running it:</p><pre><code>int weight = 1;
+for (int position = 0; position &lt; 8; position++) {
+  println(weight);
+  weight = weight * 2;
+}</code></pre><details><summary>Check your reasoning</summary><p>It prints 1, 2, 4, 8, 16, 32, 64, 128: the weights from right to left in an eight-bit number. After the last update, weight is 256, but that value is not printed because the loop ends.</p></details>
+<h2>Check your understanding</h2><ol><li>Explain why 1000 in binary is not one thousand.</li><li>What is the difference between “16 patterns” and “largest value 15”?</li><li>How does adding one bit change the number of available patterns?</li><li>What additional information do you need before interpreting a bit pattern?</li></ol>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

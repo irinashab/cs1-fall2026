@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1: Loops: making repetition work for you">
+  <title>CS1 – Loops: making repetition work for you</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Loops: making repetition work for you</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <nav class="course-navigation" aria-label="Lesson pages"><ul><li><a href="lect7.html">Loops</a></li><li><a href="lect8.html">Loops and draw()</a></li><li><a href="binary.html">Binary numbers</a></li><li><a href="loop-extensions.html">Loop extensions</a></li></ul></nav>
+<p>An <code>if</code> statement decides whether a block runs. A loop can run a block repeatedly. Our first goal is to follow the order of execution and explain why a loop stops.</p>
+<h2>1. Find what changes</h2><p>Look at these statements before running them. What stays the same? What changes?</p><pre><code>ellipse(40, 100, 20, 20);
+ellipse(80, 100, 20, 20);
+ellipse(120, 100, 20, 20);
+ellipse(160, 100, 20, 20);</code></pre><p>The x coordinate changes by 40 each time. We can describe that rule with a variable and a loop. Here is a complete Processing sketch:</p><pre><code>void setup() {
+  size(300, 200);
+  background(255);
+
+  for (int x = 40; x &lt;= 160; x = x + 40) {
+    ellipse(x, 100, 20, 20);
+  }
+}</code></pre><p>This sketch creates a static drawing in <code>setup()</code>. There is no need for <code>draw()</code> because nothing needs to change afterward.</p>
+<h2>2. Read a for loop in execution order</h2><pre><code>for (initialization; condition; update) {
+  // body: statements to repeat
+}</code></pre><ol><li><strong>Initialize once</strong> when execution reaches this loop.</li><li><strong>Check the condition.</strong> If it is false, leave the loop.</li><li><strong>Run the body</strong> if the condition is true.</li><li><strong>Run the update.</strong></li><li>Return to the condition check.</li></ol><p>One execution of the body is an <strong>iteration</strong>. The update happens after the body, even though it is written above the body. This execution order is described in the <a href="https://processing.org/reference/for">Processing for reference</a>.</p><table><thead><tr><th>x at check</th><th>x &lt;= 160</th><th>Body</th><th>x after update</th></tr></thead><tbody><tr><td>40</td><td>true</td><td>Draw at x = 40</td><td>80</td></tr><tr><td>80</td><td>true</td><td>Draw at x = 80</td><td>120</td></tr><tr><td>120</td><td>true</td><td>Draw at x = 120</td><td>160</td></tr><tr><td>160</td><td>true</td><td>Draw at x = 160</td><td>200</td></tr><tr><td>200</td><td>false</td><td>Skip body; leave loop</td><td>No update</td></tr></tbody></table><p>The body runs four times, but the condition is checked five times. <code>x</code> is local to the loop: its name cannot be used after the loop’s closing brace.</p>
+<h2>3. Predict, explain, then run</h2><p>For each fragment, list the printed values and the number of iterations. Place each fragment inside <code>setup()</code> when testing.</p><pre><code>// A
+for (int n = 2; n &lt; 8; n = n + 2) {
+  println(n);
+}
+
+// B
+for (int n = 5; n &gt;= 1; n = n - 2) {
+  println(n);
+}
+
+// C
+for (int n = 4; n &lt; 4; n = n + 1) {
+  println(n);
+}</code></pre><details><summary>Check your reasoning</summary><p>A: 2, 4, 6 (three iterations). B: 5, 3, 1 (three iterations). C: no output (zero iterations), because the first check is false.</p></details><div class="callout"><h3>Try it</h3><p>Change A so that it includes 8. Write a loop that prints 3, 6, 9, 12. Then invent a different sequence with a constant step and exchange it with a partner to trace.</p></div>
+<h2>4. Count separately from position</h2><p>A counter makes “exactly five repetitions” easy to see. A second variable can derive a drawing position from that count. This fragment goes inside <code>setup()</code> after <code>size()</code>:</p><pre><code>for (int i = 0; i &lt; 5; i++) {
+  int x = 30 + i * 45;
+  line(x, 50, x, 100);
+}</code></pre><p><code>i++</code> means increase <code>i</code> by 1; here it has the same effect as <code>i = i + 1</code>. The values of <code>i</code> are 0, 1, 2, 3, 4. The positions are 30, 75, 120, 165, 210. The loop counter and the drawing position have different jobs.</p><div class="callout"><h3>Try it</h3><p>Without running the fragment, predict how many marks would be drawn if <code>i &lt; 5</code> became <code>i &lt;= 5</code>. Explain why.</p></div><details><summary>Check your reasoning</summary><p>Six marks: the body runs with i equal to 0 through 5. Starting at zero matters when counting iterations.</p></details>
+<h2>5. A conditional inside a loop</h2><p>A condition can make some iterations different. For this practice, predict the printed words before testing:</p><pre><code>for (int i = 0; i &lt; 5; i++) {
+  if (i &lt; 2) {
+    println(&quot;near&quot;);
+  } else {
+    println(&quot;far&quot;);
+  }
+}</code></pre><details><summary>Check your reasoning</summary><p>The output is near, near, far, far, far. The condition is evaluated for each iteration, using that iteration’s value of i.</p></details>
+<h2>6. Debug by tracing</h2><p>This programmer wants the numbers 1 through 4. Which part needs to change? Trace on paper; do not run this version.</p><pre><code>for (int i = 1; i &lt;= 4; i--) {
+  println(i);
+}</code></pre><details><summary>Check your reasoning</summary><p>For the intended sequence, change <code>i--</code> to <code>i++</code>. The shown update moves away from the intended stopping boundary. It will not reach that boundary by counting upward and can flood the console; integer overflow is not a sensible stopping strategy.</p></details>
+<h2>7. Your design: repetition with a purpose</h2><div class="callout"><p>Create a visual composition in which repetition contributes to an idea, mood, or recognizable subject. Use a loop to generate repeated elements and a conditional to make some elements different.</p></div><p><strong>Before coding:</strong> sketch your idea on paper and describe what repeats, what changes, and why that change matters. Choose the subject and the visual rules yourself.</p><ul><li>Use a terminating loop to generate the repeated elements.</li><li>Use a conditional that has a visible effect on some elements.</li><li>Be able to explain the starting value, condition, update, and number of iterations.</li><li>Make a deliberate design choice beyond changing a demonstration’s colors.</li></ul><p>A static composition in <code>setup()</code> is enough. Animation, grids, media files, and nested loops are optional. Explain the meaning of your rule and show a change you made after testing. Your explanation and control of the code matter more than visual polish.</p><details><summary>Questions to help if you are stuck</summary><p>Where do you notice repetition? What changes across it? Could repetition suggest growth, order, interruption, distance, or movement? Choose one idea and describe its rule in words before choosing coordinates.</p></details><p><a href="lect8.html">Continue: what happens when a loop is inside draw()?</a></p>
+<p>The following practice sets restore the exercises from the previous loop lectures. Use the <a href="loop-extensions.html">loop extensions</a> for while, nested loops, and modulo as needed. These drills are separate from the open composition task above.</p><h2 id="exercises">Exercises: single loops</h2>
+  <p>Use these to practice repetition, counters, and systematic change. Start simple and test often.</p>
+
+  <h3>1) Concentric circles</h3>
+  <p>
+    Use a <code>for()</code> loop to draw exactly <strong>20 concentric circles</strong> with the center in the middle of the canvas.
+    Make the stroke color change gradually from circle to circle.
+  </p>
+
+  <h3>2) Evens 0 to 100</h3>
+  <p>Write a loop that prints all the even numbers from 0 to 100 to the console.</p>
+  <p><em>(Even numbers are divisible by 2, e.g., 6, 28, 40.)</em></p>
+
+  <h3>3) Odds 19 down to -3</h3>
+  <p>Write a loop that will print all the odd numbers from 19 down to -3.</p>
+  <p><em>(Odd numbers are not divisible by 2, e.g., 19, 29, -3.)</em></p>
+
+  <h3>4) Zebra canvas</h3>
+  <p>Use a loop to convert your canvas into a zebra (alternating stripes).</p>
+
+  <h3>5) Concentric circles with “every k-th one” highlighted (Bonus: Modulo)</h3>
+  <p>
+    Re-create the screenshot using a loop: draw many concentric circles and make every <em>k-th</em> circle a different color.
+    <strong>Hint:</strong> this uses modulo (<code>%</code>), which we will introduce separately.
+  </p>
+<p><img alt="alternating red and black circle " height="300" src="media/redblackcircles.png" width="300"/></p>
+  <details>
+    <summary><strong>Modulo mini-box (open when ready)</strong></summary>
+    <p>
+      <strong>Modulo</strong> is the “remainder” operator.
+      For example:
+    </p>
+    <ul>
+      <li><code>7 % 3</code> is <code>1</code> because 7 = 3·2 + 1</li>
+      <li><code>10 % 5</code> is <code>0</code> because 10 divides evenly by 5</li>
+    </ul>
+
+    <p>In loops, modulo helps us select “every k-th item”:</p>
+
+    <pre><code>// Count circles from 1: highlight i = 7, 14, 21, ...
+if (i % 7 == 0) {
+  stroke(255, 0, 0); // red
+} else {
+  stroke(0);         // black
+}</code></pre>
+
+    <p>Translation: “If <code>i</code> is divisible by 7, it’s a highlight ring.”</p>
+  </details>
+
+
+  <h2>Exercises: nested loops and patterns</h2>
+<p><strong>Note:</strong> All examples and mini-labs in this lesson can be done entirely inside <code>setup()</code>.</p>
+<ol>
+  <li>
+    <strong>Warm-up grid:</strong>
+    Make a grid of circles (or squares). Choose a spacing like <code>50</code>.
+    <br>
+    <em>Requirement:</em> use a nested <code>for</code> loop; the entire screen should be filled with a regular pattern.
+  </li>
+
+  <li>
+    <strong>Chessboard / checkerboard (optional):</strong>
+    Turn your grid into a checkerboard using alternating colors.
+    <br><br>
+
+    <strong>Modulo note:</strong>
+    In grids, alternating patterns (like a checkerboard) are easiest when you compute
+    a row/column index and use <code>% 2</code> to switch between two choices.
+    <br><br>
+
+    <em>Hint:</em> use integer division + modulo to alternate tiles:
+    <pre><code>// if using step = 50:
+int col = x / step;
+int row = y / step;
+
+if ((col + row) % 2 == 0) fill(0);
+else fill(255);</code></pre>
+    Then draw <code>rect(x, y, step, step)</code>.
+  </li>
+
+  <li>
+    <strong>Offset pattern (visual upgrade):</strong>
+    Make every other row “shifted” by half a step.
+    <br>
+    <em>Hint:</em> if <code>row</code> is odd, add <code>step/2</code> to x when drawing circles.
+    <pre><code>float xShift = 0;
+if (row % 2 == 1) xShift = step/2.0;
+
+ellipse(x + xShift, y, 30, 30);</code></pre>
+  </li>
+
+  <li>
+    <strong>Creative extension (choose one):</strong>
+    <ul>
+      <li><strong>Gradient by row:</strong> make color depend on <code>row</code> (top lighter, bottom darker).</li>
+      <li><strong>Gradient by column:</strong> make size depend on <code>col</code> (left small, right large).</li>
+      <li><strong>Targets:</strong> in each grid cell, draw 3 concentric circles.</li>
+      <li><strong>Optional:</strong> highlight every other column using modulo <code>col % 2</code>.</li>
+    </ul>
+  </li>
+</ol>
+<p><strong>Check-in questions (answer in one sentence each):</strong></p>
+<ul>
+  <li>What does the outer loop control? What does the inner loop control?</li>
+  <li>How do you compute how many shapes are drawn total?</li>
+  <li>Where does modulo show up naturally in nested loops?</li>
+</ul>
+  <hr>
+
+<h2>Exercises: while loops</h2>
+
+<p>
+  Goal: do the <em>same</em> kinds of tasks we already know, but using <code>while</code>.
+  This is about control flow, not new geometry.
+</p>
+
+<ol>
+  <li>
+    <strong>Translate concentric circles (<code>for</code> → <code>while</code>).</strong><br>
+    You already know the “exactly 20 circles” version with a counter. Rewrite it using <code>while</code>.<br><br>
+
+    <strong>You must:</strong>
+    <ul>
+      <li>Declare and initialize a counter.</li>
+      <li>Write a condition that guarantees exactly 20 iterations.</li>
+      <li>Update the counter inside the loop.</li>
+    </ul>
+  </li>
+
+  <li>
+    <strong>Translate zebra stripes (<code>for</code> → <code>while</code>).</strong><br>
+    Convert your zebra canvas (vertical or horizontal stripes across the screen) to <code>while</code>.<br><br>
+
+    <strong>Tips:</strong>
+    <ul>
+      <li>Start at <code>x = 0</code> (for vertical stripes) or <code>y = 0</code> (for horizontal stripes).</li>
+      <li>Continue while your position is still inside the canvas.</li>
+      <li>Increase your position by the stripe width each time.</li>
+      <li>To alternate colors, compute a stripe index (for example, <code>col = x / step</code>) and use <code>col % 2</code>.</li>
+    </ul>
+  </li>
+
+  <li>
+    <strong>Condition-controlled repetition: random until target.</strong><br>
+    Keep generating random integers from 0..9 until you get your <code>target</code> number. Print how many tries it took.
+  </li>
+</ol>
+
+<p><strong>One-sentence reflection:</strong> Which of the three tasks above is the best reason to use <code>while</code>, and why?</p>
+
+
+
+<h3>Countdown trace</h3><p>Trace a while loop that starts n at 5, prints n while n &gt; 0, and decrements n after printing. What makes it stop? Explain what happens if the decrement is removed; do not run that version.</p>    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

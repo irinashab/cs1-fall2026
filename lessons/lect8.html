@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1: Loops inside draw(): iterations and frames">
+  <title>CS1 – Loops inside draw(): iterations and frames</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Loops inside draw(): iterations and frames</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <nav class="course-navigation" aria-label="Lesson pages"><ul><li><a href="lect7.html">Loops</a></li><li><a href="lect8.html">Loops and draw()</a></li><li><a href="binary.html">Binary numbers</a></li><li><a href="loop-extensions.html">Loop extensions</a></li></ul></nav>
+<p>Processing repeats <code>draw()</code>. A <code>for</code> loop repeats statements inside one function call. These are two different levels of repetition.</p><div class="callout"><p><strong>One complete call to draw() produces one frame.</strong> A loop inside that call completes before execution moves to the statements after it. A new loop iteration does not create a new frame.</p></div>
+<h2>1. Four circles, or one moving circle?</h2><p>Predict this complete sketch. At the slow frame rate, will you see one new circle per frame or all four together?</p><pre><code>void setup() {
+  size(300, 200);
+  frameRate(1);
+}
+
+void draw() {
+  background(255);
+  fill(0);
+
+  for (int x = 40; x &lt;= 160; x = x + 40) {
+    ellipse(x, 100, 20, 20);
+  }
+}</code></pre><details><summary>Check your reasoning</summary><p>All four appear together in each frame. Each call to draw() starts its own x at 40 and runs the whole loop. The next call clears the screen and draws the same four circles again.</p></details>
+<h2>2. Follow the first frame all the way through</h2><ol><li>Processing calls <code>draw()</code>.</li><li><code>background(255)</code> clears the drawing surface.</li><li><code>fill(0)</code> selects black.</li><li>The loop creates its local <code>x</code> with value 40.</li><li>The body draws at 40; the update makes x equal to 80.</li><li>The body draws at 80, then 120, then 160, with a check and update each time.</li><li>The update makes x equal to 200. The condition is false, so the loop ends.</li><li><code>draw()</code> reaches its closing brace. The completed frame is displayed.</li></ol><p>The next call repeats this entire sequence. Processing updates the screen at the end of <code>draw()</code>, as explained in the <a href="https://processing.org/reference/draw_">draw() reference</a>.</p><table><thead><tr><th>Call to draw()</th><th>Values used inside loop</th><th>Completed frame</th></tr></thead><tbody><tr><td>First</td><td>40, 80, 120, 160</td><td>Four circles</td></tr><tr><td>Second</td><td>40, 80, 120, 160</td><td>The same four circles</td></tr><tr><td>Third</td><td>40, 80, 120, 160</td><td>The same four circles</td></tr></tbody></table><p>Across three calls there are twelve executions of <code>ellipse()</code>. Because the background clears each frame, only four circles are visible in the completed frame.</p>
+<h2>3. Observe the order in the console</h2><p>In the first sketch, replace only <code>draw()</code> with this version. <code>frameCount</code> is Processing’s count of frames since the sketch started.</p><pre><code>void draw() {
+  background(255);
+  println(&quot;Start frame &quot; + frameCount);
+
+  for (int x = 40; x &lt;= 160; x = x + 40) {
+    ellipse(x, 100, 20, 20);
+    println(&quot;  x = &quot; + x);
+  }
+
+  println(&quot;End frame &quot; + frameCount);
+}</code></pre><p>The first two groups of output are:</p><pre><code>Start frame 1
+  x = 40
+  x = 80
+  x = 120
+  x = 160
+End frame 1
+Start frame 2
+  x = 40
+  x = 80
+  x = 120
+  x = 160
+End frame 2</code></pre><p><code>frameRate(1)</code> requests roughly one frame per second. It does not insert a one-second pause between loop iterations. A requested rate is a target, not a guarantee; see the <a href="https://processing.org/reference/frameRate_">frameRate() reference</a>.</p>
+<h2>4. To animate, keep a value between frames</h2><p>This second complete sketch draws one circle per frame. Predict its first five positions before running it.</p><pre><code>int x = 40;
+
+void setup() {
+  size(300, 200);
+  frameRate(1);
+}
+
+void draw() {
+  background(255);
+  fill(0);
+  ellipse(x, 100, 20, 20);
+
+  x = x + 40;
+  if (x &gt; 160) {
+    x = 40;
+  }
+}</code></pre><table><thead><tr><th>Frame</th><th>Global x at entry</th><th>Circle drawn at</th><th>Global x at exit</th></tr></thead><tbody><tr><td>1</td><td>40</td><td>40</td><td>80</td></tr><tr><td>2</td><td>80</td><td>80</td><td>120</td></tr><tr><td>3</td><td>120</td><td>120</td><td>160</td></tr><tr><td>4</td><td>160</td><td>160</td><td>40 (reset after update)</td></tr><tr><td>5</td><td>40</td><td>40</td><td>80</td></tr></tbody></table><p>There is no inner loop. The function draws once, changes the stored position once, and returns. The next call uses the updated global value. At one frame per second, the motion appears as separate steps. Increasing the frame rate makes updates happen more often.</p>
+<h2>5. Scope explains the difference</h2><p>In the four-circle sketch, <code>int x = 40</code> belongs to the <code>for</code> statement. Every time execution reaches that statement, initialization runs again. The loop does not remember 200 for the next frame.</p><p>In the moving-circle sketch, the global x retains its value between calls. If you remove its global declaration and instead put <code>int x = 40;</code> at the beginning of <code>draw()</code>, each call draws at 40 again. The later update changes only that call’s local variable.</p><div class="callout"><h3>Try it</h3><p>Try that local-variable change in the moving-circle sketch. Explain why the assignment still runs but the circle no longer moves across frames. Then restore the global variable.</p></div>
+<h2>6. Where background() goes matters</h2><table><thead><tr><th>Placement</th><th>What it means</th></tr></thead><tbody><tr><td>Once at the start of draw()</td><td>Erase the previous frame, then construct the next one.</td></tr><tr><td>Inside the loop, before each shape</td><td>Erase earlier iterations’ shapes; only the final shape remains in the completed frame.</td></tr><tr><td>Only in setup(), with no later clearing</td><td>Earlier marks remain. New drawing accumulates on the surface.</td></tr></tbody></table><div class="callout"><h3>Try it</h3><p>In the four-circle sketch, move <code>background(255)</code> inside the loop, just before <code>ellipse()</code>. Predict what remains visible and explain why this still is not animation.</p></div><details><summary>Check your reasoning</summary><p>Only the circle at x = 160 remains. Each iteration erases the earlier circles, and the screen is updated after the entire draw() call. You do not see the erased intermediate versions as separate frames.</p></details><p>In the moving-circle sketch, clearing only in <code>setup()</code> leaves a trail. Drawing marks on the screen does not create a collection of independently moving objects.</p>
+<h2>7. You can use both kinds of repetition together</h2><p>A loop can draw several elements in each frame while a global variable changes their shared position between frames. Trace the separate jobs of <code>i</code> and <code>offset</code>.</p><pre><code>int offset = 0;
+
+void setup() {
+  size(360, 200);
+  frameRate(10);
+}
+
+void draw() {
+  background(255);
+  fill(0);
+
+  for (int i = 0; i &lt; 4; i++) {
+    int x = 40 + i * 40 + offset;
+    ellipse(x, 100, 20, 20);
+  }
+
+  offset = offset + 2;
+  if (offset &gt; 120) {
+    offset = 0;
+  }
+}</code></pre><p>The counter i selects four positions within a frame. The global offset shifts the whole group between frames. The first frame draws at 40, 80, 120, 160; the second at 42, 82, 122, 162. Each frame still contains four circles.</p><div class="callout"><h3>Try it</h3><p>Why is the offset update after the loop? Predict the effect of putting it inside the loop instead. Would all four circles still share the same offset within a frame?</p></div><details><summary>Check your reasoning</summary><p>After the loop, the shared offset changes once per frame. Inside the loop, it would change four times per frame, and later circles would use a different offset from earlier ones. That changes both the spacing and the rate of movement.</p></details>
+<h2>8. A loop must let draw() finish</h2><p>This fragment never changes x. Trace it on paper; do not run it.</p><pre><code>int x = 40;
+while (x &lt; 160) {
+  ellipse(x, 100, 20, 20);
+}</code></pre><p>The condition stays true, so execution never reaches the end of the function. A loop like this inside <code>draw()</code> prevents completion of the frame and can make the sketch unresponsive. A very large terminating loop can also delay frames.</p><p>Do not use a waiting loop inside <code>draw()</code> to wait for a mouse press or a later frame. Let the function finish, then check input on a later call or handle it in an event function. Slowing execution with a delay inside the loop does not turn its iterations into completed frames.</p>
+<h2>Check your understanding</h2><ol><li>A loop draws six rectangles per call to draw(). How many rectangle calls occur across four frames? How many remain visible if each frame starts with background()?</li><li>Does frameRate(2) make each loop iteration last half a second?</li><li>What must persist if you want the picture to change between frames?</li><li>Where would you put code that generates a static picture only once?</li></ol><details><summary>Check your reasoning</summary><p>1. Twenty-four calls; six rectangles remain, assuming they do not cover one another. 2. No: it requests two complete frames per second. 3. Information that controls the next frame, such as a global position. 4. In setup().</p></details>
+<p><a href="lect7.html#exercises">Practice exercises: single loops, nested loops, and while loops</a></p>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
