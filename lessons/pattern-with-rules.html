@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="An optional CS1 Processing challenge exploring procedural drawing, functions, and algorithm design.">
+  <title>CS1 – Extension Challenge: A Pattern with Rules</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Extension Challenge: A Pattern with Rules</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <div class="callout note">
+  <p>This optional challenge is open to everyone and explores ideas beyond the core lesson. Choose one problem that introduces something new to you. You may work on it over several classes; completing all three is not expected.</p>
+  <p>This challenge is ungraded. You can receive feedback and demonstrate your work. It does not replace the required course exercises.</p>
+</div>
+
+<h2>The challenge</h2>
+<p>Create a Processing sketch that generates a visual composition from a small set of rules. Choose your own subject: architecture, a fictional alphabet, a landscape, a machine, an abstract composition, or another idea.</p>
+<p>Your program should produce related but visibly different results when its inputs change.</p>
+
+<h2>Core requirements</h2>
+<ul>
+  <li>Organize the program into functions with clear responsibilities.</li>
+  <li>Use formal parameters to control the functions’ behavior, and vary the actual parameters when calling them.</li>
+  <li>Include a function that returns a calculated value or answers a meaningful question.</li>
+  <li>Use loops to generate structure.</li>
+  <li>Provide at least two controls that change the composition’s rules—not just its colors.</li>
+  <li>Explain one rule your program always preserves, and test it at boundary values.</li>
+</ul>
+<p>Choose your own organization and function names. Start with a sketch and a short description of your rules.</p>
+
+<h2>Choose a deeper problem</h2>
+<p>Select one direction that you do not already know how to solve. Discuss your choice with your instructor if you are unsure how far to take it.</p>
+
+<section>
+  <h3>1. Placement under constraints</h3>
+  <p>Place objects of different sizes without allowing them to overlap or leave the canvas.</p>
+  <p>Decide what “overlap” means for your shapes. Your program must finish even when the requested arrangement is impossible. Report how many objects it could place and explain why it stopped.</p>
+  <p>Distinguish between proving that an arrangement is impossible and having your placement procedure stop without finding one.</p>
+</section>
+
+<section>
+  <h3>2. Recursive structure</h3>
+  <p>Create a branching, subdividing, or self-similar composition using a function that calls itself.</p>
+  <p>Define a stopping condition. Let the user control its depth, and explain how the amount of work grows as depth increases. Set a practical limit so the sketch remains responsive.</p>
+</section>
+
+<section>
+  <h3>3. Continuous construction</h3>
+  <p>Generate a complex composition gradually while keeping the sketch interactive.</p>
+  <p>Separate the work into steps that can continue across frames. Let the user pause, resume, and reset construction. Explain what state must persist between frames and why.</p>
+</section>
+
+<p>Arrays, classes, or recursion may be useful depending on your choice. You may learn and use concepts beyond the current lesson.</p>
+
+<h2>Demonstrate and explain</h2>
+<p>Show:</p>
+<ol>
+  <li>Two substantially different results from the same program.</li>
+  <li>A boundary case that works correctly.</li>
+  <li>A case your program cannot support, and how it handles it.</li>
+  <li>One design decision you revised after testing.</li>
+</ol>
+<p>Finish with a short explanation: <strong>What makes your solution general, and what assumptions does it depend on?</strong></p>
+
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
