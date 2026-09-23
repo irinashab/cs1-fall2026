@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Lesson 10: functions, parameters, scope, return values, and integrated Processing exercises.">
+  <title>CS1 – Lesson 10: Functions</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Lesson 10: Functions</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <p>You have used variables to store state, conditionals to make decisions, and loops to repeat work. Functions let you organize that work into named pieces that you can call when needed.</p><p>In this lesson, you will define functions, pass information through parameters, return results, and reorganize an existing sketch. The exercises are included below.</p><nav aria-label="Lesson sections"><ul><li><a href="#definitions">Defining and calling functions</a></li><li><a href="#parameters">Parameters and scope</a></li><li><a href="#returns">Returning values</a></li><li><a href="#organization">Organizing a sketch</a></li><li><a href="#exercises">Exercises</a></li><li><a href="#square">The Scared Square</a></li><li><a href="#refactor">Refactoring an earlier project</a></li></ul></nav>
+<h2 id="definitions">1. What is a function?</h2><p>A function is a named block of code that performs a task. It can receive input through parameters and may return a value. Some functions draw, print, or change state instead of returning a result. In Processing’s Java mode, these functions are also methods.</p><p>You already know functions:</p><table><thead><tr><th scope="col">Example</th><th scope="col">What it does</th></tr></thead><tbody><tr><td>ellipse(100, 100, 30, 30)</td><td>Draws a shape.</td></tr><tr><td>println(42)</td><td>Prints to the console.</td></tr><tr><td>random(10)</td><td>Returns a random floating-point value from 0 up to, but not including, 10.</td></tr><tr><td>setup() and draw()</td><td>Functions that Processing calls as the sketch runs.</td></tr></tbody></table><p>There are two reasons to define your own functions:</p><ul><li><strong>Modularity:</strong> divide a program into tasks that can be understood and tested separately.</li><li><strong>Reusability:</strong> express a behavior once, then call it with different inputs instead of copying its code.</li></ul><p>A loop repeats work. A function names a task. They can be used together.</p>
+<h2>2. Definition and call are different</h2><p>This is a complete sketch:</p><pre><code>void setup() {
+  println(&quot;Before&quot;);
+  printMessage();
+  println(&quot;After&quot;);
+}
+
+void printMessage() {
+  println(&quot;Inside the function&quot;);
+}</code></pre><p><strong>Predict:</strong> In what order are the three messages printed?</p><details><summary>Check your reasoning</summary><p>Before → Inside the function → After. Execution reaches the call, runs printMessage(), then continues with the statement after the call.</p></details><p><code>void printMessage() { ... }</code> is the definition. <code>printMessage();</code> is a call. Writing a definition does not run it. Processing calls <code>setup()</code>, <code>draw()</code>, and event functions at the appropriate times; you decide where to call your own functions.</p><p>Define your functions outside <code>setup()</code>, <code>draw()</code>, and other function bodies. A definition can appear below the code that calls it. Its position on the page does not determine when it runs.</p>
+<h2>3. Read the function header</h2><pre><code>returnType functionName(parameterType parameterName, ...) {
+  // body
+}</code></pre><p>This shows the structure; replace the placeholders with actual types and names. For example:</p><pre><code>void drawEye(float x, float y, float diameter) {
+  fill(255);
+  ellipse(x, y, diameter, diameter);
+  fill(0);
+  ellipse(x + diameter * 0.15, y,
+          diameter * 0.35, diameter * 0.35);
+}</code></pre><table><thead><tr><th scope="col">Part</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td>void</td><td>The function does not return a value.</td></tr><tr><td>drawEye</td><td>The function name.</td></tr><tr><td>float x, float y, float diameter</td><td>Three parameters, each with a type and name.</td></tr><tr><td>Statements between braces</td><td>The function body.</td></tr></tbody></table><p>The <strong>header</strong> includes the return type, name, and parameter list. In Java terminology, the <strong>signature</strong> is the name and ordered parameter types: <code>drawEye(float, float, float)</code>. It does not include the return type or parameter names. See <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html">Java’s method definition reference</a>.</p>
+<h2 id="parameters">4. Parameters receive the arguments from a call</h2><p><strong>Parameters</strong> are the variables declared in the definition. <strong>Arguments</strong> are the values supplied when calling it.</p><pre><code>// Definition: x, y, and diameter are parameters.
+void drawEye(float x, float y, float diameter) {
+  fill(255);
+  ellipse(x, y, diameter, diameter);
+  fill(0);
+  ellipse(x + diameter * 0.15, y,
+          diameter * 0.35, diameter * 0.35);
+}
+
+void setup() {
+  size(400, 300);
+  background(200);
+  drawEye(120, 140, 80);
+  drawEye(250, 140, 50);
+}</code></pre><p>At the first call, the parameter values are <code>x = 120</code>, <code>y = 140</code>, and <code>diameter = 80</code>. The second call has its own parameter values: 250, 140, and 50. All positions and sizes inside the function are derived from those parameters, so the same definition draws both eyes.</p><p>Arguments are matched by position. Supply the right number in the intended order and with compatible types. An integer can be supplied to a float parameter through an automatic widening conversion; a float cannot generally be supplied to an int parameter without an explicit conversion. See <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html">Java’s parameter and argument reference</a>.</p><p>An argument can be a literal, a variable, or an expression. These are example calls, assuming the referenced variables exist:</p><pre><code>drawEye(120, 140, 80);
+drawEye(mouseX, mouseY, 40);
+drawEye(width / 2, height / 2, 20 + 30);</code></pre><p><strong>Predict:</strong> What would <code>drawEye(80, 120, 140)</code> change compared with the first call? The types still match, but the meaning of each argument changes because its position changes.</p><p>The eye function also changes the current fill color. Drawing settings such as fill persist after a function returns. Set the styles your drawing needs; a function call does not automatically restore them.</p>
+<h2>5. Parameters and local variables belong to a call</h2><p>For primitive values such as int and float, the parameter receives a copy of the argument’s value. Assigning to the parameter does not assign to the caller’s variable.</p><pre><code>void setup() {
+  int a = 5;
+  changeIt(a);
+  println(a);
+}
+
+void changeIt(int n) {
+  n = 999;
+  println(n);
+}</code></pre><p>Draw separate memory boxes for <code>a</code> and <code>n</code>. Predict the output before expanding the explanation.</p><details><summary>Check your reasoning</summary><table><thead><tr><th scope="col">Moment</th><th scope="col">a in setup()</th><th scope="col">n in changeIt()</th></tr></thead><tbody><tr><td>Before call</td><td>5</td><td>No active call</td></tr><tr><td>At function entry</td><td>5</td><td>5</td></tr><tr><td>After n = 999</td><td>5</td><td>999</td></tr><tr><td>After return</td><td>5</td><td>Call has finished</td></tr></tbody></table><p>The output is 999, then 5. Changing n changes the local copy. Each call gets its own parameters and local variables.</p></details><p>The caller cannot use a name local to the called function. A function can access global variables, but a parameterized function should use its parameters for the information it claims to receive.</p><p>For example, a function with a parameter named <code>x</code> will not respond properly to different x arguments if its calculation ignores x and always reads a global <code>sqX</code>.</p>
+<h2 id="returns">6. A return value gives information back</h2><p>A return value lets the caller use a result in an assignment, expression, or condition.</p><pre><code>int bigger(int a, int b) {
+  if (a &gt; b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+void setup() {
+  int result = bigger(7, 12);
+  println(result);
+  println(bigger(20, 4) + 1);
+}</code></pre><p>The output is 12, then 21. The call <code>bigger(7, 12)</code> produces the value 12, which is stored in <code>result</code>.</p><p><code>return</code> ends the current function call immediately and sends a value back when one is specified. A value-returning function must return a compatible value on every path that completes normally. A <code>void</code> function can use a bare <code>return;</code> to finish early, but cannot return a value.</p>
+<h3>Printing is different from returning</h3><pre><code>void printDouble(int n) {
+  println(n * 2);
+}
+
+int doubleValue(int n) {
+  return n * 2;
+}</code></pre><p><code>printDouble(6);</code> prints 12. <code>int result = doubleValue(6);</code> stores 12 without printing it. You cannot assign the result of <code>printDouble(6)</code> to an int: its return type is void.</p><p>A returned value does not automatically change the argument you supplied:</p><pre><code>int a = 5;
+doubleValue(a);      // Calculates 10, but the result is discarded.
+a = doubleValue(a);  // Stores the returned 10 in a.</code></pre><p>This fragment belongs inside a function where doubleValue() is available.</p>
+<h2>7. Boolean functions separate checking from acting</h2><p>This function answers a question about its inputs:</p><pre><code>boolean isWithin(float value, float target, float radius) {
+  return abs(value - target) &lt; radius;
+}</code></pre><p>The radius is assumed to be nonnegative. The strict comparison means a distance exactly equal to the radius is outside. The function returns a boolean; it does not move or draw anything.</p><p>Place these calls inside setup() to test it:</p><pre><code>println(isWithin(100, 110, 20)); // true: distance 10
+println(isWithin(100, 130, 20)); // false: distance 30
+println(isWithin(100, 120, 20)); // false: distance exactly 20</code></pre><p>The caller can decide what to do with the answer:</p><pre><code>if (isWithin(mouseX, 200, 20)) {
+  background(0);
+} else {
+  background(255);
+}</code></pre><p>This drawing fragment can go inside draw(). The same boolean function can be used elsewhere without forcing the caller to change the background. Separating a check from an action also makes the check easier to test.</p>
+<h2 id="organization">8. Functions, loops, and frames</h2><p>A loop can call a function repeatedly. This complete sketch uses one definition to draw a row of eyes:</p><pre><code>void setup() {
+  size(500, 250);
+  background(200);
+
+  for (int i = 0; i &lt; 5; i++) {
+    drawEye(50 + i * 90, 125, 50);
+  }
+}
+
+void drawEye(float x, float y, float diameter) {
+  fill(255);
+  ellipse(x, y, diameter, diameter);
+  fill(0);
+  ellipse(x + diameter * 0.15, y,
+          diameter * 0.35, diameter * 0.35);
+}</code></pre><p>Each call completes before the loop continues. If that loop were inside draw(), all five calls would complete during each frame. Calling a function does not create a new frame.</p><p>A function can contain a loop or call another function. Divide the work into tasks whose names communicate their purpose.</p><p>For a moving sketch, draw() might express a short sequence of tasks:</p><pre><code>void draw() {
+  background(255);
+  moveSquare();
+  drawSquare(sqX, sqY, sqSize);
+}</code></pre><p>This is an organization example, not a complete sketch: the state variables and the two functions must also be defined. The movement function updates state once per call. The drawing function displays the updated position.</p><p>Changing duplicated code into function calls while preserving its behavior is <strong>refactoring</strong>. Test the original behavior before and after the change.</p>
+<h2 id="exercises">9. Exercises</h2>
+<h3>A. Identify the parts</h3><p>Choose a function that you wrote. In comments, identify its return type, name, parameter types and names, and body. Write its signature separately. Add a call and label its arguments. Explain the difference between a definition and a call.</p>
+<h3>B. Trace a return value</h3><p>Predict all three printed values. Draw the relevant variable boxes during the call.</p><pre><code>int addThree(int n) {
+  n = n + 3;
+  println(n);
+  return n;
+}
+
+void setup() {
+  int a = 4;
+  int b = addThree(a);
+  println(a);
+  println(b);
+}</code></pre>
+<h3>C. Write and test a calculation</h3><p>Write <code>float rectangleArea(float w, float h)</code>. Return the area; do not print inside the function. In setup(), call it with at least three pairs of nonnegative dimensions, including a zero dimension. Print the results in the caller and compare them with calculations on paper.</p>
+<h3>D. Create a reusable drawing</h3><p>Design a small visual element of your own. Put its drawing code in a void function with parameters for position and size. Call it at least three times with different arguments. Then use a loop to call it repeatedly. Choose your own subject and arrangement.</p><p>Changing a position parameter should move the entire element; changing its size parameter should affect its parts consistently. Avoid using a global position in place of the supplied parameters.</p>
+<h3>E. Repair the return paths</h3><p>This function should return the larger integer, including when the inputs are equal. Explain what is missing, then repair it and test all three cases: first larger, second larger, and equal.</p><pre><code>int chooseLarger(int a, int b) {
+  if (a &gt; b) {
+    return a;
+  }
+}</code></pre>
+<h2 id="square">10. Exercise: The Scared Square</h2><p>A square moves away when the mouse gets too close. It moves in small steps and remains completely inside the canvas. This exercise separates drawing, checking, and updating state.</p>
+<h3>Behavior and coordinates</h3><ul><li>Use global variables for the square’s position and size.</li><li>Use the default CORNER rectangle coordinates: <code>sqX</code> and <code>sqY</code> are its top-left corner.</li><li>For the required version, check horizontal proximity only. Ignore mouseY.</li><li>Define proximity using the horizontal distance from mouseX to sqX. Use a strict “less than fearRadius” comparison.</li><li>Move horizontally away from the mouse in small steps when it is too close. Decide which direction to use when mouseX equals sqX.</li><li>Keep the whole square inside the canvas. At an edge, staying inside takes priority if it cannot move farther away.</li></ul><p>Choose your own colors, appearance, and movement settings. The required functions describe responsibilities, not a complete solution.</p>
+<h3>Required function headers</h3><pre><code>void drawSquare(float x, float y, float s) {
+  // Draw using these parameters.
+}
+
+boolean mouseTooClose(float x, float fearRadius) {
+  // Return the result of the horizontal proximity check.
+}
+
+void moveSquare() {
+  // Use the check, update global state, and enforce boundaries.
+}</code></pre><p>These are incomplete definitions to implement, not a runnable starter: the boolean function needs a return statement. Inside mouseTooClose(), use the parameter x, not global sqX. This function reads Processing’s mouseX, so its result depends on both the arguments and the current mouse position.</p><p>Unlike the earlier isWithin() function, mouseTooClose() is specifically tied to mouse input. It should still return information without moving the square.</p>
+<h3>Possible starting state</h3><p>You may use this setup or choose other values. Complete the sketch with draw() and your function definitions.</p><pre><code>float sqX, sqY;
+float sqSize = 60;
+float fearRadius = 20;
+float step = 3;
+
+void setup() {
+  size(600, 400);
+  sqX = width / 2 - sqSize / 2;
+  sqY = height / 2 - sqSize / 2;
+}</code></pre>
+<h3>Test whether the parameter matters</h3><p>Temporarily pause movement by leaving out the call to moveSquare(). In draw(), test these two fixed x-values and print both the distances and boolean results:</p><pre><code>float xA = 100;
+float xB = 130;
+float testRadius = 20;
+
+println(&quot;A: d=&quot; + abs(mouseX - xA)
+        + &quot; close=&quot; + mouseTooClose(xA, testRadius));
+println(&quot;B: d=&quot; + abs(mouseX - xB)
+        + &quot; close=&quot; + mouseTooClose(xB, testRadius));</code></pre><table><thead><tr><th scope="col">mouseX</th><th scope="col">Distance to xA = 100</th><th scope="col">Distance to xB = 130</th><th scope="col">Expected A / B</th></tr></thead><tbody><tr><td>100</td><td>0</td><td>30</td><td>true / false</td></tr><tr><td>115</td><td>15</td><td>15</td><td>true / true</td></tr><tr><td>130</td><td>30</td><td>0</td><td>false / true</td></tr></tbody></table><p>Move the mouse near the listed positions and observe the results. Different input x-values do not always produce different distances or different boolean results. At the midpoint, the distances are equal. Look for test positions where the expected results differ.</p><p>Then use <code>xA = sqX</code> and <code>xB = sqX + 30</code>, keeping a radius of 20, and repeat the comparison. Restore movement after checking the function and remove or limit the debug output.</p><p>Write one sentence explaining why mouseTooClose() returns a boolean rather than moving the square itself.</p>
+<details><summary>Hints for distance, movement, and boundaries</summary><p><code>abs(mouseX - x)</code> gives the horizontal distance. Decide the direction separately by comparing mouseX with sqX. With a top-left position and square size s, the allowed horizontal interval is 0 through width − s.</p><pre><code>sqX = constrain(sqX, 0, width - sqSize);</code></pre><p>Apply the boundary rule after changing the position. Assume the square is smaller than the canvas and its size is positive. Update the position once per frame; do not use a loop to keep moving until the mouse is far away.</p></details>
+<h3>Behavior checks</h3><ul><li>Far from the square: no movement.</li><li>Near its left side: movement to the right, unless blocked by the edge.</li><li>Near its right side: movement to the left, unless blocked by the edge.</li><li>Exactly at the fear radius: no movement under the strict comparison.</li><li>At both canvas edges: the entire square stays visible.</li><li>Same mouseX but different mouseY: the required 1D check gives the same result.</li></ul>
+<h3>Optional: two-dimensional proximity</h3><p>Extend the check to both coordinates. You can define a rectangular proximity region by requiring both horizontal and vertical distances to be below a threshold; no circular distance formula is required.</p><p>Update x and y in directions away from the mouse. Decide what should happen when either coordinate is exactly equal. Keep both coordinates within their allowed bounds. Explain your definition of “too close” and test positions inside, outside, and on its boundary.</p>
+<h2 id="refactor">11. Exercise: Refactor an earlier project</h2><p>Choose an earlier sketch and reorganize it using functions while preserving its behavior.</p><ul><li>Create at least two user-defined functions, excluding setup(), draw(), and event functions.</li><li>Give at least one function parameters.</li><li>Replace at least one repeated code block with calls to a function.</li><li>Use names that describe each function’s task.</li><li>Add a short comment at the top: “Refactor summary: what I changed and why.”</li></ul><p>Decide where the useful boundaries are in your own program. You do not need to copy the Scared Square’s organization into a different project.</p><p>Before editing, list three behaviors to preserve. After refactoring, run those same checks. Explain which function improved readability or removed duplication, and why its parameters are appropriate.</p>
+<h2>Check your understanding</h2><ol><li>Does defining a function make it run?</li><li>What is the difference between a parameter and an argument?</li><li>Why does assigning to an int parameter not change the caller’s int variable?</li><li>What is the difference between printing a value and returning it?</li><li>How can a boolean function be used in an if condition?</li><li>Why might two correct calls with different arguments return the same result?</li><li>If draw() calls a function containing a loop, when does that loop finish?</li></ol>
+
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

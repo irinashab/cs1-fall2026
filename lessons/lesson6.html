@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Lesson 9: while loops, nested loops, grids, and practice exercises in Processing.">
+  <title>CS1 – Lesson 6: While Loops and Nested Loops</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Lesson 9: While Loops and Nested Loops</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <p>A loop repeats a block of code while a condition is true. So far, we have used <code>for</code> loops to keep the initialization, condition, and update together. A <code>while</code> loop expresses repetition with the condition at the center.</p>
+<p>Nested loops—a loop inside another loop—let us describe repetition at two levels, such as the rows and columns of a grid.</p>
+<nav aria-label="Lesson sections"><ul><li><a href="#while">While loops</a></li><li><a href="#nested">Nested loops</a></li><li><a href="#grids">Grids and coordinates</a></li><li><a href="#exercises">Exercises</a></li><li><a href="#understanding">Check your understanding</a></li></ul></nav>
+<h2 id="while">1. From if to while</h2><p>Compare these two fragments. Each starts with <code>n</code> equal to 1.</p><h3>A conditional</h3><pre><code>int n = 1;
+
+if (n &lt;= 3) {
+  println(n);
+  n++;
+}</code></pre><h3>A loop</h3><pre><code>int n = 1;
+
+while (n &lt;= 3) {
+  println(n);
+  n++;
+}</code></pre><p>Before running them, predict what each fragment prints and the final value of <code>n</code> in each.</p><p>The <code>if</code> statement checks its condition once. If the condition is true, its body runs once, and execution continues after the block.</p><p>The <code>while</code> loop checks its condition again after completing the body. If the condition is still true, the body runs again.</p><p>The first fragment prints <code>1</code> and leaves <code>n</code> equal to 2. The second prints <code>1</code>, <code>2</code>, and <code>3</code>, then leaves <code>n</code> equal to 4.</p>
+<h2>2. How a while loop runs</h2><p>The general structure is:</p><pre><code>while (condition) {
+  // statements to repeat
+}</code></pre><ol><li>Check the condition.</li><li>If it is false, skip the body and continue after the loop.</li><li>If it is true, execute the entire body.</li><li>Return to the condition check.</li></ol><p>Consider:</p><pre><code>int n = 2;
+
+while (n &lt;= 8) {
+  println(n);
+  n = n + 2;
+}
+
+println(&quot;Finished&quot;);</code></pre><p>Trace the variable through the loop:</p><table><thead><tr><th scope="col">n at the condition check</th><th scope="col">n &lt;= 8</th><th scope="col">Output from the body</th><th scope="col">n after the update</th></tr></thead><tbody><tr><td>2</td><td>true</td><td>2</td><td>4</td></tr><tr><td>4</td><td>true</td><td>4</td><td>6</td></tr><tr><td>6</td><td>true</td><td>6</td><td>8</td></tr><tr><td>8</td><td>true</td><td>8</td><td>10</td></tr><tr><td>10</td><td>false</td><td>Body skipped</td><td>10</td></tr></tbody></table><p>The output is:</p><pre><code>2
+4
+6
+8
+Finished</code></pre><p>The body runs four times. The condition is checked five times, including the final check that ends the loop.</p><p><strong>Predict:</strong> What changes if the condition becomes <code>n &lt; 8</code>?</p>
+<h3>A loop can run zero times</h3><pre><code>int n = 10;
+
+while (n &lt; 5) {
+  println(n);
+  n++;
+}
+
+println(&quot;After the loop&quot;);</code></pre><p>The condition is false at the first check. The body never runs, and the only output is <code>After the loop</code>.</p>
+<h2>3. What makes the loop stop?</h2><p>For the counting loops in this lesson, identify three things:</p><ul><li><strong>Initialization:</strong> Where does the variable get its starting value?</li><li><strong>Condition:</strong> What must remain true for repetition to continue?</li><li><strong>Update:</strong> How does the variable move toward the stopping condition?</li></ul><p>In a <code>while</code> loop, these pieces are not all written on the same line. That makes it especially important to check them.</p><p>This loop does not stop. <strong>Trace it on paper; do not run it.</strong></p><pre><code>int n = 1;
+
+while (n &lt;= 5) {
+  println(n);
+}</code></pre><p>Nothing changes <code>n</code>. It remains 1, so the condition remains true.</p><p>An update must also move in a useful direction. If you intend to count upward toward an upper boundary, subtracting from the counter will not produce the intended stopping behavior.</p>
+<h3>The condition is checked between iterations</h3><p>Changing the variable inside the body does not immediately interrupt the body. Predict this fragment:</p><pre><code>int n = 3;
+
+while (n &lt; 5) {
+  n = n + 2;
+  println(n);
+}</code></pre><p>It prints <code>5</code> once. The condition was true when <code>n</code> was 3. The update and print statement both execute before the condition is checked again.</p>
+<h2>4. Expressing the same repetition with for and while</h2><p>These fragments print the same values.</p><h3>Using for</h3><pre><code>for (int i = 0; i &lt; 4; i++) {
+  println(i);
+}</code></pre><h3>Using while</h3><pre><code>int i = 0;
+
+while (i &lt; 4) {
+  println(i);
+  i++;
+}</code></pre><p>Both print:</p><pre><code>0
+1
+2
+3</code></pre><p>A <code>for</code> loop is convenient when initialization, a condition, and a regular update naturally belong together. A <code>while</code> loop is useful when the condition is the clearest description of why repetition should continue.</p><p>Both can express counted repetition. A <code>while</code> loop is not restricted to situations with an unknown number of iterations.</p><p>There is also a scope difference: the <code>for</code> loop declares <code>i</code> inside its header, so that name is unavailable after the loop. The <code>while</code> version declares <code>i</code> in the surrounding block, where it remains available after the loop.</p>
+<h3>Example: repeat until a value reaches a threshold</h3><pre><code>int amount = 3;
+int doublings = 0;
+
+while (amount &lt; 100) {
+  amount = amount * 2;
+  doublings++;
+}
+
+println(amount);
+println(doublings);</code></pre><p>Here, the condition describes the goal: keep doubling while the amount is below 100.</p><p><strong>Trace it:</strong> What are the final values? Does the amount have to become exactly 100?</p>
+<h2>5. Drawing with a while loop</h2><p>This complete sketch draws vertical lines:</p><pre><code>void setup() {
+  size(400, 300);
+  background(255);
+
+  int x = 20;
+
+  while (x &lt; width) {
+    line(x, 0, x, height);
+    x = x + 40;
+  }
+}</code></pre><p>Before running it, determine:</p><ul><li>The first three values of <code>x</code>.</li><li>The last value used to draw a line.</li><li>The number of lines.</li><li>The value of <code>x</code> when the loop ends.</li></ul><p>The loop runs in <code>setup()</code>, so the drawing is generated once.</p>
+<h3>A while loop inside draw() still runs within one frame</h3><p>Putting the same loop inside <code>draw()</code> would not draw one line per frame. Each call to <code>draw()</code> would execute the entire loop before finishing that frame.</p><p>To change something across frames, keep its state between calls and update it a little during each call.</p><p>Do not use a loop inside <code>draw()</code> to wait for a mouse press. The function needs to finish so the sketch can continue responding and drawing. Use an event function such as <code>mousePressed()</code>, or check a condition during successive calls to <code>draw()</code>.</p>
+<h2 id="nested">6. Nested loops: one complete loop for each outer iteration</h2><p>A nested loop is a loop inside another loop. Start with console output:</p><pre><code>void setup() {
+  for (int row = 0; row &lt; 2; row++) {
+    for (int col = 0; col &lt; 3; col++) {
+      println(&quot;row = &quot; + row + &quot;, col = &quot; + col);
+    }
+  }
+}</code></pre><p>Predict the output before reading further. For each value of <code>row</code>, the inner loop runs completely:</p><pre><code>row = 0, col = 0
+row = 0, col = 1
+row = 0, col = 2
+row = 1, col = 0
+row = 1, col = 1
+row = 1, col = 2</code></pre><ol><li>The outer loop starts with <code>row = 0</code>.</li><li>The inner loop starts with <code>col = 0</code> and completes its three iterations.</li><li>The outer loop updates <code>row</code> to 1.</li><li>The inner loop starts again with a new <code>col = 0</code>.</li><li>After that inner loop finishes, the outer loop updates <code>row</code> to 2 and stops.</li></ol><p>The outer variable stays unchanged while the inner loop runs.</p><p>Here, the print statement executes <strong>2 rows × 3 columns = 6 times</strong>.</p><p>Multiplication works because the inner loop runs three times for every outer iteration. If the inner limit depends on the outer variable, its number of iterations may vary.</p>
+<h2 id="grids">7. From row and column numbers to screen coordinates</h2><p>A row and column identify a position in a grid. They are not yet pixel coordinates. We can calculate coordinates from them:</p><pre><code>x = left margin + column number × horizontal spacing
+y = top margin + row number × vertical spacing</code></pre><p>These are formulas in words. The complete Processing sketch below draws three rows of five circles:</p><pre><code>void setup() {
+  size(400, 280);
+  background(255);
+
+  int rows = 3;
+  int columns = 5;
+  int spacing = 60;
+
+  for (int row = 0; row &lt; rows; row++) {
+    for (int col = 0; col &lt; columns; col++) {
+      int x = 50 + col * spacing;
+      int y = 50 + row * spacing;
+
+      ellipse(x, y, 24, 24);
+    }
+  }
+}</code></pre><p>The first few positions are:</p><table><thead><tr><th scope="col">Row</th><th scope="col">Column</th><th scope="col">x</th><th scope="col">y</th></tr></thead><tbody><tr><td>0</td><td>0</td><td>50</td><td>50</td></tr><tr><td>0</td><td>1</td><td>110</td><td>50</td></tr><tr><td>0</td><td>2</td><td>170</td><td>50</td></tr><tr><td>1</td><td>0</td><td>50</td><td>110</td></tr><tr><td>1</td><td>1</td><td>110</td><td>110</td></tr></tbody></table><p>The circle diameter is 24. The spacing is 60. These are separate choices: spacing controls the distance between centers, while diameter controls the size of each circle.</p><p><strong>Predict:</strong></p><ul><li>How many circles are drawn?</li><li>Where is the circle in row 2, column 4?</li><li>What changes if <code>spacing</code> becomes 40?</li><li>What changes if <code>columns</code> becomes 6?</li></ul>
+<h3>Which loop comes first?</h3><p>In this version, rows are outside and columns are inside, so the program draws one row at a time.</p><p>If you exchange the loops while keeping the coordinate formulas tied to <code>row</code> and <code>col</code>, the same grid positions are visited column by column. The order changes; the final image can remain the same.</p><p>Order can affect the image when shapes overlap or drawing choices depend on previous iterations.</p>
+<h2>8. Nested loops using while</h2><p>The same structure can be written with <code>while</code>:</p><pre><code>void setup() {
+  size(400, 280);
+  background(255);
+
+  int rows = 3;
+  int columns = 5;
+  int spacing = 60;
+
+  int row = 0;
+
+  while (row &lt; rows) {
+    int col = 0;
+
+    while (col &lt; columns) {
+      int x = 50 + col * spacing;
+      int y = 50 + row * spacing;
+
+      ellipse(x, y, 24, 24);
+      col++;
+    }
+
+    row++;
+  }
+}</code></pre><p>Notice where <code>col</code> is initialized: <strong>inside the outer loop, before the inner loop</strong>. Each row needs its own run through the columns, beginning at zero.</p><p>If you declare and initialize <code>col</code> only once before the outer loop, it reaches 5 after the first row. Unless you reset it, the inner condition is already false for every later row.</p><p>Also notice the two updates:</p><ul><li><code>col++</code> advances through the current row.</li><li><code>row++</code> advances after that row is complete.</li></ul>
+<h2>9. Conditions inside a grid</h2><p>A condition inside the inner loop can make a decision for every cell. This fragment identifies cells in the first row or first column:</p><pre><code>if (row == 0 || col == 0) {
+  fill(0);
+} else {
+  fill(200);
+}</code></pre><p>Place the condition before the drawing statement inside the inner loop.</p><p><strong>Predict:</strong> Which cells change if <code>||</code> becomes <code>&amp;&amp;</code>?</p>
+<h3>Alternating patterns with remainder</h3><p>The remainder operator <code>%</code> helps describe repeating patterns.</p><pre><code>7 % 2   // 1
+8 % 2   // 0</code></pre><p>For nonnegative integers, an even number has remainder 0 when divided by 2; an odd number has remainder 1.</p><p>To alternate choices across both rows and columns:</p><pre><code>if ((row + col) % 2 == 0) {
+  fill(0);
+} else {
+  fill(255);
+}</code></pre><p>Moving one column or one row changes the parity of <code>row + col</code>, so neighboring cells receive different colors.</p><p>Before using this condition, trace its result for a small grid:</p><table><thead><tr><th scope="col">row + col</th><th scope="col">Column 0</th><th scope="col">Column 1</th><th scope="col">Column 2</th></tr></thead><tbody><tr><td>Row 0</td><td>0</td><td>1</td><td>2</td></tr><tr><td>Row 1</td><td>1</td><td>2</td><td>3</td></tr><tr><td>Row 2</td><td>2</td><td>3</td><td>4</td></tr></tbody></table>
+<h2 id="exercises">10. Exercises</h2>
+<h3>A. Trace a while loop</h3><p>Write the output and the final value of <code>n</code> without running the code.</p><pre><code>int n = 12;
+
+while (n &gt; 1) {
+  println(n);
+  n = n - 3;
+}</code></pre><p>Then change the condition so that zero is also printed.</p>
+<h3>B. Rewrite earlier loops</h3><p>Use <code>while</code> loops to:</p><ol><li>Print every even number from 0 through 100.</li><li>Print every odd number from 19 down through −3.</li><li>Draw exactly 20 concentric circles with gradually changing stroke color.</li><li>Draw alternating stripes across the canvas.</li></ol><p>For each solution, identify the initialization, condition, and update.</p>
+<h3>C. Reaching a threshold</h3><p>Start with an integer value of 5. Repeatedly double it until it is at least 1,000.</p><p>Print the final value and the number of doublings. Predict both results before running the program.</p>
+<h3>D. Diagnose a loop</h3><p>A programmer expects this code to print 1 through 5:</p><pre><code>int n = 1;
+
+while (n &lt;= 5) {
+  n++;
+  println(n);
+}</code></pre><p>What does it actually print? Modify it to produce the intended sequence. Explain why moving a statement changes the output.</p>
+<h3>E. Build a grid</h3><p>Draw a grid with four rows and seven columns. Choose the shape, spacing, and margins. Keep all shapes within the canvas.</p><p>Before running the sketch:</p><ul><li>Calculate how many shapes it should draw.</li><li>Calculate the first and last shape positions.</li><li>Explain what each loop controls.</li></ul>
+<h3>F. Rewrite the grid</h3><p>Rewrite your grid using nested <code>while</code> loops. Explain why the column counter must start again for each row.</p>
+<h3>G. Make selected cells different</h3><p>Using a grid, write conditions that distinguish:</p><ol><li>The first row.</li><li>The last column.</li><li>The outer border.</li><li>The main diagonal of a square grid.</li></ol><p>Choose a visible difference for the selected cells. Explain your conditions in terms of row and column numbers.</p>
+<h3>H. Checkerboard and offset rows</h3><ol><li>Create a checkerboard using filled squares.</li><li>Create a separate pattern in which every other row is shifted horizontally by half the spacing.</li></ol><p>For the second pattern, decide how you will handle shapes near the canvas edges.</p>
+<h3>I. Variation across a grid</h3><p>Choose one:</p><ul><li>Make color depend on the row.</li><li>Make size depend on the column.</li><li>Draw three concentric circles at each grid position.</li><li>Highlight every third column.</li></ul><p>Explain whether your counting begins at index 0 or at item 1, especially when interpreting “every third column.”</p>
+<h3>J. When the inner limit changes</h3><p>Predict the total number of printed lines:</p><pre><code>for (int row = 0; row &lt; 4; row++) {
+  for (int col = 0; col &lt;= row; col++) {
+    println(row + &quot;, &quot; + col);
+  }
+}</code></pre><p>List the number of inner iterations for each row. Why is <code>4 × 4</code> not the correct count?</p>
+<h3>K. Design with repetition</h3><p>Create a composition in which a two-dimensional arrangement serves an idea of your own.</p><p>Decide:</p><ul><li>What each repeated element represents.</li><li>What changes across rows, columns, or regions.</li><li>How a condition contributes to the design.</li></ul><p>Sketch the idea before coding. Use nested loops, but choose your own subject and rules. Be prepared to explain one design decision, trace one cell, and describe a revision you made after testing.</p>
+<h2 id="understanding">Check your understanding</h2><ol><li>When is a <code>while</code> condition checked?</li><li>Can a <code>while</code> loop execute zero times?</li><li>Why must a loop make progress toward stopping?</li><li>What happens to the inner loop each time the outer loop advances?</li><li>When can you multiply the outer and inner iteration counts?</li><li>If nested loops are inside <code>draw()</code>, do they generate one cell per frame or the whole grid per frame?</li></ol>
+
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
