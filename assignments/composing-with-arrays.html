@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Advanced Assignment: Composing with Arrays</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>Advanced Assignment: Composing with Arrays</h1>
+</header>
+
+<main>
+
+<section>
+  <h3>Purpose</h3>
+  <p>You have practiced arrays on lists of numbers and on bouncing balls. This assignment asks
+  you to use arrays for something less obvious: <strong>music</strong>.</p>
+
+  <p>A melody is a sequence of pitches. A chord is several pitches at once. A canon is the same
+  melody played twice with an offset in time. All of these are naturally represented as arrays,
+  and representing them well is the hard part of this assignment. The code that plays them is
+  the easy part.</p>
+
+  <p>You will write a short piece in Processing using <code>Sound</code> (or another library, if
+  you prefer — see the note under Submission). The piece itself is up to you. What is not up to
+  you is that the piece must be built from arrays in specific, named ways, and you must be able
+  to explain which array technique is doing what.</p>
+</section>
+
+<hr>
+
+<section>
+  <h3>What you must demonstrate</h3>
+
+  <p>Choose <strong>three</strong> of the following six techniques. Each one is a real array pattern,
+  not a trick. The musical idea next to each one is just an example of where it shows up.</p>
+
+  <ol>
+    <li><strong>Parallel arrays for a melody.</strong>
+      One array holds pitches, a second array holds durations. A single index walks both arrays
+      together. <em>Musical idea:</em> a monophonic melody.</li>
+
+    <li><strong>A two-dimensional array for chords.</strong>
+      Rows are time steps, columns are voices (or the reverse). <em>Musical idea:</em> a chord
+      progression, or a harmonized melody.</li>
+
+    <li><strong>Offset playback (canon or round).</strong>
+      The same array is played more than once, with each voice starting at a different time or
+      at a different transposition. <em>Musical idea:</em> a canon, a round, or a phase piece.</li>
+
+    <li><strong>A repeating pattern with variation.</strong>
+      A rhythmic or melodic array repeats, but one element is modified between repetitions.
+      <em>Musical idea:</em> a phrase with a turnaround, or a pattern that evolves.</li>
+
+    <li><strong>A lookup table (indirection).</strong>
+      One array stores a scale, mode, or set of allowed pitches. A second array stores indices
+      into the first. <em>Musical idea:</em> a melody constrained to a scale, where the melody
+      is written as scale degrees rather than absolute pitches.</li>
+
+    <li><strong>Arrays as state (a walking index).</strong>
+      A longer piece is stored in one array, and an integer tracks the current position as the
+      piece plays. The position advances over time and can be reset or jumped.
+      <em>Musical idea:</em> a piece with sections, repeats, or a coda.</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h3>Constraints</h3>
+
+  <ul>
+    <li>The piece must be roughly 30–60 seconds long. Longer is not better; it is just more typing.</li>
+    <li>Every technique you claim must be implemented with a loop that walks an array. If you
+      cannot point to the loop, it does not count.</li>
+    <li>Do not call <code>random()</code> during playback. Any randomness belongs in
+      <code>setup()</code>. If the piece sounds different every time you run it, you have a bug.</li>
+    <li>You may use <code>Sound</code>, or you may look up and use another Processing sound library
+      if you prefer. If you use a different library, say so in your write-up and explain briefly
+      why you chose it.</li>
+    <li>The piece must actually play when the sketch runs. A sketch that only prints note names
+      is not a submission.</li>
+  </ul>
+</section>
+
+<hr>
+
+<section>
+  <h3>Write-up (required)</h3>
+
+  <p>Submit a short write-up alongside the sketch. Half a page is plenty. It must contain:</p>
+
+  <ol>
+    <li><strong>Technique map.</strong> For each of the three techniques you chose, name the
+      arrays involved, name the loop that implements it, and describe in one or two sentences
+      what musical decision that technique corresponds to.</li>
+    <li><strong>Representation choices.</strong> Explain how you decided to represent a note,
+      a chord, and time. There is no single correct answer here; the point is that you made a
+      choice and can defend it.</li>
+    <li><strong>Reflection.</strong> One paragraph on what was hard about representing music
+      as arrays. What did the array structure make easy? What did it make awkward? For example,
+      did fixed-length arrays force you to do something you would not have done musically?</li>
+  </ol>
+</section>
+
+<hr>
+
+
+<hr>
+
+<section>
+  <h3>Submission</h3>
+
+  <ul>
+    <li>One Processing sketch containing the piece.</li>
+    <li>One write-up (plain text, PDF, or a comment block at the top of the sketch — your choice).</li>
+    <li>Compress (zip) the sketch folder with the write-up inside it, and submit the single
+      <code>.zip</code> file.</li>
+  </ul>
+</section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>

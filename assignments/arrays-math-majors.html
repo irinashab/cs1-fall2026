@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Array Practice (Math/CS Majors)</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>Array Practice — Mandatory (Math/CS Majors)</h1>
+</header>
+
+<main>
+
+<section>
+  <p><em>Optional for everyone else — can be done for extra credit.</em></p>
+</section>
+
+<hr>
+
+<section>
+  <h2>Task 1 — Squaring elements of an array</h2>
+  <p>Work with an array of 10 integers. Square each element and store the result back into the same array.</p>
+
+  <h3>Steps</h3>
+  <ol>
+    <li>Declare an integer array of length 10.</li>
+    <li>In <code>setup()</code>, fill the array using a loop with any simple pattern you like.</li>
+    <li>Print the first and last elements before making any changes, using <code>a[0]</code> and <code>a[a.length - 1]</code>. Label this line <code>BEFORE</code>.</li>
+    <li>Using a single loop, square each element <em>in place</em> — that is, store the squared value back into the same slot. Do not create a second array.</li>
+    <li>Print the first and last elements again. Label this line <code>AFTER</code>.</li>
+    <li>As a comment in your code, explain in one or two sentences why you wrote the loop condition as <code>i &lt; a.length</code> rather than <code>i &lt;= a.length</code>.</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h2>Task 2 — Summing consecutive elements</h2>
+  <p>Work with an array of 10 integers. Replace each element (except the last one) with the sum of that element and the next one. Do not modify the last element.</p>
+
+  <h3>Steps</h3>
+  <ol>
+    <li>Declare an integer array of length 10.</li>
+    <li>In <code>setup()</code>, fill the array using any simple pattern you like.</li>
+    <li>Print <code>a[0]</code>, <code>a[1]</code>, and <code>a[a.length - 1]</code>. Label this line <code>BEFORE</code>.</li>
+    <li>Using a loop, replace each element (except the last) with the sum of that element and the next one. Your loop bound must be chosen so the loop never reads past the end of the array.</li>
+    <li>Print the same three values again. Label this line <code>AFTER</code>.</li>
+    <li>As a comment in your code, answer this question in one or two sentences: when you update the array left to right, can <code>a[i + 1]</code> already contain a changed value by the time you read it? Explain why or why not.</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h2>Task 3 — Calculating a sum</h2>
+  <p>Work with an array of 5 integers. Compute the sum of all elements, then compute the sum of the elements at even indices only.</p>
+
+  <h3>Steps</h3>
+  <ol>
+    <li>Declare an integer array of length 5.</li>
+    <li>In <code>setup()</code>, fill the array using any simple pattern you like.</li>
+    <li>Print the first and last elements.</li>
+    <li>Using a loop, compute the sum of <em>all</em> elements. Store it in a variable named <code>sumAll</code>.</li>
+    <li>Using a second loop that starts at index 0 and increments by 2 (so it visits indices 0, 2, and 4 only), compute the sum of the elements at even indices. Store it in a variable named <code>sumEvenIndex</code>.</li>
+    <li>Print both sums with clear labels.</li>
+    <li>As a comment in your code, explain in one sentence why starting at 0 and incrementing by 2 visits exactly the even indices.</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h2>Task 4 — Working with colors</h2>
+  <p>Build an array of 50 random RGB colors and use them to paint shapes of your choice.</p>
+
+  <h3>Steps</h3>
+  <ol>
+    <li>Declare a color array of length 50. The <code>color</code> type stores an RGB value, so each slot in this array holds one color:
+      <pre><code class="language-java">color[] palette = new color[50];</code></pre>
+    </li>
+    <li>In <code>setup()</code>, set the canvas size, disable the stroke, and fill the color array using a loop with random colors. Each slot <code>palette[i]</code> should be assigned a <code>color(...)</code> value built from random red, green, and blue components.</li>
+    <li>Print the first and last colors in the array so you can verify the fill worked.</li>
+    <li>In <code>draw()</code>, clear the background.</li>
+    <li>Using a loop, draw exactly 50 shapes. Shape number <code>i</code> must use <code>palette[i]</code> as its fill. Do not call <code>random()</code> inside <code>draw()</code> for color.</li>
+    <li>If your artwork is static, you may call <code>noLoop()</code> at the end of <code>draw()</code>.</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h2>Submission</h2>
+  <ul>
+    <li>Each sketch must run without errors and must include the required prints and comments.</li>
+    <li>Place all sketch folders inside one parent folder, compress (zip) that parent folder, and submit the single .zip file.</li>
+  </ul>
+</section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>

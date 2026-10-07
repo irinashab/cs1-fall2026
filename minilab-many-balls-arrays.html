@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 – Mini-Lab: Many Bouncing Balls (Arrays)</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <h1>Mini-Lab: Many Bouncing Balls (Arrays)</h1>
+</header>
+
+<main>
+
+<section>
+  <h3>Purpose</h3>
+  <p>You already know how to animate a single bouncing ball using individual variables.
+  In this mini-lab you will animate <strong>many</strong> balls by replacing those variables with
+  <strong>arrays</strong>. This is your first step toward managing multiple moving objects.</p>
+</section>
+
+<hr>
+
+<section>
+  <h3>Reference: single bouncing ball (from the earlier lab)</h3>
+  <details>
+    <summary><strong>Show the single-ball sketch</strong></summary>
+    <pre><code class="language-java">float xspeed, yspeed;
+float xpos, ypos, wdth, ht;
+
+void setup(){
+  size(1000, 1000);
+  background(0);
+
+  xpos = random(width);
+  ypos = random(height);
+  xspeed = random(3);
+  yspeed = random(3);
+
+  wdth = random(20);
+  ht = wdth;
+
+  noStroke();
+}
+
+void draw(){
+  background(0);
+  ellipse(xpos, ypos, wdth, ht);
+
+  xpos += xspeed;
+  ypos += yspeed;
+
+  if (xpos >= width || xpos <= 0){
+    xspeed *= -1;
+  }
+  if (ypos >= height || ypos <= 0){
+    yspeed *= -1;
+  }
+}</code></pre>
+  </details>
+  <p><em>Note:</em> the bounce in this reference treats the ball as a point. Once balls have a visible size, that logic is no longer correct. You will fix this below.</p>
+</section>
+
+<hr>
+
+<section>
+  <h3>Instructions</h3>
+
+  <ol>
+    <li><strong>Choose the number of balls.</strong> Declare an integer variable <code>n</code> and give it a value around 20. This value determines both how many balls you draw and the length of every array you create.</li>
+
+    <li><strong>Turn each ball property into an array.</strong> Look at the single-ball sketch. Every variable that describes the ball — position, speed, size — becomes an array of length <code>n</code>. Declare those arrays at the top of your sketch.</li>
+
+    <li><strong>Initialize all balls in <code>setup()</code>.</strong> Use a loop so that each index <code>i</code> represents one ball. Choose speeds and sizes that give you a visually interesting variety — for example, let the speed or size depend on <code>i</code>.</li>
+
+    <li><strong>Print the endpoints of your arrays in <code>setup()</code>.</strong> Print <code>xpos[0]</code> and <code>xpos[n - 1]</code>, and print <code>wdth[0]</code> and <code>wdth[n - 1]</code>. These two lines let you confirm that your indexing is correct before anything starts moving.</li>
+
+    <li><strong>Make ball 0 start off-screen.</strong> After initializing the arrays, set the x-position of ball 0 to a value slightly to the left of the canvas. Ball 0 must still appear and bounce normally once the sketch runs.</li>
+
+    <li><strong>Animate all balls in <code>draw()</code>.</strong> Use a loop to draw each ball, update each ball's position, and handle bouncing. Every ball must be updated inside the same loop.</li>
+
+    <li><strong>Make the bounce respect ball size.</strong> A ball should reverse direction when the <em>edge</em> of the ball reaches the wall, not when its center does. Balls should never disappear partway off-screen.</li>
+
+    <li><strong>Do not call <code>random()</code> inside <code>draw()</code>.</strong> All randomness belongs in <code>setup()</code>. If a ball's speed or position changes every frame, you have a bug, not a feature.</li>
+
+    <li><strong>Try different values of <code>n</code>.</strong> Run your sketch with roughly 100, 1000, and 10000 balls. Write two or three sentences as a comment in your sketch describing what you observe as <code>n</code> grows.</li>
+  </ol>
+</section>
+
+<hr>
+
+<section>
+  <h3>Submission</h3>
+  <ul>
+    <li>Your sketch must run without errors and must include the two endpoint prints and the scalability comment.</li>
+    <li>Compress (zip) the sketch folder and submit the single <code>.zip</code> file.</li>
+  </ul>
+</section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(err => console.error("Footer load failed:", err));
+</script>
+
+</body>
+</html>
