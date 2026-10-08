@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Irina Shablinsky">
-  <meta name="description" content="Course page description">
   <title>CS1 – Array Practice (Math/CS Majors)</title>
-  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
-<body id="top">
-  <header>
-    <h1>Array Practice (Mandatory for Math/CS majors)</h1>
-  </header>
+<body>
+<header>
+  <h1>Array Practice — Mandatory (Math/CS Majors)</h1>
+</header>
 
-  <div id="navigation-placeholder"></div>
+<main>
 
-  <main>
-   <section>
+<section>
   <p><em>Optional for everyone else — can be done for extra credit.</em></p>
 </section>
 
@@ -101,46 +98,17 @@
   </ul>
 </section>
 
-    <p class="back-to-top">
-  <a href="#top">↑ Back to top</a>
-</p>
-  </main>
+</main>
 
-  <div id="footer-placeholder"></div>
+<div id="footer-placeholder"></div>
 
-  <script>
-  const siteRoot = window.location.hostname.endsWith("github.io")
-    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
-    : "/";
-
-  fetch(`${siteRoot}assets/includes/navigation.html`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Navigation request failed: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then(html => {
-      const placeholder = document.getElementById("navigation-placeholder");
-      placeholder.innerHTML = html;
-
-      placeholder.querySelectorAll("a[data-path]").forEach(link => {
-        link.href = `${siteRoot}${link.dataset.path}`;
-      });
-    })
-    .catch(error => console.error("Navigation load failed:", error));
-
-  fetch(`${siteRoot}assets/includes/footer.html`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Footer request failed: ${response.status}`);
-      }
-      return response.text();
-    })
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(error => console.error("Footer load failed:", error));
+    .catch(err => console.error("Footer load failed:", err));
 </script>
 
 </body>
