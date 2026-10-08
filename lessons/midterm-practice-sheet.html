@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Course page description">
   <title>CS1 – Midterm Practice Sheet</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
-<header>
+<body id="top">
+  <header>
     <h1>Midterm Practice Sheet</h1>
-        
-    </header>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
  <main>
 <section>
-  <h2>CS1 Midterm Practice Sheet</h2>
+
   <p>This practice sheet mirrors the structure and difficulty of the midterm.
   You should be able to answer every question without running code.</p>
 </section>
@@ -186,17 +190,42 @@ println(arr[arr[2]/3]);</code></pre>
   </ul>
 </section>
 </main>
-<div id="footer-placeholder"></div>
+  <div id="footer-placeholder"></div>
 
-<script>
-  fetch("assets/includes/footer.html")
-    .then(response => response.text())
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(err => console.error("Footer load failed:", err));
+    .catch(error => console.error("Footer load failed:", error));
 </script>
 
-
-    </body>
+</body>
 </html>
