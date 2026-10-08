@@ -3,20 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Irina Shablinsky">
-  <meta name="description" content="Course page description">
-  <title>CS1 – Lesson 8: Arrays</title>
-  <link rel="stylesheet" href="../assets/style.css">
+  <title>Lesson 10: Arrays</title>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
-<body id="top">
-  <header>
-    <h1>Lesson 8: Introduction to Arrays in Processing</h1>
-  </header>
+<body>
+<header>
+    <h1>Lesson 8: Introduction to Arrays in Processing
+</h1>
+        
+    </header>
+ <main>
 
-  <div id="navigation-placeholder"></div>
-
-  <main>
-   <h3 class="code-line" data-line-start="1" data-line-end="2"><a id="What_is_an_Array_1"></a>What is an Array?</h3>
+<h3 class="code-line" data-line-start="1" data-line-end="2"><a id="What_is_an_Array_1"></a>What is an Array?</h3>
 <p class="has-line-data" data-line-start="2" data-line-end="4">An array is a structured collection of elements of the same data type, stored in contiguous memory locations and accessed through a single reference (variable).<br>
 For example, suppose you want to store the scores of five students. Instead of writing:</p>
 <pre><code class="has-line-data" data-line-start="5" data-line-end="11"><span class="hljs-keyword">int</span> score1 = <span class="hljs-number">85</span>;
@@ -320,48 +318,19 @@ int[][] grid = new int[3][4];
 <li>Board simulations</li>
 </ul>
 
-<p>For now focus on mastering 1D arrays first.</p>
-    <p class="back-to-top">
-  <a href="#top">↑ Back to top</a>
-</p>
-  </main>
+<p>For now, focus on mastering 1D arrays first.</p>
+</main>
+<div id="footer-placeholder"></div>
 
-  <div id="footer-placeholder"></div>
-
-  <script>
-  const siteRoot = window.location.hostname.endsWith("github.io")
-    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
-    : "/";
-
-  fetch(`${siteRoot}assets/includes/navigation.html`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Navigation request failed: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then(html => {
-      const placeholder = document.getElementById("navigation-placeholder");
-      placeholder.innerHTML = html;
-
-      placeholder.querySelectorAll("a[data-path]").forEach(link => {
-        link.href = `${siteRoot}${link.dataset.path}`;
-      });
-    })
-    .catch(error => console.error("Navigation load failed:", error));
-
-  fetch(`${siteRoot}assets/includes/footer.html`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Footer request failed: ${response.status}`);
-      }
-      return response.text();
-    })
+<script>
+  fetch("assets/includes/footer.html")
+    .then(response => response.text())
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(error => console.error("Footer load failed:", error));
+    .catch(err => console.error("Footer load failed:", err));
 </script>
 
-</body>
+
+    </body>
 </html>
