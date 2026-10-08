@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Course page description">
   <title>CS1 – Mini-Lab: Many Bouncing Balls (Arrays)</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
-<header>
-  <h1>Mini-Lab: Many Bouncing Balls (Arrays)</h1>
-</header>
+<body id="top">
+  <header>
+    <h1>Mini-Lab: Many Bouncing Balls (Arrays)</h1>
+  </header>
 
-<main>
+  <div id="navigation-placeholder"></div>
 
-<section>
+  <main>
+    <section>
   <h3>Purpose</h3>
   <p>You already know how to animate a single bouncing ball using individual variables.
   In this mini-lab you will animate <strong>many</strong> balls by replacing those variables with
@@ -98,17 +101,47 @@ void draw(){
   </ul>
 </section>
 
-</main>
 
-<div id="footer-placeholder"></div>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
 
-<script>
-  fetch("assets/includes/footer.html")
-    .then(response => response.text())
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(err => console.error("Footer load failed:", err));
+    .catch(error => console.error("Footer load failed:", error));
 </script>
 
 </body>
