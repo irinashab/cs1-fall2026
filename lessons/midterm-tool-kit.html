@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 – Midterm Project Tool Kit">
+  <title>CS1 – Midterm Project Tool Kit</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Midterm Project Tool Kit</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+
+    <section>
+      <p>To help you with your midterm project I put together several tools.</p>
+
+      <ol>
+        <li><a href="collisions.html" target="_blank" rel="noopener noreferrer">Collision Detection</a></li>
+        <li><a href="timers.html" target="_blank" rel="noopener noreferrer">Creating a Timer</a></li>
+        <li><a href="animation.html" target="_blank" rel="noopener noreferrer">How to do Animations</a></li>
+        <li><a href="putting-it-all-together.html" target="_blank" rel="noopener noreferrer">Putting It Together: A Tiny Game Sketch</a></li>
+      </ol>
+
+      <p>
+        This core tool kit will allow you to build simple games, move characters,
+        animate sprites, time events and detect collisions — in other words do
+        something <em>real.</em>
+      </p>
+    </section>
+
+    <p class="back-to-top">
+      <a href="#top">↑ Back to top</a>
+    </p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
