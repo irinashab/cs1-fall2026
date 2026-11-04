@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Lesson 9: classes, objects, constructors, and Programming Assignment 9 in Processing.">
+  <title>CS1 – Lesson 9: A Touch of Class</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Lesson 9: A Touch of Class</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <section>
+  <h2>Learning Goals</h2>
+  <p>By the end of this lesson, you will be able to define a simple class, create objects with constructors, and use each object's methods to display it and change its state.</p>
+  <ul>
+    <li>Distinguish a class from an object.</li>
+    <li>Identify instance variables, methods, and constructors.</li>
+    <li>Use <code>setup()</code> and <code>draw()</code> to animate independent objects.</li>
+    <li>Design and test a class of your own.</li>
+  </ul>
+</section>
+<section>
+  <h2>1. Classes and Objects</h2>
+  <p>A <strong>class</strong> defines a type of object: the data each object stores and the operations it can perform. An <strong>object</strong> is one particular instance of that class. For example, <code>Ball</code> is a class; <code>firstBall</code> can refer to one Ball object and <code>secondBall</code> to another.</p>
+  <p>Think of a class as a blueprint and an object as a house built from it: one blueprint can produce many houses, and each house can have its own paint color and furniture.</p>
+  <p>A class groups two things together:</p>
+  <ul>
+    <li><strong>State:</strong> instance variables that hold an object's current data, such as its position and speed. Each object gets its own copies.</li>
+    <li><strong>Methods:</strong> functions defined inside the class. A method can use the object's state to draw it or change that state.</li>
+  </ul>
+  <p>A constructor supplies the object's initial state when the object is created. The class definition alone does not create or draw any objects.</p>
+</section>
+<section>
+  <h2>2. First Complete Sketch: A Simple Constructor</h2>
+  <p>Open a new sketch in <strong>Processing Java mode</strong>. Copy this entire example into the sketch and run it. Each complete sketch in this lesson runs separately; replace the earlier sketch when trying the next one.</p>
+<pre><code>Ball myBall;
+
+void setup() {
+  size(600, 400);
+  myBall = new Ball();
+}
+
+void draw() {
+  background(245);
+  myBall.move();
+  myBall.display();
+}
+
+class Ball {
+  float x;
+  float y;
+  float speed;
+
+  Ball() {
+    x = 50;
+    y = 200;
+    speed = 2;
+  }
+
+  void move() {
+    x += speed;
+    if (x &gt; width + 10) {
+      x = -10;
+    }
+  }
+
+  void display() {
+    noStroke();
+    fill(40, 100, 200);
+    ellipse(x, y, 20, 20);   // diameter 20, so radius 10
+  }
+}</code></pre>
+  <h3>Read the sketch in order</h3>
+  <ol>
+    <li><code>Ball myBall;</code> declares a variable that can refer to a Ball. It does not create the object yet.</li>
+    <li><code>setup()</code> runs once. After setting the canvas size, <code>new Ball()</code> creates an object, runs its constructor, and returns a reference stored in <code>myBall</code>.</li>
+    <li>The constructor initializes that object's <code>x</code>, <code>y</code>, and <code>speed</code>.</li>
+    <li><code>draw()</code> repeats. It clears the previous frame, changes the object's position, and draws the object at its new position.</li>
+  </ol>
+  <p><code>myBall.move()</code> means “call the move method on the object referred to by myBall.” This is <strong>dot syntax</strong>: <code>object.method()</code>. Inside that method, <code>x</code> and <code>speed</code> belong to that object.</p>
+  <p>Notice the difference in form: <code>myBall.move()</code> asks one particular object to run its method, while a plain function call like <code>background(245)</code> belongs to the sketch as a whole.</p>
+  <p>The ball wraps to the left after it passes the right edge. Its radius is 10 pixels, so the boundary check allows the whole ball to leave before resetting it.</p>
+  <div class="callout note"><strong>Why create the object in setup()?</strong> An object created inside <code>draw()</code> on every frame would repeatedly restart at its initial position. Create it once, then update it repeatedly.</div>
+  <h3>Predict, Run, Explain</h3>
+  <ul>
+    <li>What changes if you set the constructor's <code>speed</code> to 4?</li>
+    <li>What happens if you remove <code>myBall.move()</code>?</li>
+    <li>What happens if you remove <code>background(245)</code> from <code>draw()</code>?</li>
+  </ul>
+</section>
+<section>
+  <h2>3. Constructors and Methods</h2>
+  <p>A <strong>constructor</strong> runs when you create an object with <code>new</code>. Its name must exactly match the class name, including capitalization, and it has <strong>no return type—not even void</strong>. A regular method declares a return type; <code>void</code> means that it returns no value.</p>
+  <table>
+    <thead><tr><th scope="col">Feature</th><th scope="col">Constructor</th><th scope="col">Regular method</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Purpose in our sketch</th><td>Initialize state</td><td>Update state or display the object</td></tr>
+      <tr><th scope="row">Declaration</th><td><code>Ball() { ... }</code></td><td><code>void move() { ... }</code></td></tr>
+      <tr><th scope="row">Return type</th><td>None</td><td>Required, such as <code>void</code></td></tr>
+      <tr><th scope="row">How used</th><td><code>new Ball()</code></td><td><code>myBall.move()</code></td></tr>
+    </tbody>
+  </table>
+  <p>We will see a constructor that takes formal parameters in the next section.</p>
+  <p>Common errors: <code>void Ball()</code> declares a method instead of a constructor; <code>myBall.Ball()</code> does not create an object; calling <code>myBall.move()</code> before assigning an object to <code>myBall</code> causes an error.</p>
+</section>
+<section>
+  <h2>4. A Parameterized Constructor</h2>
+  <p>The first constructor gives every new Ball the same starting values. A <strong>constructor with formal parameters</strong> lets the caller choose those values. A <strong>formal parameter</strong> is a named input in the constructor or method declaration; an <strong>actual parameter</strong> is a value supplied in a call.</p>
+  <!-- CHANGE: Replaced the "parameter/argument" sentence with the formal/actual terminology used in Lesson 9 (functions). -->
+  <p>In <code>new Ball(50, 120, 2)</code>, the actual parameters are passed to the formal parameters <code>startX</code>, <code>startY</code>, and <code>startSpeed</code>, in that order. The constructor copies them into the object's instance variables. The formal parameters exist only during the constructor call; the instance variables retain the values afterward.</p>
+  <h3>Second Complete Sketch: Two Independent Objects</h3>
+  <p>Replace your sketch with the following code. Both objects use the same class and methods, but start in different places and move at different speeds. Click the canvas to stop only the first ball.</p>
+<pre><code>Ball firstBall;
+Ball secondBall;
+
+void setup() {
+  size(600, 400);
+  firstBall = new Ball(50, 120, 2);
+  secondBall = new Ball(300, 280, 4);
+}
+
+void draw() {
+  background(245);
+  firstBall.move();
+  firstBall.display();
+  secondBall.move();
+  secondBall.display();
+}
+
+void mousePressed() {
+  firstBall.speed = 0;
+}
+
+class Ball {
+  float x;
+  float y;
+  float speed;
+
+  Ball(float startX, float startY, float startSpeed) {
+    x = startX;
+    y = startY;
+    speed = startSpeed;
+  }
+
+  void move() {
+    x += speed;
+    if (x &gt; width + 10) {
+      x = -10;
+    }
+  }
+
+  void display() {
+    noStroke();
+    fill(40, 100, 200);
+    ellipse(x, y, 20, 20);
+  }
+}</code></pre>
+  <p>This version replaces <code>Ball()</code> with a constructor that requires three formal parameters. A call to <code>new Ball()</code> will no longer match the constructor in this class.</p>
+  <p>In fact, Processing will report a compile error such as <em>“The constructor Ball() is undefined.”</em> Here is the precise rule: Java automatically supplies a no-argument constructor only when you define <em>no</em> constructor of your own. Once you write a constructor with formal parameters, that automatic one no longer exists, so every call to <code>new Ball(...)</code> must pass the required actual parameters.</p>
+  <h3>Independent State</h3>
+  <p>Each <code>new Ball(...)</code> creates a separate object. Updating <code>firstBall.x</code> or setting <code>firstBall.speed</code> does not change the second object's variables. Both objects still need their own method calls in <code>draw()</code>.</p>
+  <p>By contrast, assigning <code>secondBall = firstBall;</code> would make both variables refer to the same object; it would not make a copy. This statement is an explanation only—do not add it to the two-object sketch.</p>
+    <div class="callout note"><strong>Direct field access and a look ahead.</strong> In <code>mousePressed()</code> we changed <code>firstBall.speed</code> directly from outside the class. That works. It would even work if <code>speed</code> were marked <code>private</code>, because in Processing every class you write in a <code>.pde</code> tab is compiled as a nested class inside the sketch, and Java lets the enclosing sketch class reach a nested class's private members. The <code>private</code> keyword only blocks access from genuinely separate classes—which is why it matters more once you move a class into its own <code>.java</code> file. For this assignment, direct field access is fine; larger programs usually add methods such as <code>stop()</code> so that state changes are requested in one clear place.</div>
+  <h3>A Note About <code>this</code></h3>
+  <p>Our formal parameter names differ from the instance variable names, which makes assignments easy to read. You may also see a constructor use the same names for both. In that case, <code>this.x = x;</code> means “store the formal parameter x in this object's instance variable x.” You do not need that naming style for this assignment.</p>
+</section>
+<section>
+  <h2>5. Check Your Understanding</h2>
+  <ol>
+    <li>In the second sketch, how many classes are defined? How many Ball objects are created?</li>
+    <li>Which variables describe each object's state? Which methods change or display that state?</li>
+    <li>Why does clicking stop only the first ball?</li>
+    <li>Why do we put creation in <code>setup()</code> and repeated method calls in <code>draw()</code>?</li>
+    <li>How would you create a third Ball with a different starting position and speed?</li>
+  </ol>
+  <details>
+    <summary>Show suggested answers</summary>
+    <ol>
+      <li>One class (<code>Ball</code>) is defined; two Ball objects are created (<code>firstBall</code> and <code>secondBall</code>).</li>
+      <li>Each object's state is <code>x</code>, <code>y</code>, and <code>speed</code>. <code>move()</code> changes <code>x</code>; <code>display()</code> reads the state to draw the ball.</li>
+      <li><code>mousePressed()</code> sets only <code>firstBall.speed = 0</code>; it never touches <code>secondBall</code>, whose speed stays 4.</li>
+      <li>Creating an object once in <code>setup()</code> preserves its state across frames. Repeated calls in <code>draw()</code> then update and redraw that same object instead of restarting it.</li>
+      <li>Declare a third variable, call <code>new Ball(...)</code> with new actual parameters in <code>setup()</code>, and add <code>thirdBall.move();</code> and <code>thirdBall.display();</code> to <code>draw()</code>.</li>
+    </ol>
+  </details>
+  <p>Use class names beginning with a capital letter, such as <code>Firefly</code>. Use camelCase for variables and methods, such as <code>glowAmount</code> and <code>updateGlow()</code>.</p>
+</section>
+<section id="assignment">
+  <h2>Programming Assignment: Give It a Life</h2>
+  <p>A sleepy robot. A dramatic houseplant. A star with stage fright. Invent something that has a look, a little personality, and something it <em>does</em>—then build a class for it.</p>
+  <p>Put at least <strong>two objects</strong> in your sketch. They come from the same class, but different starting values should give them different lives. Maybe one plant grows faster, one robot blinks nervously, or one battery runs out before the other.</p>
+
+  <h3>The Essentials</h3>
+  <ul>
+    <li><strong>Your own class</strong> with at least three meaningful instance variables and a parameterized constructor that initializes them.</li>
+    <li>A <strong>display method</strong> and a separate <strong>behavior method</strong> that changes the object's state in a visible way.</li>
+    <li><strong>Two independent objects</strong>, created with separate <code>new</code> calls in <code>setup()</code> and brought to life through method calls in <code>draw()</code>.</li>
+  </ul>
+  <p><strong>The catch:</strong> a Ball with a new name or a different shape is still the lecture example. Give your creation behavior that fits what it is. No inheritance needed.</p>
+
+  <h3>Before You Code</h3>
+  <p>Jot a few lines at the top of your sketch: What are you making? What three things does each object need to remember? What will it do?</p>
+
+  <h3>Take It for a Test Drive</h3>
+  <p>Run it long enough to see what happens at its limits. Change or pause one object's behavior and check that the other keeps doing its own thing. Leave a brief comment about what you tested and anything you fixed.</p>
+
+  <h3>Turn It In</h3>
+  <p>Submit your complete Processing sketch (all <code>.pde</code> tabs), with your short planning and testing comments, plus a screenshot showing both objects.</p>
+  <p><strong>Want an encore?</strong> Make one object react to a click, add a reset, or introduce a third object with a very different personality.</p>
+</section>
+
+    <section>
+      <h2>Summary</h2>
+      <p>A class bundles <strong>state</strong> (instance variables) with <strong>behavior</strong> (methods), and a constructor sets each object's initial state. Creating objects with <code>new</code> and calling their methods gives you independent, reusable pieces of behavior—the core idea behind this lesson and the foundation for everything that follows.</p>
+    </section>
+
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+ 
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => {
+      console.error("Navigation load failed:", error);
+      document.getElementById("navigation-placeholder").textContent =
+        "Navigation could not be loaded. Open this page through a local server or GitHub Pages.";
+    });
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => {
+      console.error("Footer load failed:", error);
+      document.getElementById("footer-placeholder").textContent =
+        "Footer could not be loaded. Open this page through a local server or GitHub Pages.";
+    });
+</script>
+
+</body>
+</html>
