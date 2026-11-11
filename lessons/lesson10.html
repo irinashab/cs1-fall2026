@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Lesson 10: inheritance, polymorphism, encapsulation, and an inheritance lab in Processing.">
+  <title>CS1 – Lesson 10: Inheritance, Polymorphism, and Encapsulation</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Lesson 10: Three Big Words in Object-Oriented Programming</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <section>
+    <h2>Big picture</h2>
+    <p>
+      In this lesson we put together three major ideas of object-oriented programming:
+      <strong>inheritance</strong>, <strong>polymorphism</strong>, and <strong>encapsulation</strong>.
+      These ideas are related, but they answer different questions.
+    </p>
+    <ul>
+      <li><strong>Inheritance</strong> asks: how are classes related?</li>
+      <li><strong>Polymorphism</strong> asks: which method runs?</li>
+      <li><strong>Encapsulation</strong> asks: who is allowed to touch the data?</li>
+    </ul>
+    <p>
+      Processing gives us a friendly place to experiment with these ideas. At the same time,
+      the PDE organizes sketch code differently from separate Java classes, which affects where
+      private fields can be accessed.
+    </p>
+  </section>
+
+  <section>
+    <h2>Recap: classes and objects</h2>
+    <p>
+      A class is like a blueprint or cookie cutter. It describes what data an object stores
+      and what methods that object can perform. An object is an instance of the class.
+    </p>
+    <p>
+      Once we know how to build one object, a natural question is: can we reuse that design for
+      a whole family of related objects? One important answer is <strong>inheritance</strong>.
+    </p>
+  </section>
+
+  <section>
+    <h2>Inheritance</h2>
+    <p>
+      Suppose we have a group of related things that share common features. We can put the common
+      data and behavior into a more general class called a <strong>superclass</strong>
+      (also called a parent class or base class). Then we can create more specific classes called
+      <strong>subclasses</strong> that inherit from it.
+    </p>
+    <p>
+      Examples:
+    </p>
+    <ul>
+      <li>A trash-sorting machine may begin with a general class <code>Trash</code>, then create subclasses for cans, bottles, paper, and so on.</li>
+      <li>In geometry, a general shape class may lead to more specific shapes such as circles and squares.</li>
+      <li>On a farm, a general class <code>Animal</code> may lead to subclasses such as <code>Cow</code>, <code>Pig</code>, <code>Duck</code>, and <code>Lamb</code>.</li>
+    </ul>
+    <p>
+      Inheritance helps us avoid repeating the same code over and over.
+    </p>
+  </section>
+
+  <section>
+    <h2>The farm example</h2>
+    <p>
+      Here is a Processing example based on the idea of Old MacDonald’s farm.
+      The class <code>Animal</code> stores what all animals in our sketch have in common:
+      a position on the screen and a method <code>animalSound()</code>.
+      Specific animals inherit from <code>Animal</code> and provide their own version of that method.
+    </p>
+
+<pre><code>abstract class Animal {
+  float x, y;
+
+  Animal(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  void animalSound() {
+    text("The animal makes a sound", x, y);
+  }
+}
+
+class Cow extends Animal {
+  Cow(float x, float y) {
+    super(x, y);
+  }
+
+  void animalSound() {
+    text("A moo moo here and a moo moo there", x, y);
+  }
+}
+
+class Pig extends Animal {
+  Pig(float x, float y) {
+    super(x, y);
+  }
+
+  void animalSound() {
+    text("An oink oink here and an oink oink there", x, y);
+  }
+}
+
+class Duck extends Animal {
+  Duck(float x, float y) {
+    super(x, y);
+  }
+
+  void animalSound() {
+    text("A quack quack here and a quack quack there", x, y);
+  }
+}
+
+class Lamb extends Animal {
+  Lamb(float x, float y) {
+    super(x, y);
+  }
+
+  void animalSound() {
+    text("A baa baa here and a baa baa there", x, y);
+  }
+}</code></pre>
+
+    <p>
+      In this example:
+    </p>
+    <ul>
+      <li><code>Animal</code> is a superclass.</li>
+      <li><code>Cow</code>, <code>Pig</code>, <code>Duck</code>, and <code>Lamb</code> are subclasses.</li>
+      <li>Each subclass <strong>inherits</strong> from <code>Animal</code>.</li>
+      <li>Each subclass <strong>overrides</strong> the method <code>animalSound()</code>.</li>
+    </ul>
+  </section>
+
+  <section id="super">
+    <h2>What Does super Mean?</h2>
+    <p><code>super</code> lets a subclass use its superclass's constructor or methods. Here are its two uses.</p>
+    <h3>1. Initialize the Inherited State</h3>
+<pre><code>// Constructor from the Cow class above:
+Cow(float x, float y) {
+  super(x, y);
+}</code></pre>
+    <p>When you create <code>new Cow(20, 160)</code>, Cow's constructor passes those coordinates to <code>Animal(float x, float y)</code>. Animal's constructor initializes the inherited position fields. This initializes the Animal part of the same Cow object; it does not create a second object.</p>
+    <p>For our Processing sketches, put <code>super(...)</code> first in the subclass constructor. Constructors are not inherited. If you omit the call, Java tries <code>super()</code>; our Animal class has no no-argument constructor, so that would be an error.</p>
+    <h3>2. Build on an Inherited Method</h3>
+    <p>Replace Cow's <code>animalSound()</code> method with this version to try it:</p>
+<pre><code>void animalSound() {
+  super.animalSound();
+  text("Moo!", x, y + 20);
+}</code></pre>
+    <p><code>super.animalSound()</code> runs Animal's version on this object, then the next line adds Cow's own text below it. Without the super call, the override supplies only Cow's version. Calling <code>animalSound()</code> inside that same override would call itself again, rather than Animal's version.</p>
+    <p><strong>Remember:</strong> <code>super(...)</code> calls a constructor; <code>super.methodName(...)</code> calls a superclass method.</p>
+    <p><small>Reference: <a href="https://processing.org/reference/super">Processing: super</a>.</small></p>
+  </section>
+
+  <section>
+    <h2>Overriding</h2>
+    <p>
+      When a subclass provides its own version of a method from the superclass,
+      the subclass is said to <strong>override</strong> that method.
+    </p>
+    <p>
+      That is different from <strong>overloading</strong>, where methods have the same name but different parameter lists.
+      In this lesson we are dealing with <strong>overriding</strong>.
+    </p>
+    <p>
+      For example, the <code>Lamb</code> class does not need to invent a new method name.
+      It uses the same method name, <code>animalSound()</code>, but gives it more specific behavior.
+    </p>
+  </section>
+
+  <section>
+    <h2>Polymorphism</h2>
+    <p>
+      The Greek roots suggest “many forms.” In programming, polymorphism means that one reference type
+      can refer to objects of different but related classes.
+    </p>
+    <p>
+      For example, this is legal:
+    </p>
+
+<pre><code>
+Duck myDuck = new Duck(20,40);
+Lamb myLamb = new Lamb(20, 80);
+Animal myPig = new Pig(20, 120);
+Animal myCow = new Cow(20, 160);</code></pre>
+
+    <p>
+      Why is <code>Animal myPig = new Pig(...)</code> legal? Because a pig <strong>is an</strong> animal.
+      The variable type is the more general superclass, while the actual object is a more specific subclass.
+    </p>
+    <p>
+      Then we can collect related objects into one array:
+    </p>
+
+<pre><code>Animal[] animals = {myDuck, myLamb, myPig, myCow};
+
+for (int i = 0; i &lt; animals.length; i++) {
+  animals[i].animalSound();
+}</code></pre>
+
+    <p>
+      Each object responds in its own way. Even though the array type is <code>Animal[]</code>,
+      the correct version of <code>animalSound()</code> is chosen at runtime.
+      That is polymorphism in action.
+    </p>
+  </section>
+
+  <section>
+    <h2>Why this matters</h2>
+    <p>
+      Inheritance helps us organize families of related classes.
+      Polymorphism lets us treat many related objects in a uniform way.
+      Instead of writing separate code for every animal, we can write a loop over an array of
+      <code>Animal</code> references and trust each object to do the right thing.
+    </p>
+  </section>
+
+  <section>
+    <h2>Encapsulation</h2>
+    <p>
+      So far, inheritance and polymorphism help us organize and reuse code.
+      Another major idea is <strong>encapsulation</strong>.
+    </p>
+    <p>
+      Encapsulation means that an object keeps its data and the methods that work with that data together,
+      and it controls how that data can be changed.
+    </p>
+    <p>
+      This is important because without encapsulation, outside code can change object data in arbitrary ways,
+      even ways that do not make sense.
+    </p>
+  </section>
+
+  <section>
+    <h2>Why Can My Sketch Access a Private Field?</h2>
+    <p>Processing Java mode follows Java's access rules. The surprise comes from how a sketch is organized: classes written in <code>.pde</code> tabs become nested classes inside the generated sketch class. Java allows private access within that enclosing top-level class, including between its nested classes.</p>
+    <p>That is why <code>p0.y = height/2;</code> in this sketch's <code>draw()</code> can compile even when Point's <code>y</code> is private. Moving Point to another <code>.pde</code> tab does not change that arrangement. An unrelated top-level Java class could not directly access Point's private fields.</p>
+    <p><strong>Our design rule:</strong> use the object's methods anyway. Write <code>p0.setY(height/2);</code> so the same boundary check applies every time. Access that compiles can still bypass the rules your class is meant to enforce.</p>
+    <p><small>Reference: <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-6.html#jls-6.6.1">Java's private-access rule</a>.</small></p>
+  </section>
+
+  <section>
+    <h2>Controlling access to fields</h2>
+    <p>
+      Java uses access modifiers to control visibility.
+    </p>
+    <ul>
+      <li><code>private</code>: restricts access to the enclosing top-level class and its nested classes, as explained above</li>
+      <li><code>public</code>: any code can access it</li>
+    
+    </ul>
+    <p>
+      In this lesson, the important contrast is between <code>private</code> fields and methods that form the public interface of the class.
+    </p>
+  </section>
+
+  <section>
+    <h2>Example 1: Account</h2>
+    <p>
+      The class below is a good example of encapsulation. The account stores its own data,
+      and outside code is supposed to use methods such as <code>deposit()</code>, <code>withdraw()</code>,
+      and <code>getBalance()</code>.
+    </p>
+
+<pre><code>class Account {
+  private int accountNumber;
+  private float accountBalance;
+
+  Account(int number) {
+    accountNumber = number;
+    accountBalance = 50;
+  }
+
+  public int getAccountNumber() {
+    return accountNumber;
+  }
+
+  public float getBalance() {
+    return accountBalance;
+  }
+
+  public void deposit(float amount) {
+    if (amount &lt; 0) {
+      println("Invalid deposit amount.");
+    } else {
+      accountBalance += amount;
+    }
+  }
+
+  public void withdraw(float amount) {
+    float fee = 1.25;
+    if (amount &lt; 0) {
+      println("Invalid withdrawal amount.");
+    } else if (amount + fee &gt; accountBalance) {
+      println("Insufficient funds.");
+    } else {
+      accountBalance -= (amount + fee);
+    }
+  }
+}</code></pre>
+
+    <p>
+      This class does <strong>not</strong> provide a generic <code>setBalance()</code> method,
+      and that is a good design choice. Encapsulation is not about writing getters and setters for everything.
+      It is about deciding what operations make sense.
+    </p>
+    <p>
+      For a bank account, <code>deposit()</code> and <code>withdraw()</code> make sense.
+      Randomly setting the balance does not.
+    </p>
+    <p>
+      Also note: in real financial software, using <code>float</code> for money is not a good idea because of rounding issues.
+      We use it here only for simplicity.
+    </p>
+  </section>
+
+  <section>
+    <h2>Why the Account example is useful</h2>
+    <p>
+      Suppose anyone could directly write:
+    </p>
+
+<pre><code>acc.accountBalance = -9000;
+acc.accountNumber = 5;</code></pre>
+
+    <p>
+      Then the methods <code>deposit()</code> and <code>withdraw()</code> would become almost meaningless,
+      because outside code could ignore all the rules.
+    </p>
+    <p>
+      Encapsulation lets the object protect its own state.
+      The object decides which changes are allowed.
+    </p>
+    <p>
+      It also encourages a good design question: should every piece of data be changeable?
+      For example, an account balance changes over time, but an account number usually should not.
+    </p>
+  </section>
+  <section>
+  <h2>Getters and setters</h2>
+  <p>
+    In many classes, we use methods called <strong>getters</strong> and <strong>setters</strong>.
+  </p>
+  <ul>
+    <li>A <strong>getter</strong> (or inspector) returns information about an object.</li>
+    <li>A <strong>setter</strong> (or mutator) changes the object's data in a controlled way.</li>
+  </ul>
+  <p>
+    For example, <code>getX()</code> returns the value of <code>x</code>,
+    while <code>setY(value)</code> changes <code>y</code>.
+  </p>
+  <p>
+    However, good design does <strong>not</strong> mean writing getters and setters for everything.
+    Sometimes a setter is unnecessary or even harmful.
+    The goal is to allow only meaningful and valid changes.
+  </p>
+</section>
+
+  <section>
+    <h2>Example 2: Point</h2>
+    <p>
+      The <code>Point</code> example is especially good for CS1 because it is visual.
+      We can see controlled change happen on the screen.
+    </p>
+
+<pre><code>Point p0, p1;
+
+void setup() {
+  size(500, 500);
+  p0 = new Point(width/2, height/2);
+  p1 = new Point(random(width), random(height));
+}
+
+void draw() {
+  background(0);
+
+  p0.display(color(255));
+  p0.move(0, 1);   // controlled change through a method
+
+  if (mousePressed) {
+    p0.y = height/2;     // bad style: skips the setter that keeps the point in the window
+  }
+
+  p1.display(color(255, 0, 0));
+  p1.setY(height + 20);   // setter prevents point from going below the window
+}
+
+class Point {
+  private float x, y;
+
+  Point(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public float getX() {
+    return x;
+  }
+
+  public float getY() {
+    return y;
+  }
+
+  public void setX(float value) {
+    x = constrain(value, 0, width);
+  }
+
+  public void setY(float value) {
+    y = constrain(value, 0, height);
+  }
+
+  public void move(float dx, float dy) {
+    setX(x + dx);
+    setY(y + dy);
+  }
+
+  public void display(color c) {
+    fill(c);
+    ellipse(x, y, 10, 10);
+  }
+}</code></pre>
+
+    <p>
+      The important point is that the setters do something useful: they keep the point inside the window.
+      The class is enforcing a rule, or <strong>invariant</strong>.
+    </p>
+    <p>
+      This is the main idea of encapsulation: the object does not merely store data;
+      it protects that data by controlling how it changes.
+    </p>
+  </section>
+
+  <section>
+    <h2>Direct access vs. meaningful operations</h2>
+    <p>
+      Compare these two styles:
+    </p>
+
+<pre><code>p0.setY(p0.getY() + 1);   // controlled change
+p0.move(0, 1);           // even better: meaningful operation
+
+p0.y = height/2;         // direct access, bypasses the class</code></pre>
+
+    <p>
+      In good object-oriented design, we prefer meaningful methods such as <code>move()</code>
+      over letting outside code manipulate raw data directly.
+    </p>
+    <p>
+      This is why encapsulation is more than “hide variables and add setters.”
+      Objects should provide sensible operations and enforce sensible rules.
+    </p>
+  </section>
+
+  <section>
+    <h2>Common beginner misunderstanding</h2>
+    <p>
+      A common mistake is to think that encapsulation means: make everything private,
+      then write getters and setters for everything.
+    </p>
+    <p>
+      That is not always good design. Sometimes a getter is fine. Sometimes a setter is not.
+      Good encapsulation asks: what changes should this object allow?
+    </p>
+  </section>
+
+  <section>
+    <h2>Putting the three ideas together</h2>
+    <p>
+      These three ideas work together.
+    </p>
+    <ul>
+      <li><strong>Inheritance</strong> gives us a family of related classes such as <code>Animal</code>, <code>Cow</code>, <code>Pig</code>, and <code>Lamb</code>.</li>
+      <li><strong>Polymorphism</strong> lets us store them in one array of <code>Animal</code> references and call the same method name.</li>
+      <li><strong>Encapsulation</strong> reminds us that each object should protect its own data and define sensible operations.</li>
+    </ul>
+    <p>
+      So object-oriented programming is not just “put variables and functions into a class.”
+      It is also about designing relationships, behaviors, and boundaries.
+    </p>
+  </section>
+
+  <section>
+    <h2>Summary</h2>
+    <ul>
+      <li>Inheritance organizes related classes into superclasses and subclasses.</li>
+      <li>Overriding lets a subclass provide a more specific version of an inherited method.</li>
+      <li>Polymorphism lets one superclass reference type refer to many related subclass objects.</li>
+      <li>Encapsulation keeps data and behavior together and controls access to the data.</li>
+      <li>In Java, fields are often <code>private</code> and objects are manipulated through methods.</li>
+      <li>PDE classes are nested inside the sketch class; Java permits private access within that enclosing class.</li>
+      <li>Good design prefers meaningful operations such as <code>animalSound()</code>, <code>deposit()</code>, <code>withdraw()</code>, and <code>move()</code> over arbitrary direct changes to fields.</li>
+    </ul>
+  </section>
+
+  <section id="inheritance-lab">
+    <h2>Programming Assignment: Family Resemblance</h2>
+    <p>Your creation is getting a relative. Turn your class from the previous lab into a small family—or start fresh with a new idea.</p>
+    <p>A blinking robot could gain a nervous cousin. A plant could become a flowering plant. A creature could gain a fire-breathing relative. Pick a relationship you can explain with <strong>“is a”</strong>: a flowering plant <em>is a</em> plant.</p>
+
+    <h3>The Challenge</h3>
+    <p>Build a Processing sketch with a <strong>superclass and one subclass</strong>. Keep shared state and behavior in the superclass. Use <code>extends</code> to define the subclass, and have its constructor call <code>super(...)</code> to initialize the inherited state. Put that call first in the constructor.</p>
+    <ul>
+      <li>Give the subclass at least <strong>one new instance variable</strong> that matters to its appearance or behavior.</li>
+      <li><strong>Override one method</strong> with the same name and parameter list as the superclass method. Make the difference visible. You may use <code>super.display()</code> or another superclass method to build on the original behavior.</li>
+      <li>Show <strong>one superclass object and one subclass object</strong> together. Create them in <code>setup()</code> and call their methods in <code>draw()</code>. Make the superclass concrete for this lab; you do not need <code>abstract</code>.</li>
+    </ul>
+    <p>Reuse the shared code instead of copying it into the subclass. A new class name or color alone is not enough—give the relative a distinct feature or behavior.</p>
+
+    <h3>Make Your Case</h3>
+    <p>At the top of your sketch, write a few lines: What is the “is a” relationship? What do both objects share? What makes the subclass different?</p>
+    <p>Test your family: change a shared method and check that both objects use the change where expected. Then change the subclass's new state and check that only its object is affected. Add a brief comment describing your test and which version of the overridden method runs for each object.</p>
+
+    <h3>Turn It In</h3>
+    <p>Submit the complete sketch (all <code>.pde</code> tabs), your short design and testing comments, and a screenshot showing both family members.</p>
+    <p><strong>Extra family drama:</strong> Add a second subclass. Or store your objects in an array of the superclass type and call the overridden method in a loop—same call, different responses.</p>
+  </section>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

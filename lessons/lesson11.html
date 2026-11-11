@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="Lesson 11: Images and Pixels in Processing. Read pixel arrays, map coordinates to indices, and create image filters.">
+  <title>CS1 – Lesson 11: Images and Pixels</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Lesson 11: Images and Pixels</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <section>
+<h2>Big idea</h2>
+<p>An image is a grid of colors. By reading those colors, changing them, and writing them back, we can create our own image filters. We will connect arrays, nested loops, coordinates, and functions.</p>
+<p><strong>Core path:</strong> map coordinates to array indices, read and write screen pixels, then process an image. After completing the core exercises, choose an extension.</p>
+<h3>Goals</h3><ul><li>Explain how a two-dimensional pixel grid is stored in a one-dimensional array.</li><li>Use <code>loadPixels()</code> and <code>updatePixels()</code> with the correct pixel array.</li><li>Extract RGB components and construct a new color.</li><li>Keep the source image separate from the output drawn on the canvas.</li><li>Test a filter with a small example before applying it to every pixel.</li></ul>
+<p><strong>Setup:</strong> Use Processing in Java mode. All complete sketches below use <code>pixelDensity(1)</code> and the default RGB range, 0–255. This makes each canvas coordinate correspond to one entry in the pixel array, including on high-density displays. Run each complete sketch separately. Code marked as a fragment belongs inside the indicated sketch.</p>
+</section>
+<section>
+<h2>1. One color per array element</h2>
+<p>The built-in <code>pixels[]</code> array holds the canvas colors. Before reading or changing it, call <code>loadPixels()</code>. After changing it, call <code>updatePixels()</code> to display the changes. Reading alone does not require an update.</p><p><strong>Complete sketch:</strong></p><pre><code>void setup() {
+  size(300, 200);
+  pixelDensity(1);
+  loadPixels();
+
+  for (int i = 0; i &lt; pixels.length; i++) {
+    pixels[i] = color(random(256));
+  }
+
+  updatePixels();
+}</code></pre><p>Each element gets a random grayscale color. The loop runs once during <code>setup()</code>; the picture remains on the canvas.</p><p><strong>Predict, then try:</strong> Replace <code>color(random(256))</code> with <code>color(0)</code>, then <code>color(255)</code>. What changes if you put the pixel-processing loop, with its load and update calls, inside <code>draw()</code>?</p>
+</section>
+<section>
+<h2>2. From a grid to an array</h2>
+<p>Coordinates and array indices begin at zero. Pixels are stored one row after another. For a grid four pixels wide:</p>
+<table><caption>Array indices for a 4 × 3 grid</caption><thead><tr><th scope="col">Row / column</th><th scope="col">x = 0</th><th scope="col">x = 1</th><th scope="col">x = 2</th><th scope="col">x = 3</th></tr></thead><tbody><tr><th scope="row">y = 0</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th scope="row">y = 1</th><td>4</td><td>5</td><td>6</td><td>7</td></tr><tr><th scope="row">y = 2</th><td>8</td><td>9</td><td>10</td><td>11</td></tr></tbody></table>
+<p><strong>Index formula:</strong> <code>loc = x + y * width</code>. Skip <code>y</code> complete rows, then move <code>x</code> positions into the next row. The width must belong to the array you are indexing.</p>
+<p>In this lesson, the image and canvas have matching dimensions, so we use <code>width</code> for both. Valid canvas coordinates satisfy <code>0 &lt;= x &lt; width</code> and <code>0 &lt;= y &lt; height</code>.</p>
+<p><strong>On paper:</strong> Find the index of (2, 1) in the table. Then find the coordinates of index 9. Explain each answer.</p><details><summary>Check your reasoning</summary><p>(2, 1) has index 2 + 1 × 4 = 6. Index 9 is at (1, 2). In general, <code>x = loc % width</code> and <code>y = loc / width</code>, using integer division.</p></details>
+<h3>Nested loops visit the grid</h3><p><strong>Complete sketch:</strong></p><pre><code>void setup() {
+  size(300, 200);
+  pixelDensity(1);
+  loadPixels();
+
+  for (int y = 0; y &lt; height; y++) {
+    for (int x = 0; x &lt; width; x++) {
+      int loc = x + y * width;
+      if (x % 2 == 0) {
+        pixels[loc] = color(255);
+      } else {
+        pixels[loc] = color(0);
+      }
+    }
+  }
+
+  updatePixels();
+}</code></pre><p>The outer loop chooses a row; the inner loop visits its columns. The condition creates one-pixel-wide vertical stripes, with column 0 white.</p><p><strong>Modify:</strong> Make horizontal stripes. Then make vertical bands ten pixels wide. Hint: examine <code>(x / 10) % 2</code>. Predict the colors at x = 9, 10, 19, and 20 before running.</p>
+</section>
+<section>
+<h2>3. Colors and their components</h2>
+<p>Processing’s <code>color</code> type stores a packed color value. Use helper functions to work with its components rather than treating that value as a brightness number.</p><p><strong>Fragment inside a function:</strong></p><pre><code>color c = color(180, 60, 30);
+float r = red(c);    // 180
+float g = green(c);  // 60
+float b = blue(c);   // 30
+
+color gray = color(90);            // RGB (90, 90, 90)
+color translucent = color(255, 0, 0, 120);</code></pre><p>Under the default color mode, RGB components range from 0 to 255. The fourth actual parameter is alpha: 0 is fully transparent and 255 is fully opaque. The last example is partially transparent red. This lesson’s filters use an opaque JPEG image.</p><p><code>color()</code> accepts floating-point component values. <code>brightness(c)</code> extracts HSB brightness; it is not the arithmetic average of the RGB components. For our simple grayscale filter, we will calculate that average explicitly.</p><h3>A few pixels: get() and set()</h3><pre><code>color sampled = get(mouseX, mouseY);
+set(10, 20, color(255, 0, 0));</code></pre><p>This fragment reads a canvas color and writes one red pixel. These calls are convenient for individual pixels and do not require you to manage <code>loadPixels()</code> and <code>updatePixels()</code>. For a whole-image loop, direct array access is generally more efficient.</p>
+</section>
+<section>
+<h2>4. Read an image; write to the canvas</h2>
+<p>For these examples, <strong>the image and canvas have the same width and height</strong>. Use a 300 × 168 pixel JPEG named <code>hedgehog.jpeg</code>, or change the numbers in <code>size()</code> to match your image. Add the image using <strong>Sketch → Add File</strong> so it is in the sketch’s <code>data</code> folder.</p>
+<p>We work with two arrays: <code>img.pixels[]</code> stores the image colors, and <code>pixels[]</code> stores the canvas colors. Because their dimensions match, the same index <code>loc</code> identifies the same position in both arrays.</p>
+<p><strong>Complete starter sketch:</strong></p><pre><code>PImage img;
+
+void setup() {
+  size(300, 168);
+  pixelDensity(1);
+  img = loadImage(&quot;hedgehog.jpeg&quot;);
+}
+
+void draw() {
+  loadPixels();
+  img.loadPixels();
+
+  for (int y = 0; y &lt; height; y++) {
+    for (int x = 0; x &lt; width; x++) {
+      int loc = x + y * width;
+      color c = img.pixels[loc];
+      float r = red(c);
+      float g = green(c);
+      float b = blue(c);
+
+      pixels[loc] = color(r, g, b);
+    }
+  }
+
+  updatePixels();
+}</code></pre>
+<p><code>loadPixels()</code> prepares the canvas array, and <code>img.loadPixels()</code> prepares the image array. The loop reads an image color, extracts its components, and writes a color to the canvas at the same position. Finally, <code>updatePixels()</code> displays the canvas changes.</p>
+<p>This displays the original image. Next, we will change the color before writing it to the canvas.</p>
+<p><strong>Trace:</strong> With a width of 300, what is <code>loc</code> for (10, 3)? Which array do we read, and which do we change?</p>
+<details><summary>Check</summary><p><code>loc = 10 + 3 * 300 = 910</code>. We read <code>img.pixels[910]</code> and write to <code>pixels[910]</code>. The original image stays unchanged.</p></details>
+<p><strong>Read → extract → process → write.</strong> Each frame reads the original image colors and writes the result to the canvas. This lets us change an effect without overwriting the source image.</p>
+</section>
+<section>
+<h2>5. First filter: grayscale</h2>
+<p>In the starter sketch’s inner loop, replace the final pixel assignment with this fragment:</p><pre><code>float gray = (r + g + b) / 3.0;
+pixels[loc] = color(gray);</code></pre><p>This simple average gives all three output components the same value. It is a useful introductory grayscale method, though it does not account for differences in human sensitivity to red, green, and blue.</p><p><strong>Predict:</strong> For RGB (180, 60, 30), calculate the output. Then try a channel swap instead: write <code>color(g, r, b)</code>. Explain which components change.</p>
+<h3>Connect to functions</h3><p>Move the calculation into a function defined outside <code>setup()</code> and <code>draw()</code>:</p><pre><code>color toGray(color original) {
+  float gray = (red(original) + green(original) + blue(original)) / 3.0;
+  return color(gray);
+}</code></pre><p>Then use <code>pixels[loc] = toGray(c);</code> as the assignment. Identify the formal parameter and the actual parameter. Why does this function return <code>color</code> rather than <code>void</code>?</p>
+</section>
+<section>
+<h2>6. Interactive filter: brighter or darker</h2>
+<p>The starter already runs every frame. In <code>draw()</code>, before the nested loops, calculate one factor:</p><pre><code>float factor = constrain(map(mouseX, 0, width, 0, 2), 0, 2);</code></pre><p>Inside the inner loop, after extracting the components, replace the final assignment with:</p><pre><code>r = constrain(r * factor, 0, 255);
+g = constrain(g * factor, 0, 255);
+b = constrain(b * factor, 0, 255);
+pixels[loc] = color(r, g, b);</code></pre><p><code>map()</code> converts the mouse position to a factor. <code>constrain()</code> limits a value to the specified range. A factor of 0 produces black, 1 preserves the original components, and 2 doubles them, with values above 255 clipped.</p><p><strong>Test on paper:</strong> Apply factors 0, 1, and 2 to RGB (180, 60, 30). Then test the mouse near the left edge, center, and right edge. Why must each frame start with the original image colors?</p>
+</section>
+<section>
+<h2>7. Core practice</h2>
+<p>Work through these in order. Predict before running, and keep a short explanation with each result.</p><ol><li><strong>Index map:</strong> Draw a 5 × 3 grid, label its indices, and locate (4, 2). Give the coordinates of index 7.</li><li><strong>Pattern:</strong> Create horizontal bands ten pixels tall. Explain the condition and test both sides of a band boundary.</li><li><strong>Image filter:</strong> Use the starter to make a grayscale image, then a channel-swapped version. Trace one RGB example for each.</li><li><strong>Function:</strong> Use <code>toGray()</code> and explain where its returned value is stored.</li><li><strong>Interaction:</strong> Add the mouse-controlled brightness effect. Verify that returning the mouse to the center restores the original colors across the image.</li></ol><p><strong>Checkpoint:</strong> Show a partner the source read and the output write. Explain why the same index works for both arrays and why the source image remains unchanged.</p>
+</section>
+<section>
+<h2>8. Choose an extension</h2>
+<h3>A. Keep colors near a target</h3><p>Add these global variables above <code>setup()</code>:</p><pre><code>color target = color(200, 40, 40);
+float threshold = 100;</code></pre><p>In the starter’s inner loop, replace the final pixel assignment with:</p><pre><code>float d = dist(r, g, b, red(target), green(target), blue(target));
+if (d &gt; threshold) {
+  float gray = (r + g + b) / 3.0;
+  pixels[loc] = color(gray);
+} else {
+  pixels[loc] = color(r, g, b);
+}</code></pre><p>Here, <code>dist()</code> compares two points in RGB color space, not positions on the canvas. Colors within the threshold, including the boundary, stay colorful. This is an approximate color-similarity rule, not a precise hue classifier. Choose a target found in your image and compare two thresholds.</p>
+<h3>B. Mirror horizontally</h3><p>In the starter, read from <code>img.width - 1 - x</code> instead of <code>x</code>, while still writing to screen coordinate (x, y). Derive the source index before coding. Test the leftmost, middle, and rightmost columns. Keep the image and canvas the same size.</p>
+<h3>C. Flashlight</h3><p>Calculate the distance from (x, y) to the mouse inside the inner loop. Make the brightness factor decrease as distance increases. Decide on a radius, limit your factor, and test a pixel at the center, at the radius, and outside it.</p>
+<h3>D. Pointillism</h3><p>Use sampled image colors to draw circles instead of writing canvas pixels. In a copy of the starter, add <code>img.loadPixels();</code>, <code>background(255);</code>, and <code>noStroke();</code> at the end of <code>setup()</code>, and replace the entire <code>draw()</code> function with:</p><pre><code>void draw() {
+  int x = int(random(width));
+  int y = int(random(height));
+  int loc = x + y * width;
+  color c = img.pixels[loc];
+
+  fill(red(c), green(c), blue(c), 100);
+  ellipse(x, y, 12, 12);
+}</code></pre><p>The circles accumulate because the background is cleared only in <code>setup()</code>. We read the already-loaded source array, but draw with <code>ellipse()</code>, so no canvas pixel load/update calls are needed. Explore circle size and the number of circles drawn per frame.</p>
+</section>
+<section>
+<h2>9. Debug and explain</h2>
+<ul><li><strong>Image fails to load:</strong> Check the exact filename, extension, and <code>data</code> folder.</li><li><strong>Array index error:</strong> Check the loop bounds, the array’s own width, and <code>pixelDensity(1)</code>.</li><li><strong>Rows appear scrambled:</strong> Check that the image and canvas have the same dimensions and that the index is <code>x + y * width</code>.</li><li><strong>Changes do not appear:</strong> Check which array you changed and update the matching image or canvas.</li><li><strong>Effect becomes stronger every frame:</strong> Check whether you are overwriting the source instead of reading its original colors.</li><li><strong>Pointillist dots disappear:</strong> Check whether you are clearing the background every frame.</li></ul><h3>Exit reflection</h3><p>Choose one pixel in your sketch. Explain its source coordinates, array index, original color, processing step, and output location. Describe one prediction you tested and one issue you resolved.</p><h3>References</h3><p><a href="https://processing.org/tutorials/pixels/">Processing: Images and Pixels</a> · <a href="https://processing.org/reference/pixels">pixels[]</a> · <a href="https://processing.org/reference/pixelDensity_">pixelDensity()</a></p>
+</section>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>

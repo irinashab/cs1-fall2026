@@ -3,16 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="CS1 final project guidelines, requirements, proposal deadline, and presentation date.">
   <title>CS1 – Final Project Guidelines</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
-<header>
+<body id="top">
+  <header>
     <h1>CS 1: Final Project Guidelines</h1>
-</header>
+  </header>
 
-<main>
-  <h2>1. What This Is</h2>
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <h2>1. What This Is</h2>
   <p>
     This is your final project—the big one. Your chance to take everything we’ve done this semester and turn it into something real.
   </p>
@@ -161,72 +165,51 @@
     Make something you actually care about—it shows.
   </p>
 
-  <h2>Project Submission Schedule</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Phase</th>
-        <th>Submission Item</th>
-        <th>Description &amp; Purpose</th>
-        <th>Submission Method</th>
-        <th>Due Date</th>
-        <th>Weight</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>1. Proposal</td>
-        <td>Project Proposal</td>
-        <td>Outline your plan using the provided template.</td>
-        <td>Submit via forum on Brightspace</td>
-        <td>TBD</td>
-        <td>10%</td>
-      </tr>
-      <tr>
-        <td>2. Alpha Build</td>
-        <td>Running Code Skeleton</td>
-        <td>A working version that proves your core mechanic or structure functions. It doesn't need to be pretty, but it must run.</td>
-        <td>Show me or my helpers in class</td>
-        <td>TBD</td>
-        <td>20%</td>
-      </tr>
-      <tr>
-        <td>3. Final Submission</td>
-        <td>Complete Project</td>
-        <td>All final code </td>
-        <td>Submit via Brightspace as .zip file</td>
-        <td>TBD</td>
-        <td>50%</td>
-      </tr>
-      <tr>
-        <td>4. Reflection</td>
-        <td>Project Documentation Page (PDF/Webpage)</td>
-        <td>A reflective write-up analyzing your process using the provided template.</td>
-        <td>Submit via Brightspace as PDF</td>
-        <td>TBD</td>
-        <td>10%</td>
-      </tr>
-      <tr>
-        <td>5. Presentation</td>
-        <td>In-class presentation</td>
-        <td>You will present your project in class.</td>
-        <td>In class</td>
-        <td>TBD</td>
-        <td>10%</td>
-      </tr>
-    </tbody>
-  </table>
-</main>
+  <h2>Project Dates</h2>
+  <ul>
+    <li><strong>Proposal submission:</strong> November 18, 2026, before class.</li>
+    <li><strong>Final project presentation:</strong> December 2, 2026.</li>
+  </ul>
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
 
-<div id="footer-placeholder"></div>
+  <div id="footer-placeholder"></div>
 
-<script>
-  fetch("assets/includes/footer.html")
-    .then(response => response.text())
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(err => console.error("Footer load failed:", err));
+    .catch(error => console.error("Footer load failed:", error));
 </script>
 
 </body>

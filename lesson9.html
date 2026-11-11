@@ -29,7 +29,6 @@
 <section>
   <h2>1. Classes and Objects</h2>
   <p>A <strong>class</strong> defines a type of object: the data each object stores and the operations it can perform. An <strong>object</strong> is one particular instance of that class. For example, <code>Ball</code> is a class; <code>firstBall</code> can refer to one Ball object and <code>secondBall</code> to another.</p>
-  <p>Think of a class as a blueprint and an object as a house built from it: one blueprint can produce many houses, and each house can have its own paint color and furniture.</p>
   <p>A class groups two things together:</p>
   <ul>
     <li><strong>State:</strong> instance variables that hold an object's current data, such as its position and speed. Each object gets its own copies.</li>
@@ -74,7 +73,7 @@ class Ball {
   void display() {
     noStroke();
     fill(40, 100, 200);
-    ellipse(x, y, 20, 20);   // diameter 20, so radius 10
+    ellipse(x, y, 20, 20);
   }
 }</code></pre>
   <h3>Read the sketch in order</h3>
@@ -85,7 +84,6 @@ class Ball {
     <li><code>draw()</code> repeats. It clears the previous frame, changes the object's position, and draws the object at its new position.</li>
   </ol>
   <p><code>myBall.move()</code> means “call the move method on the object referred to by myBall.” This is <strong>dot syntax</strong>: <code>object.method()</code>. Inside that method, <code>x</code> and <code>speed</code> belong to that object.</p>
-  <p>Notice the difference in form: <code>myBall.move()</code> asks one particular object to run its method, while a plain function call like <code>background(245)</code> belongs to the sketch as a whole.</p>
   <p>The ball wraps to the left after it passes the right edge. Its radius is 10 pixels, so the boundary check allows the whole ball to leave before resetting it.</p>
   <div class="callout note"><strong>Why create the object in setup()?</strong> An object created inside <code>draw()</code> on every frame would repeatedly restart at its initial position. Create it once, then update it repeatedly.</div>
   <h3>Predict, Run, Explain</h3>
@@ -107,14 +105,12 @@ class Ball {
       <tr><th scope="row">How used</th><td><code>new Ball()</code></td><td><code>myBall.move()</code></td></tr>
     </tbody>
   </table>
-  <p>We will see a constructor that takes formal parameters in the next section.</p>
   <p>Common errors: <code>void Ball()</code> declares a method instead of a constructor; <code>myBall.Ball()</code> does not create an object; calling <code>myBall.move()</code> before assigning an object to <code>myBall</code> causes an error.</p>
 </section>
 <section>
   <h2>4. A Parameterized Constructor</h2>
-  <p>The first constructor gives every new Ball the same starting values. A <strong>constructor with formal parameters</strong> lets the caller choose those values. A <strong>formal parameter</strong> is a named input in the constructor or method declaration; an <strong>actual parameter</strong> is a value supplied in a call.</p>
-  <!-- CHANGE: Replaced the "parameter/argument" sentence with the formal/actual terminology used in Lesson 9 (functions). -->
-  <p>In <code>new Ball(50, 120, 2)</code>, the actual parameters are passed to the formal parameters <code>startX</code>, <code>startY</code>, and <code>startSpeed</code>, in that order. The constructor copies them into the object's instance variables. The formal parameters exist only during the constructor call; the instance variables retain the values afterward.</p>
+  <p>The first constructor gives every new Ball the same starting values. A <strong>parameterized constructor</strong> lets the caller choose those values. A parameter is a named input in the constructor declaration; an argument is a value supplied in a call.</p>
+  <p>In <code>new Ball(50, 120, 2)</code>, the arguments become <code>startX</code>, <code>startY</code>, and <code>startSpeed</code>, in that order. The constructor copies them into the object's instance variables. The parameters exist only during the constructor call; the instance variables retain the values afterward.</p>
   <h3>Second Complete Sketch: Two Independent Objects</h3>
   <p>Replace your sketch with the following code. Both objects use the same class and methods, but start in different places and move at different speeds. Click the canvas to stop only the first ball.</p>
 <pre><code>Ball firstBall;
@@ -162,14 +158,12 @@ class Ball {
     ellipse(x, y, 20, 20);
   }
 }</code></pre>
-  <p>This version replaces <code>Ball()</code> with a constructor that requires three formal parameters. A call to <code>new Ball()</code> will no longer match the constructor in this class.</p>
-  <p>In fact, Processing will report a compile error such as <em>“The constructor Ball() is undefined.”</em> Here is the precise rule: Java automatically supplies a no-argument constructor only when you define <em>no</em> constructor of your own. Once you write a constructor with formal parameters, that automatic one no longer exists, so every call to <code>new Ball(...)</code> must pass the required actual parameters.</p>
+  <p>This version replaces <code>Ball()</code> with a constructor that requires three arguments. A call to <code>new Ball()</code> will no longer match the constructor in this class.</p>
   <h3>Independent State</h3>
   <p>Each <code>new Ball(...)</code> creates a separate object. Updating <code>firstBall.x</code> or setting <code>firstBall.speed</code> does not change the second object's variables. Both objects still need their own method calls in <code>draw()</code>.</p>
   <p>By contrast, assigning <code>secondBall = firstBall;</code> would make both variables refer to the same object; it would not make a copy. This statement is an explanation only—do not add it to the two-object sketch.</p>
-    <div class="callout note"><strong>Direct field access and a look ahead.</strong> In <code>mousePressed()</code> we changed <code>firstBall.speed</code> directly from outside the class. That works. It would even work if <code>speed</code> were marked <code>private</code>, because in Processing every class you write in a <code>.pde</code> tab is compiled as a nested class inside the sketch, and Java lets the enclosing sketch class reach a nested class's private members. The <code>private</code> keyword only blocks access from genuinely separate classes—which is why it matters more once you move a class into its own <code>.java</code> file. For this assignment, direct field access is fine; larger programs usually add methods such as <code>stop()</code> so that state changes are requested in one clear place.</div>
-  <h3>A Note About <code>this</code></h3>
-  <p>Our formal parameter names differ from the instance variable names, which makes assignments easy to read. You may also see a constructor use the same names for both. In that case, <code>this.x = x;</code> means “store the formal parameter x in this object's instance variable x.” You do not need that naming style for this assignment.</p>
+  <h3>A Note About this</h3>
+  <p>Our parameter names differ from the instance variable names, which makes assignments easy to read. You may also see a constructor use the same names for both. In that case, <code>this.x = x;</code> means “store the parameter x in this object's instance variable x.” You do not need that naming style for this assignment.</p>
 </section>
 <section>
   <h2>5. Check Your Understanding</h2>
@@ -180,20 +174,10 @@ class Ball {
     <li>Why do we put creation in <code>setup()</code> and repeated method calls in <code>draw()</code>?</li>
     <li>How would you create a third Ball with a different starting position and speed?</li>
   </ol>
-  <details>
-    <summary>Show suggested answers</summary>
-    <ol>
-      <li>One class (<code>Ball</code>) is defined; two Ball objects are created (<code>firstBall</code> and <code>secondBall</code>).</li>
-      <li>Each object's state is <code>x</code>, <code>y</code>, and <code>speed</code>. <code>move()</code> changes <code>x</code>; <code>display()</code> reads the state to draw the ball.</li>
-      <li><code>mousePressed()</code> sets only <code>firstBall.speed = 0</code>; it never touches <code>secondBall</code>, whose speed stays 4.</li>
-      <li>Creating an object once in <code>setup()</code> preserves its state across frames. Repeated calls in <code>draw()</code> then update and redraw that same object instead of restarting it.</li>
-      <li>Declare a third variable, call <code>new Ball(...)</code> with new actual parameters in <code>setup()</code>, and add <code>thirdBall.move();</code> and <code>thirdBall.display();</code> to <code>draw()</code>.</li>
-    </ol>
-  </details>
   <p>Use class names beginning with a capital letter, such as <code>Firefly</code>. Use camelCase for variables and methods, such as <code>glowAmount</code> and <code>updateGlow()</code>.</p>
 </section>
-<section id="assignment">
-  <h2>Programming Assignment: Give It a Life</h2>
+<section id="assignment9">
+  <h2>Programming Assignment 9: Give It a Life</h2>
   <p>A sleepy robot. A dramatic houseplant. A star with stage fright. Invent something that has a look, a little personality, and something it <em>does</em>—then build a class for it.</p>
   <p>Put at least <strong>two objects</strong> in your sketch. They come from the same class, but different starting values should give them different lives. Maybe one plant grows faster, one robot blinks nervously, or one battery runs out before the other.</p>
 
@@ -216,11 +200,6 @@ class Ball {
   <p><strong>Want an encore?</strong> Make one object react to a click, add a reset, or introduce a third object with a very different personality.</p>
 </section>
 
-    <section>
-      <h2>Summary</h2>
-      <p>A class bundles <strong>state</strong> (instance variables) with <strong>behavior</strong> (methods), and a constructor sets each object's initial state. Creating objects with <code>new</code> and calling their methods gives you independent, reusable pieces of behavior—the core idea behind this lesson and the foundation for everything that follows.</p>
-    </section>
-
     <p class="back-to-top">
   <a href="#top">↑ Back to top</a>
 </p>
@@ -229,7 +208,6 @@ class Ball {
   <div id="footer-placeholder"></div>
 
   <script>
- 
   const siteRoot = window.location.hostname.endsWith("github.io")
     ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
     : "/";
@@ -249,11 +227,7 @@ class Ball {
         link.href = `${siteRoot}${link.dataset.path}`;
       });
     })
-    .catch(error => {
-      console.error("Navigation load failed:", error);
-      document.getElementById("navigation-placeholder").textContent =
-        "Navigation could not be loaded. Open this page through a local server or GitHub Pages.";
-    });
+    .catch(error => console.error("Navigation load failed:", error));
 
   fetch(`${siteRoot}assets/includes/footer.html`)
     .then(response => {
@@ -265,11 +239,7 @@ class Ball {
     .then(html => {
       document.getElementById("footer-placeholder").innerHTML = html;
     })
-    .catch(error => {
-      console.error("Footer load failed:", error);
-      document.getElementById("footer-placeholder").textContent =
-        "Footer could not be loaded. Open this page through a local server or GitHub Pages.";
-    });
+    .catch(error => console.error("Footer load failed:", error));
 </script>
 
 </body>
