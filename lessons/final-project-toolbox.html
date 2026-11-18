@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Irina Shablinsky">
+  <meta name="description" content="A short CS1 final-project toolbox: 3D, vector motion, and animated text in Processing.">
+  <title>CS1 – Final Project Toolbox</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body id="top">
+  <header>
+    <h1>Final Project Toolbox: Depth, Motion &amp; Words</h1>
+  </header>
+
+  <div id="navigation-placeholder"></div>
+
+  <main>
+    <section>
+<h2>One Last Toolbox</h2>
+<p>You already know enough to build something of your own. Today: three ideas you can borrow for your final project. Try them, pick what fits, and make it yours. <strong>You do not need to use all three—or any of them.</strong></p>
+<p>Each example below is a complete, separate Processing sketch. Run them one at a time in a new sketch.</p>
+</section>
+<section>
+<h2>1. Give It Depth: A Taste of 3D</h2>
+<p>Use <code>P3D</code> to add a depth coordinate. Positive <code>x</code> goes right, positive <code>y</code> goes down, and positive <code>z</code> comes toward you. Move the mouse to turn this box.</p>
+<pre><code>void setup() {
+  size(600, 400, P3D);
+}
+
+void draw() {
+  background(25);
+  lights();
+  noStroke();
+
+  pushMatrix();
+  translate(width/2, height/2, 0);
+  rotateX(map(mouseY, 0, height, -PI, PI));
+  rotateY(map(mouseX, 0, width, -PI, PI));
+  fill(100, 180, 255);
+  box(120);
+  popMatrix();
+}</code></pre>
+<p><code>translate()</code> places the local origin; <code>box()</code> draws around it. <code>rotateX()</code> and <code>rotateY()</code> turn the coordinates, using radians. <code>lights()</code> adds shading. The <code>pushMatrix()</code>/<code>popMatrix()</code> pair keeps these transformations from affecting the next object. Rotation order matters.</p>
+<p><strong>Make it yours:</strong> replace <code>box(120)</code> with <code>sphere(70)</code>, then add a second object with its own transformation pair. A tiny sculpture, a robot, a strange planet?</p>
+</section>
+<p>For more details check out  <a href="https://processing.org/tutorials/p3d"  target="_blank" rel="noopener" >P3D Tutorial</a>.</p>
+</section>
+<section>
+<h2>2. Give It Motion: PVector</h2>
+<p>A <code>PVector</code> bundles related components such as <code>x</code> and <code>y</code>. Use one for position, one for velocity, and one for acceleration: <strong>acceleration changes velocity; velocity changes position.</strong> This little follower accelerates toward the mouse.</p>
+<pre><code>PVector position;
+PVector velocity;
+
+void setup() {
+  size(600, 400);
+  position = new PVector(width/2, height/2);
+  velocity = new PVector(0, 0);
+}
+
+void draw() {
+  background(25);
+  PVector target = new PVector(mouseX, mouseY);
+  PVector acceleration = PVector.sub(target, position);
+  acceleration.normalize();
+  acceleration.mult(0.15);
+
+  velocity.add(acceleration);
+  velocity.limit(4);
+  position.add(velocity);
+
+  noStroke();
+  fill(255, 190, 70);
+  ellipse(position.x, position.y, 24, 24);
+}</code></pre>
+<p><code>PVector.sub(target, position)</code> creates a vector pointing from the follower to the target. <code>normalize()</code> keeps its direction and makes its length 1 (a zero vector stays zero); <code>mult(0.15)</code> sets the acceleration strength. <code>limit(4)</code> caps speed.</p>
+<p><strong>Watch the difference:</strong> <code>position.add(velocity)</code> changes position. The two-argument <code>PVector.sub(target, position)</code> returns a new vector without changing either input.</p>
+<p><strong>Make it yours:</strong> give your own class position and velocity vectors. Try several followers with different speeds. This example can overshoot and orbit the mouse—it does not brake to a stop. Add a boundary rule if your project needs one.</p>
+<p>For more details check out <a href="https://processing.org/tutorials/pvector"  target="_blank" rel="noopener" >PVector Tutorial</a>.</p>
+</section>
+</section>
+<section>
+<h2>3. Give It a Voice: Strings and Moving Type</h2>
+<p>Text can be more than a score label. Draw a word one letter at a time and let it dance. Press a key to change the word.</p>
+<pre><code>String word = &quot;HELLO&quot;;
+
+void setup() {
+  size(600, 400);
+  textSize(48);
+  textAlign(CENTER, CENTER);
+}
+
+void draw() {
+  background(25);
+  fill(255, 150, 190);
+  float spacing = 55;
+  float startX = width/2.0 - (word.length() - 1) * spacing/2;
+  for (int i = 0; i &lt; word.length(); i++) {
+    float y = height/2.0 + sin(frameCount * 0.05 + i) * 30;
+    text(word.charAt(i), startX + i * spacing, y);
+  }
+}
+
+void keyPressed() {
+  if (word.equals(&quot;HELLO&quot;)) {
+    word = &quot;DANCE&quot;;
+  } else {
+    word = &quot;HELLO&quot;;
+  }
+}</code></pre>
+<p><code>length()</code> gives the number of characters; <code>charAt(i)</code> gets one character, starting at index 0. The loop stops before <code>word.length()</code>. Here, <code>sin()</code> makes a repeating wave; adding <code>i</code> puts each letter at a different point in that wave.</p>
+<p><strong>Two rules to keep:</strong> compare text with <code>.equals()</code>, rather than <code>==</code>. Strings are immutable: methods such as <code>replace()</code> return new text, so save the result: <code>word = word.replace("HELLO", "WOW");</code></p>
+<p>For more details check out <a href="https://processing.org/tutorials/text"  target="_blank" rel="noopener" >Strings and Drawing Text</a>.</p>
+</section>
+<p><strong>Make it yours:</strong> a kinetic poem, expressive dialogue, a word game, or a title that reacts to the mouse. Change the wave height, spacing, color, or words.</p>
+</section>
+<section>
+<h2>Project Sparks</h2>
+<ul>
+<li><strong>A creature with opinions:</strong> a character follows the mouse and displays a message when you interact. Start with one creature; add personalities later.</li>
+<li><strong>A pocket universe:</strong> a few rotating 3D objects with different colors and speeds. Start with two shapes; add controls or labels later.</li>
+<li><strong>Words with moods:</strong> make a word bounce, tremble, or drift to match its meaning. Start with one word; add user choices later.</li>
+<li><strong>A tiny celebration:</strong> particles move with velocity and gravity while a message appears. Start with a fixed array of particles; add trails or resets later.</li>
+</ul>
+<p>Flocking is a possible stretch: separation avoids crowding, alignment matches nearby directions, and cohesion moves toward nearby neighbors. Get several independent movers working first; the follower demo above is not a full flocking system.</p>
+
+
+
+    <p class="back-to-top">
+  <a href="#top">↑ Back to top</a>
+</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+  const siteRoot = window.location.hostname.endsWith("github.io")
+    ? `/${window.location.pathname.split("/").filter(Boolean)[0]}/`
+    : "/";
+
+  fetch(`${siteRoot}assets/includes/navigation.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Navigation request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById("navigation-placeholder");
+      placeholder.innerHTML = html;
+
+      placeholder.querySelectorAll("a[data-path]").forEach(link => {
+        link.href = `${siteRoot}${link.dataset.path}`;
+      });
+    })
+    .catch(error => console.error("Navigation load failed:", error));
+
+  fetch(`${siteRoot}assets/includes/footer.html`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Footer request failed: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("footer-placeholder").innerHTML = html;
+    })
+    .catch(error => console.error("Footer load failed:", error));
+</script>
+
+</body>
+</html>
